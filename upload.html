@@ -18,8 +18,8 @@
         <h2>⬆️ 题库一键上传工具</h2>
         <p>请确保代码里已经填好了 Firebase Config 和 JSON 题目数据。</p>
         
-        <button onclick="uploadData('JuniorQuestions', juniorQuestions)">1. 上传 Junior 题库</button>
-        <button onclick="uploadData('SeniorQuestions', seniorQuestions)">2. 上传 Senior 题库</button>
+        <button onclick="uploadData('JuniorQuestions', juniorQuestions, 'JQ')">1. 上传 Junior 题库</button>
+        <button onclick="uploadData('SeniorQuestions', seniorQuestions, 'SQ')">2. 上传 Senior 题库</button>
 
         <p id="status">等待操作...</p>
     </div>
@@ -751,30 +751,34 @@
         ];
 
         // 核心上传逻辑
-        function uploadData(collectionName, dataArray) {
+        // 核心上传逻辑 (自定义 ID 版)
+        function uploadData(collectionName, dataArray, prefix) {
             if (dataArray.length === 0) {
                 document.getElementById("status").innerText = `⚠️ ${collectionName} 数组是空的，请先在代码里粘贴题目！`;
                 return;
             }
 
-            document.getElementById("status").innerText = `⏳ 正在上传 ${dataArray.length} 道题到 ${collectionName}...`;
+            document.getElementById("status").innerText = `⏳ 正在上传 ${dataArray.length} 道题，生成自定义 ID 中...`;
             document.getElementById("status").style.color = "#f39c12";
 
             let uploadPromises = [];
 
-            dataArray.forEach(question => {
-                // 使用 add() 自动生成唯一的 Document ID 并上传数据
-                let promise = db.collection(collectionName).add(question);
+            // 使用 forEach 的 index 来生成 1, 2, 3...
+            dataArray.forEach((question, index) => {
+                let docId = prefix + (index + 1); // 自动拼成 JQ1, JQ2, JQ3...
+                
+                // 使用 .doc(docId).set() 来强制指定 Firebase 里的 Document ID
+                let promise = db.collection(collectionName).doc(docId).set(question);
                 uploadPromises.push(promise);
             });
 
             // 等待所有题目上传完毕
             Promise.all(uploadPromises).then(() => {
-                document.getElementById("status").innerText = `✅ 成功！${dataArray.length} 道题已全部存入 ${collectionName} 数据库！`;
+                document.getElementById("status").innerText = `✅ 成功！${dataArray.length} 道题已全部按 ${prefix}1, ${prefix}2... 存入数据库！`;
                 document.getElementById("status").style.color = "#2ecc71";
             }).catch(error => {
                 console.error("上传出错: ", error);
-                document.getElementById("status").innerText = `❌ 上传失败，请检查控制台 (F12) 的错误信息。`;
+                document.getElementById("status").innerText = `❌ 上传失败，请检查控制台。`;
                 document.getElementById("status").style.color = "#e74c3c";
             });
         }
