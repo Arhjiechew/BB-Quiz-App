@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BB Quiz Challenge</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        /* 隐藏不同页面的辅助类 */
+        .hidden { display: none !important; }
+        
+        /* 输入框和按钮样式 */
+        input, select { width: 80%; padding: 12px; margin: 10px 0; font-size: 16px; border-radius: 6px; border: 1px solid #ccc; }
+        .btn-primary { background: #3498db; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 8px; cursor: pointer; margin: 10px; width: 80%; }
+        .btn-secondary { background: #f39c12; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 8px; cursor: pointer; margin: 10px; width: 80%; }
+        .btn-primary:hover { background: #2980b9; }
+        .btn-secondary:hover { background: #e67e22; }
+        
+        /* 答题面板样式 */
+        .dashboard { display: flex; justify-content: space-between; background: #ecf0f1; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: bold;}
+        .score { color: #2ecc71; }
+        .streak { color: #e74c3c; }
+        .timer { color: #8e44ad; }
+        .question-box { font-size: 20px; margin: 20px 0; padding: 20px; }
+        .option-btn { display: block; width: 100%; margin: 10px auto; padding: 15px; font-size: 16px; cursor: pointer; border: 2px solid #3498db; background: white; color: #3498db; border-radius: 8px; transition: 0.2s; }
+        .option-btn:hover { background: #3498db; color: white; }
+
+        /* 排行榜表格 */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #3498db; color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="loginPage" class="container">
+        <h1>BB Quiz Challenge ⚓</h1>
+        <input type="text" id="playerName" placeholder="Enter your Name (输入名字)" required>
+        <br>
+        <select id="playerRole">
+            <option value="Junior">Junior (小学组)</option>
+            <option value="Senior">Senior (中学组)</option>
+        </select>
+        <br>
+        <button class="btn-primary" onclick="startGame()">▶️ Start Quiz (开始答题)</button>
+        <button class="btn-secondary" onclick="showLeaderboard()">🏆 Leaderboard (排行榜)</button>
+    </div>
+
+    <div id="quizPage" class="container hidden">
+        <div class="dashboard">
+            <div class="score">总分: <span id="scoreDisplay">0</span></div>
+            <div class="streak">🔥 连击: <span id="streakDisplay">0</span></div>
+            <div class="timer">⏱️ 时间: <span id="timeDisplay">0</span>s</div>
+        </div>
+        
+        <h3 id="progressText">Question 1 / 50</h3>
+        <div class="question-box" id="questionText">题目加载中...</div>
+        
+        <button class="option-btn" id="btn0" onclick="checkAnswer(0)">A.</button>
+        <button class="option-btn" id="btn1" onclick="checkAnswer(1)">B.</button>
+        <button class="option-btn" id="btn2" onclick="checkAnswer(2)">C.</button>
+        <button class="option-btn" id="btn3" onclick="checkAnswer(3)">D.</button>
+    </div>
+
+    <div id="resultPage" class="container hidden">
+        <h1>🎉 Challenge Completed!</h1>
+        <h2 id="finalName"></h2>
+        <p>🎖️ 总分 (Score): <strong id="finalScore" style="color: #2ecc71; font-size: 24px;">0</strong></p>
+        <p>🔥 最高连击 (Max Combo): <strong id="finalCombo">0</strong></p>
+        <p>✅ 答对题数 (Correct Answers): <strong id="finalCorrect">0</strong> / 50</p>
+        <p>⏱️ 总耗时 (Time): <strong id="finalTime">0</strong> 秒</p>
+        <br>
+        <button class="btn-primary" onclick="location.reload()">🏠 返回主页 (Home)</button>
+        <button class="btn-secondary" onclick="showLeaderboard()">🏆 查看排行榜</button>
+    </div>
+
+    <div id="leaderboardPage" class="container hidden">
+        <h1>🏆 Leaderboard</h1>
+        <select id="lbRoleFilter" onchange="fetchLeaderboard()">
+            <option value="Junior">Junior 排行榜</option>
+            <option value="Senior">Senior 排行榜</option>
+        </select>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>名次</th>
+                    <th>名字</th>
+                    <th>分数</th>
+                    <th>最高连击</th>
+                    <th>答对</th>
+                    <th>用时</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+                <tr><td colspan="6">正在加载数据...</td></tr>
+            </tbody>
+        </table>
+        <br>
+        <button class="btn-primary" onclick="location.reload()">🏠 返回主页</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // ⚠️⚠️⚠️ 在这里贴上你的 Firebase Config ⚠️⚠️⚠️
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
+            authDomain: "bb-quiz-app.firebaseapp.com",
+            projectId: "bb-quiz-app",
+            storageBucket: "bb-quiz-app.firebasestorage.app",
+            messagingSenderId: "370671276686",
+            appId: "1:370671276686:web:204abb8c375f130b3a2fdf",
+            measurementId: "G-R83HJ2EDQG"
+            };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // 全局游戏数据变量
+        let questions = []; // 存放从数据库拉下来的所有题目
+        let currentQIndex = 0;
+        
+        // 玩家数据记录
+        let currentPlayer = "";
+        let currentRole = "";
+        let score = 0;
+        let currentStreak = 0;
+        let maxStreak = 0;
+        let totalCorrect = 0;
+        let basePoints = 10;
+        
+        // 计时器变量
+        let startTime;
+        let timerInterval;
+        let timeElapsed = 0;
+
+        // 【功能1】：开始游戏
+        function startGame() {
+            currentPlayer = document.getElementById("playerName").value;
+            currentRole = document.getElementById("playerRole").value;
+
+            if (currentPlayer.trim() === "") {
+                alert("请输入你的名字！(Please enter your name)");
+                return;
+            }
+
+            // 隐藏 Login，显示 Quiz
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("quizPage").classList.remove("hidden");
+
+            // 开始计时
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                timeElapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById("timeDisplay").innerText = timeElapsed;
+            }, 1000);
+
+            // 根据身份拉取对应的题库
+            let collectionName = currentRole === "Junior" ? "JuniorQuestions" : "SeniorQuestions";
+            
+            db.collection(collectionName).get().then((querySnapshot) => {
+                questions = [];
+                querySnapshot.forEach((doc) => {
+                    questions.push(doc.data());
+                });
+                
+                // 如果数据库没题目，给个提示
+                if(questions.length === 0) {
+                    alert("题库还在建设中！请先去 Firestore 添加题目。");
+                    return;
+                }
+
+                // 题目打乱顺序 (Shuffle) - 让每次玩的顺序都不一样
+                questions.sort(() => Math.random() - 0.5);
+                
+                // 加载第一题
+                loadNextQuestion();
+            });
+        }
+
+        // 【功能2】：加载题目到画面上
+        function loadNextQuestion() {
+            if (currentQIndex >= questions.length) {
+                endGame(); // 题目做完了，结束游戏
+                return;
+            }
+
+            let q = questions[currentQIndex];
+            document.getElementById("progressText").innerText = `Question ${currentQIndex + 1} / ${questions.length}`;
+            document.getElementById("questionText").innerText = q.question;
+            document.getElementById("btn0").innerText = q.options[0];
+            document.getElementById("btn1").innerText = q.options[1];
+            document.getElementById("btn2").innerText = q.options[2];
+            document.getElementById("btn3").innerText = q.options[3];
+        }
+
+        // 【功能3】：判断对错与计算连击
+        function checkAnswer(selectedIndex) {
+            let q = questions[currentQIndex];
+
+            if (selectedIndex === q.correct_index) {
+                // 答对
+                currentStreak++;
+                totalCorrect++;
+                if (currentStreak > maxStreak) maxStreak = currentStreak; // 记录最高连击
+
+                let pointsEarned = basePoints * Math.pow(2, currentStreak - 1);
+                score += pointsEarned;
+            } else {
+                // 答错
+                currentStreak = 0;
+            }
+
+            // 更新仪表盘
+            document.getElementById("scoreDisplay").innerText = score;
+            document.getElementById("streakDisplay").innerText = currentStreak;
+
+            // 前进到下一题
+            currentQIndex++;
+            loadNextQuestion();
+        }
+
+        // 【功能4】：游戏结束与保存数据
+        function endGame() {
+            clearInterval(timerInterval); // 停止计时
+            
+            // 隐藏 Quiz，显示 Result
+            document.getElementById("quizPage").classList.add("hidden");
+            document.getElementById("resultPage").classList.remove("hidden");
+
+            // 更新结算画面文字
+            document.getElementById("finalName").innerText = currentPlayer;
+            document.getElementById("finalScore").innerText = score;
+            document.getElementById("finalCombo").innerText = maxStreak;
+            document.getElementById("finalCorrect").innerText = totalCorrect;
+            document.getElementById("finalTime").innerText = timeElapsed;
+
+            // 【关键】：把成绩保存到 Firebase 的 Leaderboard 集合里
+            db.collection("Leaderboard").add({
+                name: currentPlayer,
+                role: currentRole,
+                score: score,
+                maxCombo: maxStreak,
+                correctAnswers: totalCorrect,
+                timeSeconds: timeElapsed,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp() // 记录时间戳
+            }).then(() => {
+                console.log("成绩已上传至排行榜！");
+            }).catch((error) => {
+                console.error("上传失败: ", error);
+            });
+        }
+
+        // 【功能5】：查看排行榜
+        function showLeaderboard() {
+            // 隐藏其他页面
+            document.getElementById("loginPage").classList.add("hidden");
+            document.getElementById("resultPage").classList.add("hidden");
+            document.getElementById("leaderboardPage").classList.remove("hidden");
+            
+            fetchLeaderboard(); // 去数据库拉取排名数据
+        }
+
+        // 【功能6】：从 Firebase 获取排行榜数据
+        function fetchLeaderboard() {
+            let lbRole = document.getElementById("lbRoleFilter").value;
+            let tbody = document.getElementById("leaderboardBody");
+            tbody.innerHTML = "<tr><td colspan='6'>正在加载数据...</td></tr>";
+
+            // 按照 分数从高到低 排序，如果同分，按用时从少到多 排序。只取前 10 名。
+            db.collection("Leaderboard")
+              .where("role", "==", lbRole)
+              .orderBy("score", "desc")
+              .orderBy("timeSeconds", "asc")
+              .limit(10)
+              .get()
+              .then((querySnapshot) => {
+                  tbody.innerHTML = ""; // 清空加载提示
+                  let rank = 1;
+                  querySnapshot.forEach((doc) => {
+                      let data = doc.data();
+                      tbody.innerHTML += `
+                          <tr>
+                              <td>${rank}</td>
+                              <td>${data.name}</td>
+                              <td><strong style="color:#2ecc71">${data.score}</strong></td>
+                              <td>🔥 ${data.maxCombo}</td>
+                              <td>${data.correctAnswers}</td>
+                              <td>${data.timeSeconds}s</td>
+                          </tr>
+                      `;
+                      rank++;
+                  });
+                  if(rank === 1) {
+                      tbody.innerHTML = "<tr><td colspan='6'>目前还没有人挑战，快来抢占第一名！</td></tr>";
+                  }
+              }).catch((error) => {
+                  console.error("获取排行榜失败: ", error);
+                  tbody.innerHTML = "<tr><td colspan='6'>加载失败，请检查数据库权限 (需要给 Leaderboard 建 Index 索引)</td></tr>";
+              });
+        }
+    </script>
+</body>
+</html>
