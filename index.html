@@ -3,272 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BB Quiz Challenge</title>
-    <style>
-        /* 全局现代字体与背景 */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        
-        /* 手机端卡片式容器 */
-        .container { background: white; width: 100%; max-width: 450px; min-height: 600px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; box-sizing: border-box; display: flex; flex-direction: column; position: relative; }
-        
-        /* 隐藏元素的类 */
-        .hidden { display: none !important; }
-
-        /* 标题和文字 */
-        h1 { text-align: center; color: #2c3e50; font-size: 26px; margin-bottom: 30px; }
-        h2 { color: #34495e; font-size: 20px; text-align: center; }
-        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
-
-        /* 选身份的大按钮 */
-        .role-btn { display: block; width: 100%; padding: 25px; margin: 15px 0; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 15px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-        .btn-junior { background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4); }
-        .btn-senior { background: linear-gradient(135deg, #e74c3c, #c0392b); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
-        .role-btn:active { transform: scale(0.96); }
-
-        /* 输入框和通用按钮 */
-        input { width: 100%; padding: 15px; font-size: 18px; border: 2px solid #bdc3c7; border-radius: 10px; box-sizing: border-box; margin-bottom: 20px; text-align: center; outline: none; transition: border-color 0.3s; }
-        input:focus { border-color: #3498db; }
-        .btn-primary { width: 100%; padding: 15px; font-size: 18px; font-weight: bold; background: #2ecc71; color: white; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4); }
-        .btn-primary:active { transform: scale(0.98); }
-
-        /* --- 答题界面专属 UI --- */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; padding: 10px 15px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; font-weight: bold; color: #34495e; }
-        .top-bar div { display: flex; flex-direction: column; align-items: center; }
-        .top-bar span { font-size: 18px; color: #2c3e50; }
-        
-        .progress-text { font-size: 14px; color: #7f8c8d; font-weight: bold; margin-bottom: 10px; }
-        .question-text { font-size: 20px; color: #2c3e50; font-weight: bold; line-height: 1.5; margin-bottom: 30px; }
-
-        /* 选项按钮 (默认状态) */
-        .option-btn { display: block; width: 100%; padding: 18px 20px; margin-bottom: 15px; font-size: 16px; text-align: left; background: white; border: 2px solid #e0e6ed; color: #34495e; border-radius: 12px; cursor: pointer; transition: 0.2s; font-weight: 500; }
-        .option-btn:hover:not(:disabled) { border-color: #3498db; background: #f0f8ff; }
-        
-        /* 选项按钮 (状态变化) */
-        .option-btn.correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724 !important; font-weight: bold; }
-        .option-btn.wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24 !important; }
-        .option-btn:disabled { cursor: not-allowed; opacity: 0.9; }
-
-        /* Next 按钮 */
-        #nextBtn { margin-top: auto; background: #3498db; display: none; } /* 默认隐藏，放到底部 */
-
-        /* 结算界面 */
-        .result-stats { background: #f8f9fa; padding: 20px; border-radius: 15px; margin: 20px 0; }
-        .result-stats p { font-size: 18px; margin: 10px 0; color: #34495e; }
-        .result-stats strong { color: #2c3e50; font-size: 22px; }
-
-    </style>
-</head>
+    <title>BB Quiz Challenge ⚓</title>
+    </head>
 <body>
 
-    <div id="page1-role" class="container">
-        <h1>BB Quiz Challenge ⚓</h1>
-        <p class="subtitle">Please select your category (请选择组别)</p>
-        <button class="role-btn btn-junior" onclick="selectRole('Junior')">👦 Junior (小学组)</button>
-        <button class="role-btn btn-senior" onclick="selectRole('Senior')">👨 Senior (中学组)</button>
-    </div>
-
-    <div id="page2-name" class="container hidden">
-        <h1>Welcome, <span id="displayRole"></span>!</h1>
-        <p class="subtitle">Enter your name to start the challenge.</p>
-        <input type="text" id="playerName" placeholder="Your Name (你的名字)" required>
-        <button class="btn-primary" onclick="startQuiz()">▶️ Start Now</button>
-        <br>
-        <button style="background:none; border:none; color:#7f8c8d; cursor:pointer; text-decoration:underline;" onclick="goBackToRole()">⬅️ Back</button>
-    </div>
-
-    <div id="page3-quiz" class="container hidden">
-        <div class="top-bar">
-            <div>分数 <span id="scoreDisplay" style="color:#f39c12;">0</span></div>
-            <div>连击 <span id="streakDisplay" style="color:#e74c3c;">0</span></div>
-            <div>答对 <span id="correctDisplay" style="color:#2ecc71;">0 / 50</span></div>
+    <div id="app">
+        <div id="page1-role" class="container">
+            <h1>BB Quiz Challenge ⚓</h1>
+            <p class="subtitle">Please select your category (请选择组别)</p>
+            <button id="btnSelectJunior" class="role-btn btn-junior">👦 Junior (小学组)</button>
+            <button id="btnSelectSenior" class="role-btn btn-senior">👨 Senior (中学组)</button>
         </div>
-        
-        <div class="progress-text" id="progressText">Question 1 of 50</div>
-        <div class="question-text" id="questionText">题目加载中...</div>
-        
-        <button class="option-btn" id="btn0" onclick="checkAnswer(0)">A.</button>
-        <button class="option-btn" id="btn1" onclick="checkAnswer(1)">B.</button>
-        <button class="option-btn" id="btn2" onclick="checkAnswer(2)">C.</button>
-        <button class="option-btn" id="btn3" onclick="checkAnswer(3)">D.</button>
 
-        <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">Next Question ➡️</button>
-    </div>
-
-    <div id="page4-result" class="container hidden">
-        <h1>🎉 Challenge Completed!</h1>
-        <h2 id="finalName"></h2>
-        
-        <div class="result-stats">
-            <p>🏆 总分: <strong id="finalScore" style="color: #f39c12;">0</strong></p>
-            <p>🔥 最高连击: <strong id="finalCombo" style="color: #e74c3c;">0</strong></p>
-            <p>✅ 答对题数: <strong id="finalCorrect" style="color: #2ecc71;">0</strong> / 50</p>
+        <div id="page2-name" class="container hidden">
+            <h1>Welcome, <span id="displayRole"></span>!</h1>
+            <p class="subtitle">Enter your full name (Must be UPPERCASE)</p>
+            <input type="text" id="playerName" placeholder="FULL NAME (e.g. ALI BIN ABU)" required>
+            <button id="btnStartQuiz" class="btn-primary">▶️ Start Now</button>
+            <br>
+            <button id="btnBackToRole" class="btn-back">⬅️ Back</button>
         </div>
-        
-        <button class="btn-primary" onclick="location.reload()">🏠 Play Again (再玩一次)</button>
+
+        <div id="page3-quiz" class="container hidden">
+            <div class="top-bar">
+                <div>Score <span id="scoreDisplay">0</span></div>
+                <div>Combo <span id="streakDisplay">0</span></div>
+                <div>Correct <span id="correctDisplay">0 / 50</span></div>
+            </div>
+            
+            <div class="progress-text" id="progressText">Question 1 of 50</div>
+            <div class="question-text" id="questionText">Loading...</div>
+            
+            <div id="optionsContainer">
+                <button class="option-btn" data-index="0">A.</button>
+                <button class="option-btn" data-index="1">B.</button>
+                <button class="option-btn" data-index="2">C.</button>
+                <button class="option-btn" data-index="3">D.</button>
+            </div>
+
+            <button class="btn-primary hidden" id="nextBtn">Next Question ➡️</button>
+        </div>
+
+        <div id="page4-result" class="container hidden">
+            <h1>🎉 Completed!</h1>
+            <h2 id="finalName"></h2>
+            <div class="result-stats">
+                <p>🏆 Total Score: <strong id="finalScore">0</strong></p>
+                <p>🔥 Max Combo: <strong id="finalCombo">0</strong></p>
+                <p>✅ Correct: <strong id="finalCorrect">0</strong> / 50</p>
+            </div>
+            <button id="btnRestart" class="btn-primary">🏠 Play Again</button>
+        </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <script>
-        // ⚠️⚠️⚠️ 替换为你的 Firebase Config ⚠️⚠️⚠️
-        const firebaseConfig = {
-            apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
-            authDomain: "bb-quiz-app.firebaseapp.com",
-            projectId: "bb-quiz-app",
-            storageBucket: "bb-quiz-app.firebasestorage.app",
-            messagingSenderId: "370671276686",
-            appId: "1:370671276686:web:204abb8c375f130b3a2fdf",
-            measurementId: "G-R83HJ2EDQG"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // 游戏数据
-        let currentRole = "";
-        let playerName = "";
-        let questions = []; 
-        let currentQIndex = 0;
-        
-        let score = 0;
-        let currentStreak = 0;
-        let maxStreak = 0;
-        let totalCorrect = 0;
-        let basePoints = 10;
-
-        // 步骤 1：选择身份
-        function selectRole(role) {
-            currentRole = role;
-            document.getElementById("displayRole").innerText = role;
-            document.getElementById("page1-role").classList.add("hidden");
-            document.getElementById("page2-name").classList.remove("hidden");
-        }
-
-        // 返回上一步
-        function goBackToRole() {
-            document.getElementById("page2-name").classList.add("hidden");
-            document.getElementById("page1-role").classList.remove("hidden");
-        }
-
-        // 步骤 2：填名字并开始拉取题目
-        function startQuiz() {
-            playerName = document.getElementById("playerName").value.trim();
-            if (playerName === "") {
-                alert("Please enter your name!");
-                return;
-            }
-
-            // 切换页面，提示加载中
-            document.getElementById("page2-name").classList.add("hidden");
-            document.getElementById("page3-quiz").classList.remove("hidden");
-            document.getElementById("questionText").innerText = "Loading questions from database... (加载题目中)";
-
-            // 决定拉取哪个题库
-            let collectionName = currentRole === "Junior" ? "JuniorQuestions" : "SeniorQuestions";
-            
-            db.collection(collectionName).get().then((querySnapshot) => {
-                questions = [];
-                querySnapshot.forEach((doc) => {
-                    questions.push(doc.data());
-                });
-                
-                if(questions.length === 0) {
-                    document.getElementById("questionText").innerText = "No questions found in database! 请先去添加题目。";
-                    return;
-                }
-
-                // 打乱题目顺序
-                questions.sort(() => Math.random() - 0.5);
-                
-                // 加载第一题
-                loadQuestionUI();
-            }).catch(error => {
-                document.getElementById("questionText").innerText = "Error loading database!";
-                console.error(error);
-            });
-        }
-
-        // 将题目显示到画面上
-        function loadQuestionUI() {
-            let q = questions[currentQIndex];
-            
-            // 更新进度文字
-            document.getElementById("progressText").innerText = `Question ${currentQIndex + 1} of ${questions.length}`;
-            document.getElementById("questionText").innerText = q.question;
-            
-            // 恢复按钮初始状态 (清除颜色，恢复可点击)
-            for(let i=0; i<4; i++) {
-                let btn = document.getElementById("btn" + i);
-                btn.innerText = q.options[i];
-                btn.className = "option-btn"; // 移除 correct/wrong 颜色
-                btn.disabled = false;         // 恢复点击
-            }
-
-            // 隐藏 Next 按钮
-            document.getElementById("nextBtn").style.display = "none";
-        }
-
-        // 步骤 3：用户点击选项 (核心 UI 变色逻辑)
-        function checkAnswer(selectedIndex) {
-            let q = questions[currentQIndex];
-            let correctIndex = q.correct_index;
-
-            // 1. 马上锁死所有按钮，防止用户点两次
-            for(let i=0; i<4; i++) {
-                document.getElementById("btn" + i).disabled = true;
-            }
-
-            // 2. 判断对错并变色
-            if (selectedIndex === correctIndex) {
-                // 答对了 -> 点击的按钮变青色
-                document.getElementById("btn" + selectedIndex).classList.add("correct");
-                
-                // 连击和分数逻辑
-                currentStreak++;
-                totalCorrect++;
-                if (currentStreak > maxStreak) maxStreak = currentStreak;
-                score += basePoints * Math.pow(2, currentStreak - 1);
-
-            } else {
-                // 答错了 -> 点击的变红色，正确的变青色
-                document.getElementById("btn" + selectedIndex).classList.add("wrong");
-                document.getElementById("btn" + correctIndex).classList.add("correct");
-                
-                currentStreak = 0; // 连击断了
-            }
-
-            // 3. 更新上方分数板
-            document.getElementById("scoreDisplay").innerText = score;
-            document.getElementById("streakDisplay").innerText = currentStreak;
-            document.getElementById("correctDisplay").innerText = `${totalCorrect} / ${questions.length}`;
-
-            // 4. 显示 Next 按钮，让用户手动去下一题
-            document.getElementById("nextBtn").style.display = "block";
-        }
-
-        // 步骤 4：点击 Next 按钮去下一题
-        function nextQuestion() {
-            currentQIndex++;
-            if (currentQIndex < questions.length) {
-                loadQuestionUI();
-            } else {
-                endGame();
-            }
-        }
-
-        // 步骤 5：结束游戏
-        function endGame() {
-            document.getElementById("page3-quiz").classList.add("hidden");
-            document.getElementById("page4-result").classList.remove("hidden");
-
-            document.getElementById("finalName").innerText = playerName + " (" + currentRole + ")";
-            document.getElementById("finalScore").innerText = score;
-            document.getElementById("finalCombo").innerText = maxStreak;
-            document.getElementById("finalCorrect").innerText = totalCorrect;
-            
-            // 这里你可以保留上一版上传分数到 Leaderboard 的代码
-        }
-    </script>
+    <script type="module" src="/main.js"></script>
 </body>
 </html>
