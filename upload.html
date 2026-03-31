@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase 批量上传工具</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
+        .box { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        button { background: #3498db; color: white; padding: 15px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; margin: 10px; width: 80%; }
+        button:hover { background: #2980b9; }
+        #status { margin-top: 20px; font-weight: bold; color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>⬆️ 题库一键上传工具</h2>
+        <p>请确保代码里已经填好了 Firebase Config 和 JSON 题目数据。</p>
+        
+        <button onclick="uploadData('JuniorQuestions', juniorQuestions)">1. 上传 Junior 题库</button>
+        <button onclick="uploadData('SeniorQuestions', seniorQuestions)">2. 上传 Senior 题库</button>
+
+        <p id="status">等待操作...</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // ⚠️ 1. 在这里换成你的 Firebase 钥匙
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
+            authDomain: "bb-quiz-app.firebaseapp.com",
+            projectId: "bb-quiz-app",
+            storageBucket: "bb-quiz-app.firebasestorage.app",
+            messagingSenderId: "370671276686",
+            appId: "1:370671276686:web:204abb8c375f130b3a2fdf",
+            measurementId: "G-R83HJ2EDQG"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ⚠️ 2. 把我之前发给你的 Junior JSON 数据（50题）粘贴到这个方括号 [ ] 里面
+        const juniorQuestions = [
+        {
+            "id": "J_001",
+            "topic": "History",
+            "question": "Who is the founder of the Boys' Brigade?",
+            "options": ["Lord Baden-Powell", "Sir William Alexander Smith", "Henry Dunant", "George Williams"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_002",
+            "topic": "History",
+            "question": "In which year was the Boys' Brigade founded?",
+            "options": ["1883", "1908", "1946", "1850"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_003",
+            "topic": "BB Malaysia & Asia",
+            "question": "Where was the first Boys' Brigade Company in Malaysia formed?",
+            "options": ["Kuala Lumpur", "Kuching", "Penang", "Johor Bahru"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_004",
+            "topic": "BB Traditions",
+            "question": "What is the official motto of the Boys' Brigade?",
+            "options": ["Be Prepared", "Sure & Stedfast", "Serve to Lead", "Always Ready"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_005",
+            "topic": "BB Uniforms",
+            "question": "What is the main symbol featured on the Boys' Brigade crest?",
+            "options": ["A shield", "A sword", "An anchor", "A star"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_006",
+            "topic": "Citizenship",
+            "question": "What is the national flower of Malaysia?",
+            "options": ["Orchid", "Rose", "Hibiscus (Bunga Raya)", "Sunflower"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_007",
+            "topic": "Citizenship",
+            "question": "How many stripes are there on the Malaysian flag (Jalur Gemilang)?",
+            "options": ["11", "13", "14", "15"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_008",
+            "topic": "2026 Current Issues",
+            "question": "What major national campaign is Malaysia actively running in the year 2026 to boost the country's economy?",
+            "options": ["Visit Malaysia 2026", "Malaysia Boleh 2026", "Wawasan 2026", "Green Malaysia 2026"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_009",
+            "topic": "Camping Knowledge",
+            "question": "Which of the following is the safest and best place to pitch a camping tent?",
+            "options": ["Under a very tall, old tree with dead branches", "On flat, dry ground away from river edges", "Right next to a campfire", "At the bottom of a steep hill"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_010",
+            "topic": "Camping Knowledge",
+            "question": "What is the most important item to bring on a camping trip to ensure you stay safely hydrated?",
+            "options": ["A compass", "Clean drinking water", "A flashlight", "A sleeping bag"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_011",
+            "topic": "BB Traditions",
+            "question": "What should a Boys' Brigade member do when the national anthem is played?",
+            "options": ["Sit down quietly", "Stand at attention", "Keep walking", "Talk to friends"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_012",
+            "topic": "History",
+            "question": "In which city was the Boys' Brigade first started?",
+            "options": ["London", "Glasgow", "Edinburgh", "Manchester"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_013",
+            "topic": "BB Uniforms",
+            "question": "Where is the Boys' Brigade badge worn on the Junior uniform?",
+            "options": ["On the left chest", "On the right sleeve", "On the belt", "On the cap"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_014",
+            "topic": "Citizenship",
+            "question": "What is the capital city of Malaysia?",
+            "options": ["Putrajaya", "Kuala Lumpur", "George Town", "Malacca City"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_015",
+            "topic": "2026 Current Issues",
+            "question": "Which major public transport line in the Klang Valley is focusing on expansion in 2026?",
+            "options": ["KTM Komuter", "Monorail", "MRT 3", "BRT"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_016",
+            "topic": "Camping Knowledge",
+            "question": "What is the basic knot used to tie a bandage for first aid during a camp?",
+            "options": ["Reef Knot", "Clove Hitch", "Bowline", "Figure of Eight"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_017",
+            "topic": "BB Traditions",
+            "question": "What is the main objective of the Boys' Brigade?",
+            "options": ["To learn how to fight", "The advancement of Christ's kingdom among Boys", "To go on holidays", "To earn money"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_018",
+            "topic": "BB Malaysia & Asia",
+            "question": "Who started the first Boys' Brigade company in Malaysia?",
+            "options": ["Robert Davis", "William Smith", "James Fraser", "John Wesley"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_019",
+            "topic": "BB Uniforms",
+            "question": "Which color is NOT part of the traditional Boys' Brigade uniform?",
+            "options": ["Navy Blue", "White", "Neon Green", "Silver"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_020",
+            "topic": "Camping Knowledge",
+            "question": "Why is it important to keep your campsite clean before leaving?",
+            "options": ["To protect the environment and wildlife", "To make sure nobody else can use it", "To practice sweeping", "To hide from animals"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_021",
+            "topic": "BB Uniforms",
+            "question": "Which award is the highest achievement for a Junior Section member?",
+            "options": ["One Year Service Badge", "Gold Award", "Target Badge", "Bronze Award"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_022",
+            "topic": "2026 Current Issues",
+            "question": "Which state in Malaysia is known for its 'Gateway to Borneo' campaign in early 2026?",
+            "options": ["Selangor", "Sarawak", "Pahang", "Perlis"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_023",
+            "topic": "BB Traditions",
+            "question": "What is the 'BB Vesper'?",
+            "options": ["A type of food", "A closing song/prayer", "A game", "A uniform part"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_024",
+            "topic": "History",
+            "question": "Where was Sir William Alexander Smith born?",
+            "options": ["London, England", "Glasgow, Scotland", "Thurso, Scotland", "Kuala Lumpur, Malaysia"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_025",
+            "topic": "Citizenship",
+            "question": "How many states are there in Malaysia?",
+            "options": ["11", "12", "13", "14"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_026",
+            "topic": "Camping Knowledge",
+            "question": "If you are lost in the woods, what is the best thing to do?",
+            "options": ["Run as fast as you can", "Stay in one place and blow a whistle for help", "Climb a tree and stay there forever", "Hide under leaves"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_027",
+            "topic": "BB Traditions",
+            "question": "Who is the 'Patron' of the Boys' Brigade in Malaysia?",
+            "options": ["The Prime Minister", "The Yang di-Pertuan Agong", "The Minister of Youth and Sports", "The Chief Minister"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_028",
+            "topic": "BB Uniforms",
+            "question": "What should you use to polish the metal parts of your uniform?",
+            "options": ["Water only", "Metal polish (e.g., Brasso)", "Sandpaper", "Ink"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_029",
+            "topic": "2026 Current Issues",
+            "question": "In early 2026, Malaysia introduced a new 'Digital ID'. What is it primarily for?",
+            "options": ["To play video games", "To verify identity online safely", "To replace the physical passport", "To buy groceries for free"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_030",
+            "topic": "Camping Knowledge",
+            "question": "Which of these is a 'Basic First Aid' item for camping?",
+            "options": ["Antiseptic cream and bandages", "A comic book", "A bag of chips", "A toy car"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_031",
+            "topic": "History",
+            "question": "In which country did the Boys' Brigade start?",
+            "options": ["USA", "Scotland", "Australia", "China"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_032",
+            "topic": "BB Traditions",
+            "question": "What is the meaning of the word 'SURE' in the BB motto?",
+            "options": ["Fast", "Reliable and Certain", "Loud", "Brave"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_033",
+            "topic": "BB Uniforms",
+            "question": "What is the correct way to wear your BB cap?",
+            "options": ["Facing backwards", "Tilted to the right, two fingers above the eyebrow", "Covering your eyes", "Hanging on your belt"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_034",
+            "topic": "Citizenship",
+            "question": "Which of these is NOT a color on the Malaysian flag?",
+            "options": ["Red", "Blue", "Green", "Yellow"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_035",
+            "topic": "2026 Current Issues",
+            "question": "Which major public holiday occurs around March/April in 2026?",
+            "options": ["Hari Raya Aidilfitri", "Deepavali", "Christmas", "National Day"],
+            "correct_index": 0
+        },
+        {
+            "id": "J_036",
+            "topic": "Camping Knowledge",
+            "question": "What is a 'Groundsheet' used for?",
+            "options": ["To cover your head", "To place under the tent to keep it dry", "To use as a towel", "To wrap around food"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_037",
+            "topic": "BB Traditions",
+            "question": "What is the BB 'Company'?",
+            "options": ["A business that sells shoes", "The basic unit or group of the Boys' Brigade", "A movie studio", "A type of car"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_038",
+            "topic": "History",
+            "question": "What was the occupation of Sir William Alexander Smith before starting BB?",
+            "options": ["A chef", "A volunteer soldier and businessman", "A pilot", "A doctor"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_039",
+            "topic": "Citizenship",
+            "question": "What is the national language of Malaysia?",
+            "options": ["English", "Bahasa Melayu", "Mandarin", "Tamil"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_040",
+            "topic": "Camping Knowledge",
+            "question": "Which tool is used to find directions (North, South, East, West)?",
+            "options": ["A Ruler", "A Compass", "A Thermometer", "A Magnifying glass"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_041",
+            "topic": "BB Uniforms",
+            "question": "When should you wear your full BB uniform?",
+            "options": ["Only when sleeping", "During parades and official BB meetings", "Only during swimming", "When playing football with friends"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_042",
+            "topic": "2026 Current Issues",
+            "question": "What is the main currency used in Malaysia?",
+            "options": ["Dollar", "Ringgit (MYR)", "Baht", "Rupiah"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_043",
+            "topic": "BB Traditions",
+            "question": "What does the 'B.B.' stand for?",
+            "options": ["Bad Boys", "Best Buddies", "Boys' Brigade", "Brave Boys"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_044",
+            "topic": "History",
+            "question": "How many Boys attended the very first BB meeting in 1883?",
+            "options": ["5", "12", "28", "100"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_045",
+            "topic": "Citizenship",
+            "question": "Which state in Malaysia is known as the 'Land of the Hornbills'?",
+            "options": ["Sabah", "Sarawak", "Penang", "Perak"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_046",
+            "topic": "Camping Knowledge",
+            "question": "Why do we use a 'Whistle' during a hike?",
+            "options": ["To play music", "To signal for help if lost", "To scare away birds", "To wake up friends"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_047",
+            "topic": "BB Uniforms",
+            "question": "What color are the socks usually worn with the BB Junior uniform?",
+            "options": ["Bright red", "White", "Dark blue or black", "Pink"],
+            "correct_index": 2
+        },
+        {
+            "id": "J_048",
+            "topic": "Citizenship",
+            "question": "Which city is the administrative center of the Malaysian government?",
+            "options": ["Ipoh", "Putrajaya", "Miri", "Sandakan"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_049",
+            "topic": "BB Traditions",
+            "question": "What is the 'Fall In' command used for?",
+            "options": ["To tell everyone to go home", "To ask the squad to form a line and get ready", "To ask everyone to sit down", "To tell a joke"],
+            "correct_index": 1
+        },
+        {
+            "id": "J_050",
+            "topic": "Camping Knowledge",
+            "question": "What is the most important rule for the 'Campfire'?",
+            "options": ["Keep it as big as a house", "Never leave it unattended and put it out completely", "Throw plastic bottles into it", "Use it to dry your wet shoes inside the fire"],
+            "correct_index": 1
+        }
+        ];
+
+        // ⚠️ 3. 如果你有 Senior 的 JSON 数据，贴在这里。没有的话先空着。
+        const seniorQuestions = [
+        {
+            "id": "S_001",
+            "topic": "History",
+            "question": "Sir William Alexander Smith founded the Boys' Brigade out of a desire to instill discipline among the youth. In which specific church did the first meeting take place?",
+            "options": ["St. Paul's Cathedral", "Free Church Mission Hall, Woodside", "Westminster Abbey", "Christ Church, Glasgow"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_002",
+            "topic": "BB Malaysia & Asia",
+            "question": "The Boys' Brigade in Malaysia was initially formed in Penang in 1946. What was the designation of this first pioneer company?",
+            "options": ["1st Penang Company", "Penang State Company", "1st Malaya Company", "George Town 1st"],
+            "correct_index": 0
+        },
+        {
+            "id": "S_003",
+            "topic": "BB Traditions",
+            "question": "The Anchor emblem of the Boys' Brigade is accompanied by the motto 'Sure & Stedfast'. From which biblical book is this motto derived?",
+            "options": ["Psalms 23:1", "Proverbs 3:5", "Hebrews 6:19", "Matthew 5:9"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_004",
+            "topic": "BB Uniforms & Awards",
+            "question": "In the Senior Section, what is the highest award a Boy can achieve, symbolizing exemplary leadership and dedication?",
+            "options": ["The President's Badge", "The Founder's Badge", "The Queen's Badge", "The Gold Anchor Award"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_005",
+            "topic": "Citizenship",
+            "question": "According to the Malaysian Constitution, the Yang di-Pertuan Agong is elected for a term of how many years?",
+            "options": ["3 years", "4 years", "5 years", "6 years"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_006",
+            "topic": "2026 Current Issues",
+            "question": "In 2026, Malaysia holds the chairmanship for which major regional intergovernmental organization?",
+            "options": ["OPEC", "ASEAN", "BRICS", "NATO"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_007",
+            "topic": "Camping Knowledge",
+            "question": "When building a campfire for cooking, which type of wood arrangement provides the most stable and long-lasting heat?",
+            "options": ["Teepee fire", "Log cabin fire", "Star fire", "Lean-to fire"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_008",
+            "topic": "Camping Knowledge",
+            "question": "In map reading, if your forward bearing to a mountain peak is 045 degrees, what is your back bearing?",
+            "options": ["090 degrees", "135 degrees", "225 degrees", "315 degrees"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_009",
+            "topic": "BB Uniforms & Awards",
+            "question": "Which of the following describes the correct placement of the haversack sling on the ceremonial uniform?",
+            "options": ["Over the left shoulder, resting on right hip", "Over the right shoulder, resting on left hip", "Tied securely around the waist", "Draped loosely around the neck"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_010",
+            "topic": "Citizenship",
+            "question": "The Rukun Negara consists of five national principles. What is the fifth and final principle?",
+            "options": ["Belief in God", "Loyalty to King and Country", "Courtesy and Morality", "Supremacy of the Constitution"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_011",
+            "topic": "History",
+            "question": "Before founding the Boys' Brigade, William Alexander Smith was an officer in which military organization?",
+            "options": ["The Royal Navy", "1st Lanarkshire Rifle Volunteers", "The British Army Infantry", "The Royal Air Force"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_012",
+            "topic": "BB Traditions",
+            "question": "What is the primary purpose of the 'Object' of the Boys' Brigade as stated in the handbook?",
+            "options": ["To prepare boys for military service", "To promote habits of Obedience, Reverence, Discipline, Self-respect", "To organize international sports", "To provide affordable education"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_013",
+            "topic": "BB Malaysia & Asia",
+            "question": "Following its establishment in Penang, the Boys' Brigade expanded. In which year was the BB officially formed in Sarawak?",
+            "options": ["1959", "1961", "1966", "1970"],
+            "correct_index": 0
+        },
+        {
+            "id": "S_014",
+            "topic": "2026 Current Issues",
+            "question": "To boost the tech economy in 2026, the Malaysian government has heavily invested in infrastructure for which emerging sector?",
+            "options": ["Coal mining", "Artificial Intelligence (AI) and Data Centers", "CD-ROM manufacturing", "Film photography"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_015",
+            "topic": "Camping Knowledge",
+            "question": "If someone suffers a minor burn while cooking at a campsite, what is the immediate first aid response?",
+            "options": ["Apply butter or oil", "Pop any blisters", "Cool the burn under cool running water for at least 10 minutes", "Wrap it tightly with a dry bandage"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_016",
+            "topic": "Citizenship",
+            "question": "Which body is responsible for interpreting the laws in Malaysia?",
+            "options": ["The Executive", "The Legislature (Parliament)", "The Judiciary", "The Royal Council"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_017",
+            "topic": "BB Uniforms & Awards",
+            "question": "For a Senior Member to earn the Target Badge, what fundamental training must they complete?",
+            "options": ["Advanced First Aid", "Recruit's training focusing on BB knowledge and basic drill", "A 50km hike", "Organizing a state event"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_018",
+            "topic": "BB Traditions",
+            "question": "During a formal BB parade, what command brings the squad from 'Stand at Ease' to a fully upright and still position?",
+            "options": ["Quick March", "Attention (Sedia)", "Right Turn", "Fall In"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_019",
+            "topic": "BB Malaysia & Asia",
+            "question": "Who was the first Malaysian to be appointed as the Brigade President of BB Malaysia?",
+            "options": ["Mr. Geh Hun Kheng", "Tan Sri Khoo Kay Kim", "Mr. Michael Khor", "Mr. Robert Davis"],
+            "correct_index": 0
+        },
+        {
+            "id": "S_020",
+            "topic": "2026 Current Issues",
+            "question": "Which major public transport infrastructure project in the Klang Valley is a key focus of development in 2026?",
+            "options": ["High-Speed Rail to Bangkok", "MRT Line 3 (Circle Line)", "KTM Steam Trains", "LRT 1 Extension"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_021",
+            "topic": "History",
+            "question": "In 1886, Sir William Alexander Smith held the first ever Boys' Brigade camp. Where was it located?",
+            "options": ["London", "Tighnabruaich", "Edinburgh", "Cardiff"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_022",
+            "topic": "BB Uniforms & Awards",
+            "question": "What is the correct Non-Commissioned Officer (NCO) rank hierarchy in the BB, from lowest to highest?",
+            "options": ["Corporal, Sergeant, Lance Corporal", "Lance Corporal, Corporal, Sergeant, Staff Sergeant", "Sergeant, Corporal, Lance Corporal", "Private, Captain, Lieutenant"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_023",
+            "topic": "Citizenship",
+            "question": "The Malaysian Parliament is bicameral. It consists of the Dewan Rakyat and which other house?",
+            "options": ["Dewan Undangan Negeri", "Dewan Negara (Senate)", "Dewan Bahasa", "Dewan Diraja"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_024",
+            "topic": "Camping Knowledge",
+            "question": "Which knot is best used to tie two ropes of unequal thickness together?",
+            "options": ["Reef Knot", "Clove Hitch", "Sheet Bend", "Sheepshank"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_025",
+            "topic": "BB Traditions",
+            "question": "What are the 'Twin Pillars' of the Boys' Brigade?",
+            "options": ["Sports and Academics", "Religion and Discipline", "Drill and Camping", "Music and Arts"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_026",
+            "topic": "2026 Current Issues",
+            "question": "In early 2026, Malaysia enforced stricter regulations on which type of consumer products to reduce environmental pollution?",
+            "options": ["Single-use plastics and packaging", "Cotton clothing", "Wooden furniture", "Bicycles"],
+            "correct_index": 0
+        },
+        {
+            "id": "S_027",
+            "topic": "BB Malaysia & Asia",
+            "question": "Where is the current Secretariat headquarters for Boys' Brigade Asia located?",
+            "options": ["Singapore", "Kuala Lumpur, Malaysia", "Jakarta, Indonesia", "Manila, Philippines"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_028",
+            "topic": "History",
+            "question": "What was the name of the Sunday School where William Alexander Smith taught before founding the BB?",
+            "options": ["St. Peter's Mission", "Woodside North Church Sunday School", "Glasgow Central School", "West End Mission"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_029",
+            "topic": "Camping Knowledge",
+            "question": "When performing CPR on an adult during a camp emergency, what is the recommended ratio of chest compressions to rescue breaths?",
+            "options": ["15:2", "30:2", "50:1", "100:0"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_030",
+            "topic": "Uniforms & Awards",
+            "question": "To obtain the President's Badge, a Senior must first earn the Founder's Badge. Is this statement true or false?",
+            "options": ["True", "False, the President's Badge must be earned before the Founder's Badge", "False, they are unrelated", "True, but only in the UK"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_031",
+            "topic": "Citizenship",
+            "question": "Malaysia Day commemorates the formation of the Malaysian federation. On what date is it celebrated?",
+            "options": ["31 August", "16 September", "1 May", "25 December"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_032",
+            "topic": "BB Traditions",
+            "question": "Which of the following best describes the 'BB Vesper'?",
+            "options": ["A marching tune", "A prayer song sung at the close of a BB meeting", "The official BB handshake", "A type of drill formation"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_033",
+            "topic": "2026 Current Issues",
+            "question": "The Malaysian government launched the 'PADU' system recently. What is its main function?",
+            "options": ["To track public buses", "A central database hub for targeted government subsidies", "To register new voters", "A national gaming platform"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_034",
+            "topic": "Camping Knowledge",
+            "question": "When reading a topographical map, what do closely spaced contour lines indicate?",
+            "options": ["A flat plain", "A lake or river", "A steep slope or cliff", "A dense forest"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_035",
+            "topic": "BB Malaysia & Asia",
+            "question": "Which of these countries is NOT a member of the Boys' Brigade Asia regional fellowship?",
+            "options": ["Indonesia", "Thailand", "Japan", "Saudi Arabia"],
+            "correct_index": 3
+        },
+        {
+            "id": "S_036",
+            "topic": "History",
+            "question": "In what year did Sir William Alexander Smith pass away?",
+            "options": ["1910", "1914", "1920", "1945"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_037",
+            "topic": "Uniforms & Awards",
+            "question": "What is the distinguishing feature on the uniform of a BB Officer (Lieutenant or Captain) compared to a Boy's uniform?",
+            "options": ["They wear red shirts", "They do not wear a uniform", "They wear a Glengarry cap or peaked cap and an officer's lanyard", "They carry a sword"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_038",
+            "topic": "Citizenship",
+            "question": "Who is the Head of State for the state of Sarawak?",
+            "options": ["The Sultan", "The Prime Minister", "The Yang di-Pertua Negeri (Governor)", "The Chief Minister"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_039",
+            "topic": "2026 Current Issues",
+            "question": "To address national food security in 2026, Malaysia has been heavily promoting 'Smart Farming'. What does this involve?",
+            "options": ["Using more manual labor", "Integrating IoT (Internet of Things) and drones into agriculture", "Stopping all imports of food", "Growing only rice"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_040",
+            "topic": "Camping Knowledge",
+            "question": "What is the primary purpose of a 'Clove Hitch' knot?",
+            "options": ["To tie a bandage", "To secure a rope to a spar or pole, often to start a lashing", "To rescue someone from water", "To shorten a rope"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_041",
+            "topic": "BB Traditions",
+            "question": "In BB Drill, when the command 'Senang Diri' (Stand at Ease) is given, what is the correct movement?",
+            "options": ["Move the right foot away from the left", "Move the left foot away from the right and place hands behind the back", "Sit down immediately", "Salute the officer"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_042",
+            "topic": "History",
+            "question": "Sir William Alexander Smith was knighted for his services to boys. Who knighted him?",
+            "options": ["Queen Victoria", "King Edward VII", "King George V", "Queen Elizabeth II"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_043",
+            "topic": "Citizenship",
+            "question": "How old must a Malaysian citizen be to be eligible to vote in a general election (under current UNDI18 laws)?",
+            "options": ["16", "18", "21", "25"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_044",
+            "topic": "Camping Knowledge",
+            "question": "If you suspect a campmate has a sprained ankle, which first aid method should you apply?",
+            "options": ["CPR", "The Heimlich Maneuver", "The R.I.C.E. method (Rest, Ice, Compression, Elevation)", "Apply a hot towel immediately"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_045",
+            "topic": "BB Uniforms & Awards",
+            "question": "Which badge signifies a Senior Member's proficiency in Christian Education?",
+            "options": ["The Drill Badge", "The Target Badge", "The Christian Education (CE) Badge", "The Community Service Badge"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_046",
+            "topic": "2026 Current Issues",
+            "question": "As of early 2026, which neighboring country is Malaysia working closely with to develop the Johor-Singapore Special Economic Zone (JS-SEZ)?",
+            "options": ["Thailand", "Indonesia", "Singapore", "Brunei"],
+            "correct_index": 2
+        },
+        {
+            "id": "S_047",
+            "topic": "BB Malaysia & Asia",
+            "question": "In BB terminology, what does 'NCO' stand for?",
+            "options": ["National Council Officer", "Non-Commissioned Officer", "New Company Organizer", "Navigational Command Officer"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_048",
+            "topic": "Camping Knowledge",
+            "question": "Which type of lashing is used to bind two poles together that cross each other at a 90-degree angle?",
+            "options": ["Diagonal Lashing", "Square Lashing", "Sheer Lashing", "Figure of Eight Lashing"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_049",
+            "topic": "Citizenship",
+            "question": "The national anthem of Malaysia is 'Negaraku'. What was the tune originally based on?",
+            "options": ["A British marching song", "The state anthem of Perak", "An Indonesian folk song", "A traditional Sarawakian melody"],
+            "correct_index": 1
+        },
+        {
+            "id": "S_050",
+            "topic": "BB Traditions",
+            "question": "What does the 'Cross' behind the anchor in the BB crest symbolize?",
+            "options": ["The medical corps", "The Christian faith and the advancement of Christ's kingdom", "A compass star", "The four points of the compass"],
+            "correct_index": 1
+        }
+        ];
+
+        // 核心上传逻辑
+        function uploadData(collectionName, dataArray) {
+            if (dataArray.length === 0) {
+                document.getElementById("status").innerText = `⚠️ ${collectionName} 数组是空的，请先在代码里粘贴题目！`;
+                return;
+            }
+
+            document.getElementById("status").innerText = `⏳ 正在上传 ${dataArray.length} 道题到 ${collectionName}...`;
+            document.getElementById("status").style.color = "#f39c12";
+
+            let uploadPromises = [];
+
+            dataArray.forEach(question => {
+                // 使用 add() 自动生成唯一的 Document ID 并上传数据
+                let promise = db.collection(collectionName).add(question);
+                uploadPromises.push(promise);
+            });
+
+            // 等待所有题目上传完毕
+            Promise.all(uploadPromises).then(() => {
+                document.getElementById("status").innerText = `✅ 成功！${dataArray.length} 道题已全部存入 ${collectionName} 数据库！`;
+                document.getElementById("status").style.color = "#2ecc71";
+            }).catch(error => {
+                console.error("上传出错: ", error);
+                document.getElementById("status").innerText = `❌ 上传失败，请检查控制台 (F12) 的错误信息。`;
+                document.getElementById("status").style.color = "#e74c3c";
+            });
+        }
+    </script>
+</body>
+</html>
