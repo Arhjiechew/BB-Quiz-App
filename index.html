@@ -193,13 +193,12 @@
     <script>
         // ⚠️⚠️⚠️ 替换为你的 Firebase 钥匙 ⚠️⚠️⚠️
         const firebaseConfig = {
-            apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
-            authDomain: "bb-quiz-app.firebaseapp.com",
-            projectId: "bb-quiz-app",
-            storageBucket: "bb-quiz-app.firebasestorage.app",
-            messagingSenderId: "370671276686",
-            appId: "1:370671276686:web:204abb8c375f130b3a2fdf",
-            measurementId: "G-R83HJ2EDQG"
+            apiKey: "你的API_KEY",
+            authDomain: "你的AUTH_DOMAIN",
+            projectId: "你的PROJECT_ID",
+            storageBucket: "你的STORAGE_BUCKET",
+            messagingSenderId: "你的SENDER_ID",
+            appId: "你的APP_ID"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -207,7 +206,8 @@
         // 游戏变量
         let currentRole = "", playerName = "", questions = [], currentQIndex = 0;
         let score = 0, currentStreak = 0, maxStreak = 0, totalCorrect = 0;
-        let currentSelectedOption = null; // 记录当前选中的答案
+        let currentSelectedOption = null; 
+        let isPlaying = false; // 🌟 新增：记录是否在答题中以防止刷新
 
         function switchPage(hideId, showId) {
             document.getElementById(hideId).classList.add("hidden");
@@ -229,7 +229,6 @@
         function startQuiz() {
             let nameInput = document.getElementById("playerName").value.trim();
             if (nameInput === "") { 
-                // 🌟 升级：漂亮的名字为空提示
                 Swal.fire({
                     icon: 'warning',
                     title: 'Oops!',
@@ -240,6 +239,8 @@
                 return; 
             }
             playerName = nameInput.toUpperCase(); 
+
+            isPlaying = true; // 🌟 开启防刷新保护
 
             switchPage("page2-name", "page3-quiz");
             document.getElementById("questionText").innerHTML = '<i class="fa-solid fa-spinner fa-spin text-indigo-500 mr-2"></i> Loading from database...';
@@ -259,20 +260,18 @@
             });
         }
 
-        // 🌟 升级：漂亮的提前结束确认弹窗
         function endGameHalfway() {
             Swal.fire({
                 title: 'End Challenge?',
                 html: "Are you sure you want to end early?<br>Your current score will be saved.<br><br><span style='color:gray; font-size:14px;'>确定要提前结束吗？系统会保存您当前的分数。</span>",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#4f46e5', // 优雅的靛蓝色
-                cancelButtonColor: '#f43f5e',  // 玫瑰红
+                confirmButtonColor: '#4f46e5', 
+                cancelButtonColor: '#f43f5e',  
                 confirmButtonText: '<i class="fa-solid fa-power-off"></i> Yes, End Game',
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // 如果玩家点击了 Yes
                     questions.length = currentQIndex + 1; 
                     endGame();
                 }
@@ -281,7 +280,7 @@
 
         function loadQuestionUI() {
             let q = questions[currentQIndex];
-            currentSelectedOption = null; // 刷新题目时清空选择
+            currentSelectedOption = null; 
 
             document.getElementById("progressText").innerHTML = `<i class="fa-solid fa-bars-progress"></i> Question ${currentQIndex + 1} of ${questions.length}`;
             document.getElementById("questionText").innerText = q.question;
@@ -290,46 +289,39 @@
                 let btn = document.getElementById("btn" + i);
                 document.getElementById("opt" + i).innerText = q.options[i];
                 
-                // 恢复默认状态，清除 correct/wrong/selected 状态
                 btn.className = "option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3";
                 btn.disabled = false;         
             }
-            // 隐藏 Confirm 和 Next 按钮
             document.getElementById("confirmBtn").classList.add("hidden");
             document.getElementById("nextBtn").classList.add("hidden");
         }
 
-        // 🌟 新增：用户点击选项但还未确认
         function selectOption(index) {
             currentSelectedOption = index;
             
             for(let i=0; i<4; i++) {
                 let btn = document.getElementById("btn" + i);
                 if (i === index) {
-                    btn.classList.add("selected"); // 添加蓝色高亮
+                    btn.classList.add("selected"); 
                 } else {
-                    btn.classList.remove("selected"); // 移除其他选项的高亮
+                    btn.classList.remove("selected"); 
                 }
             }
-            // 显示 Confirm 按钮
             document.getElementById("confirmBtn").classList.remove("hidden");
         }
 
-        // 🌟 新增：用户点击 Confirm 按钮判定对错
         function confirmAnswer() {
-            if (currentSelectedOption === null) return; // 防呆设计
+            if (currentSelectedOption === null) return; 
 
             let q = questions[currentQIndex];
             let correctIndex = q.correct_index;
 
-            // 1. 锁死所有按钮，并移除蓝色的选中框
             for(let i=0; i<4; i++) {
                 let btn = document.getElementById("btn" + i);
                 btn.disabled = true;
                 btn.classList.remove("selected");
             }
 
-            // 2. 判定对错变色逻辑
             if (currentSelectedOption === correctIndex) {
                 document.getElementById("btn" + currentSelectedOption).classList.add("correct");
                 currentStreak++;
@@ -342,12 +334,10 @@
                 currentStreak = 0; 
             }
 
-            // 3. 更新上方分数
             document.getElementById("scoreDisplay").innerText = score;
             document.getElementById("streakDisplay").innerText = currentStreak;
             document.getElementById("correctDisplay").innerText = `${totalCorrect}/${questions.length}`;
             
-            // 4. 隐藏 Confirm，显示 Next
             document.getElementById("confirmBtn").classList.add("hidden");
             document.getElementById("nextBtn").classList.remove("hidden");
         }
@@ -361,23 +351,16 @@
             }
         }
 
-        // 🌟 新增：提前退出游戏功能
-        function endGameHalfway() {
-            if (confirm("Are you sure you want to end early? Your current score will be saved.\n\n确定要提前结束吗？系统会保存你当前的分数。")) {
-                // 将题目总数缩小到当前做到哪题，为了结算页面的显示准确性
-                questions.length = currentQIndex + 1; 
-                endGame();
-            }
-        }
-
         async function endGame() {
+            isPlaying = false; // 🌟 游戏结束，关闭防刷新保护
+
             switchPage("page3-quiz", "page4-result");
 
             document.getElementById("finalName").innerText = playerName;
             document.getElementById("finalScore").innerText = score;
             document.getElementById("finalCombo").innerText = maxStreak;
             document.getElementById("finalCorrect").innerText = totalCorrect;
-            document.getElementById("finalTotal").innerText = questions.length; // 显示做过的总题数
+            document.getElementById("finalTotal").innerText = questions.length; 
             
             let playerDocId = currentRole + "_" + playerName;
             try {
@@ -393,6 +376,14 @@
                 console.error("保存失败: ", error);
             }
         }
+
+        // 🌟 核心：监听浏览器的刷新/关闭事件
+        window.addEventListener('beforeunload', function (e) {
+            if (isPlaying) {
+                e.preventDefault(); 
+                e.returnValue = 'Are you sure you want to leave? Your progress will be lost.'; 
+            }
+        });
     </script>
 </body>
 </html>
