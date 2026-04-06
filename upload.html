@@ -27,8 +27,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-    <script type="module">
-        // 1. 读取 .env 里的 Firebase 钥匙
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
             authDomain: "bb-quiz-app.firebaseapp.com",
@@ -41,7 +40,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ⚠️ 2. 把我之前发给你的 Junior JSON 数据（50题）粘贴到这个方括号 [ ] 里面
+        // Junior 数据
         const juniorQuestions = [
         {
             "id": "JQ01",
@@ -366,7 +365,7 @@
             "correct_index": 1
         },
         {
-            "id": "J_047",
+            "id": "JQ47",
             "topic": "BB Uniforms",
             "question": "What color are the socks usually worn with the BB Junior uniform?",
             "options": ["Bright red", "White", "Dark blue or black", "Pink"],
@@ -393,359 +392,359 @@
             "options": ["Keep it as big as a house", "Never leave it unattended and put it out completely", "Throw plastic bottles into it", "Use it to dry your wet shoes inside the fire"],
             "correct_index": 1
         },
-            {
-                "id": "JQ51",
-                "topic": "History",
-                "question": "What was the name of the very first Boys' Brigade Company formed in 1883?",
-                "options": ["1st London", "1st Glasgow", "1st Edinburgh", "1st Wales"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ52",
-                "topic": "History",
-                "question": "Before founding the BB, Sir William Alexander Smith was a volunteer in which army?",
-                "options": ["Royal Navy", "1st Lanarkshire Rifle Volunteers", "Air Force", "Cavalry"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ53",
-                "topic": "History",
-                "question": "In which month do BB members worldwide usually celebrate Founder's Day?",
-                "options": ["January", "April", "October", "December"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ54",
-                "topic": "History",
-                "question": "Who was the first Patron of the Boys' Brigade?",
-                "options": ["King George VI", "Queen Victoria", "King Edward VII", "Prince Albert"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ55",
-                "topic": "History",
-                "question": "Which of these is known as the 'Twin Pillars' of the Boys' Brigade?",
-                "options": ["Sports and Study", "Religion and Discipline", "Singing and Marching", "Camping and Hiking"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ56",
-                "topic": "BB Traditions",
-                "question": "What is the primary 'Object' of the Boys' Brigade?",
-                "options": ["To play games", "The advancement of Christ's kingdom among Boys", "To learn how to cook", "To go camping every week"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ57",
-                "topic": "BB Traditions",
-                "question": "Which book of the Bible is the motto 'Sure & Stedfast' taken from?",
-                "options": ["Genesis", "Psalms", "Hebrews", "Revelation"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ58",
-                "topic": "BB Traditions",
-                "question": "What is the name of the song usually sung at the end of a BB meeting?",
-                "options": ["The BB March", "The BB Vesper", "The National Anthem", "Happy Birthday"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ59",
-                "topic": "BB Traditions",
-                "question": "During BB week, what do Boys usually do to raise funds for their Company?",
-                "options": ["Sell cars", "Distribute donation cards and do chores", "Stay at home", "Ask the school for money"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ60",
-                "topic": "BB Traditions",
-                "question": "What is the correct response when an Officer calls your name during roll call?",
-                "options": ["Hello!", "Present, Sir/Ma'am!", "I am here!", "Yes!"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ61",
-                "topic": "Uniforms & Awards",
-                "question": "What is the correct age group for the Junior Section in Malaysia?",
-                "options": ["6 to 8 years old", "9 to 12 years old", "13 to 19 years old", "20 and above"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ62",
-                "topic": "Uniforms & Awards",
-                "question": "What color is the standard BB Junior Section shirt?",
-                "options": ["Red", "Navy Blue", "White", "Green"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ63",
-                "topic": "Uniforms & Awards",
-                "question": "Where should the Junior Section name tag be placed on the uniform?",
-                "options": ["Above the right pocket", "On the collar", "On the left sleeve", "On the back"],
-                "correct_index": 0
-            },
-            {
-                "id": "JQ64",
-                "topic": "Uniforms & Awards",
-                "question": "Which badge is awarded for knowing the history of the BB and the Company?",
-                "options": ["Target Badge", "Service Badge", "Recruit Badge", "Gold Award"],
-                "correct_index": 0
-            },
-            {
-                "id": "JQ65",
-                "topic": "Uniforms & Awards",
-                "question": "What footwear is strictly required when wearing the full BB ceremonial uniform?",
-                "options": ["Sports shoes", "Sandals", "Polished black laced shoes", "Boots"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ66",
-                "topic": "Uniforms & Awards",
-                "question": "How many years of active membership does a 'One Year Service Badge' represent?",
-                "options": ["1 year", "2 years", "3 years", "5 years"],
-                "correct_index": 0
-            },
-            {
-                "id": "JQ67",
-                "topic": "Uniforms & Awards",
-                "question": "What color is the Junior Section's cap?",
-                "options": ["White", "Navy Blue with white lines", "Black", "Red"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ68",
-                "topic": "Uniforms & Awards",
-                "question": "Which part of the uniform requires the use of 'Brasso' or metal polish to keep it shiny?",
-                "options": ["The shirt buttons", "The cloth badge", "The belt buckle and cap badge", "The shoelaces"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ69",
-                "topic": "Uniforms & Awards",
-                "question": "Who is allowed to wear an Officer's cap (peaked cap)?",
-                "options": ["Any Junior boy", "A Corporal", "A Lieutenant or Captain", "A recruit"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ70",
-                "topic": "Uniforms & Awards",
-                "question": "In the Junior Section, can a boy earn the 'President's Badge'?",
-                "options": ["Yes, anytime", "No, it is only for the Senior Section", "Only if he is the best boy", "Yes, if he pays for it"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ71",
-                "topic": "Citizenship",
-                "question": "Which is the longest river in Malaysia?",
-                "options": ["Kinabatangan River", "Pahang River", "Rajang River", "Klang River"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ72",
-                "topic": "Citizenship",
-                "question": "What is the capital city of Sarawak?",
-                "options": ["Sibu", "Miri", "Kuching", "Bintulu"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ73",
-                "topic": "Citizenship",
-                "question": "The Rukun Negara has how many principles?",
-                "options": ["3", "4", "5", "6"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ74",
-                "topic": "Citizenship",
-                "question": "What animal is depicted on the national emblem (Jata Negara) holding the shield?",
-                "options": ["Hornbill", "Malayan Tiger", "Orangutan", "Elephant"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ75",
-                "topic": "Citizenship",
-                "question": "What does the 14-point star on the Malaysian flag represent?",
-                "options": ["14 states and federal territories", "14 Prime Ministers", "14 rivers", "14 mountains"],
-                "correct_index": 0
-            },
-            {
-                "id": "JQ76",
-                "topic": "Citizenship",
-                "question": "On what date do we celebrate Malaysia Day?",
-                "options": ["31 August", "16 September", "1 May", "25 December"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ77",
-                "topic": "Citizenship",
-                "question": "What is the official title of the Head of State of Malaysia?",
-                "options": ["Prime Minister", "President", "Yang di-Pertuan Agong", "Chief Minister"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ78",
-                "topic": "Citizenship",
-                "question": "What is the national language of Malaysia?",
-                "options": ["English", "Tamil", "Mandarin", "Bahasa Melayu"],
-                "correct_index": 3
-            },
-            {
-                "id": "JQ79",
-                "topic": "Citizenship",
-                "question": "Which state in Malaysia does NOT have a Sultan?",
-                "options": ["Johor", "Pahang", "Penang", "Selangor"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ80",
-                "topic": "Citizenship",
-                "question": "What is the meaning of the dark blue square on the Malaysian flag?",
-                "options": ["The deep ocean", "Unity of the people of Malaysia", "The royal family", "The sky"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ81",
-                "topic": "Camping Knowledge",
-                "question": "If you hear 3 short blasts on a whistle during a camp, what does it usually mean?",
-                "options": ["Time to eat", "Time to sleep", "Emergency / SOS", "Start playing games"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ82",
-                "topic": "Camping Knowledge",
-                "question": "Why should you never eat wild mushrooms or berries found in the forest?",
-                "options": ["They taste bad", "They might be poisonous", "They belong to the animals", "They are too dirty"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ83",
-                "topic": "Camping Knowledge",
-                "question": "What is the 'Buddy System' in camping?",
-                "options": ["Bringing a soft toy", "Always having a partner with you for safety", "Sleeping in the same sleeping bag", "Sharing all your food"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ84",
-                "topic": "Camping Knowledge",
-                "question": "When setting up a tent, what do we use to secure the ropes to the ground?",
-                "options": ["Heavy books", "Tent pegs", "Water bottles", "Shoes"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ85",
-                "topic": "Camping Knowledge",
-                "question": "What is the most important rule before you sleep inside a tent?",
-                "options": ["Zip the tent door completely closed to keep insects out", "Leave the door open for fresh air", "Keep your shoes inside the sleeping bag", "Turn on all the lights"],
-                "correct_index": 0
-            },
-            {
-                "id": "JQ86",
-                "topic": "Camping Knowledge",
-                "question": "Which item is NOT suitable to put inside a camp First Aid Kit?",
-                "options": ["Band-aids", "Antiseptic cream", "Chocolate bars", "Cotton wool"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ87",
-                "topic": "Camping Knowledge",
-                "question": "What should you do with your rubbish when the camp is over?",
-                "options": ["Bury it in the sand", "Throw it in the river", "Leave it near the tent", "Pack it in a trash bag and take it to a proper bin"],
-                "correct_index": 3
-            },
-            {
-                "id": "JQ88",
-                "topic": "Camping Knowledge",
-                "question": "Why do we build a small ditch (trench) around the tent?",
-                "options": ["To catch fish", "To prevent rain water from flowing into the tent", "To trap insects", "To plant flowers"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ89",
-                "topic": "Camping Knowledge",
-                "question": "What is a 'Groundsheet'?",
-                "options": ["A map of the ground", "A waterproof mat placed under or inside the tent", "A blanket for sleeping", "A towel for showering"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ90",
-                "topic": "Camping Knowledge",
-                "question": "If your clothes catch on fire, what is the golden rule you must follow?",
-                "options": ["Run very fast", "Stop, Drop, and Roll", "Jump up and down", "Blow on it"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ91",
-                "topic": "2026 Current Issues",
-                "question": "What is the general emergency hotline number to call police or ambulance in Malaysia?",
-                "options": ["911", "999", "112", "994"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ92",
-                "topic": "2026 Current Issues",
-                "question": "To prevent Dengue fever, we must stop the breeding of which mosquito?",
-                "options": ["Anopheles", "Culex", "Aedes", "Tiger mosquito"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ93",
-                "topic": "2026 Current Issues",
-                "question": "What does a green recycling bin typically collect in Malaysia?",
-                "options": ["Glass", "Paper", "Plastics and Aluminum", "Food waste"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ94",
-                "topic": "2026 Current Issues",
-                "question": "When using a zebra crossing, what must you do before crossing?",
-                "options": ["Run quickly", "Look right, look left, and look right again", "Close your eyes", "Walk while looking at your phone"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ95",
-                "topic": "2026 Current Issues",
-                "question": "In 2026, many schools promote 'Digital Etiquette'. Which of these is a bad digital habit?",
-                "options": ["Asking permission before posting a friend's photo", "Cyberbullying or writing mean comments online", "Setting strong passwords", "Limiting screen time"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ96",
-                "topic": "2026 Current Issues",
-                "question": "What is the safest way to travel in a moving car?",
-                "options": ["Standing on the seat", "Putting your head out the window", "Sitting quietly and wearing a seatbelt", "Playing with the door handle"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ97",
-                "topic": "2026 Current Issues",
-                "question": "Which of the following is a good habit for conserving water at home?",
-                "options": ["Leaving the tap running while brushing teeth", "Taking 1-hour long showers", "Turning off the tap when applying soap", "Playing with the garden hose daily"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ98",
-                "topic": "2026 Current Issues",
-                "question": "What should you do if a stranger offers you free food or a ride home?",
-                "options": ["Say thank you and follow them", "Politely refuse, walk away quickly, and tell a trusted adult", "Ask them for money too", "Get into their car to see where they go"],
-                "correct_index": 1
-            },
-            {
-                "id": "JQ99",
-                "topic": "2026 Current Issues",
-                "question": "In the food pyramid, which type of food should we eat the least of to stay healthy?",
-                "options": ["Fruits and vegetables", "Rice and bread", "Sweets, fats, and sugary drinks", "Fish and chicken"],
-                "correct_index": 2
-            },
-            {
-                "id": "JQ100",
-                "topic": "2026 Current Issues",
-                "question": "If you find a wallet on the street with money and an ID card, what is the right thing to do as a BB member?",
-                "options": ["Keep the money and throw the wallet away", "Leave it there", "Hand it over to a police station or a trusted adult", "Buy snacks with the money"],
-                "correct_index": 2
-            }
+        {
+            "id": "JQ51",
+            "topic": "History",
+            "question": "What was the name of the very first Boys' Brigade Company formed in 1883?",
+            "options": ["1st London", "1st Glasgow", "1st Edinburgh", "1st Wales"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ52",
+            "topic": "History",
+            "question": "Before founding the BB, Sir William Alexander Smith was a volunteer in which army?",
+            "options": ["Royal Navy", "1st Lanarkshire Rifle Volunteers", "Air Force", "Cavalry"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ53",
+            "topic": "History",
+            "question": "In which month do BB members worldwide usually celebrate Founder's Day?",
+            "options": ["January", "April", "October", "December"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ54",
+            "topic": "History",
+            "question": "Who was the first Patron of the Boys' Brigade?",
+            "options": ["King George VI", "Queen Victoria", "King Edward VII", "Prince Albert"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ55",
+            "topic": "History",
+            "question": "Which of these is known as the 'Twin Pillars' of the Boys' Brigade?",
+            "options": ["Sports and Study", "Religion and Discipline", "Singing and Marching", "Camping and Hiking"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ56",
+            "topic": "BB Traditions",
+            "question": "What is the primary 'Object' of the Boys' Brigade?",
+            "options": ["To play games", "The advancement of Christ's kingdom among Boys", "To learn how to cook", "To go camping every week"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ57",
+            "topic": "BB Traditions",
+            "question": "Which book of the Bible is the motto 'Sure & Stedfast' taken from?",
+            "options": ["Genesis", "Psalms", "Hebrews", "Revelation"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ58",
+            "topic": "BB Traditions",
+            "question": "What is the name of the song usually sung at the end of a BB meeting?",
+            "options": ["The BB March", "The BB Vesper", "The National Anthem", "Happy Birthday"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ59",
+            "topic": "BB Traditions",
+            "question": "During BB week, what do Boys usually do to raise funds for their Company?",
+            "options": ["Sell cars", "Distribute donation cards and do chores", "Stay at home", "Ask the school for money"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ60",
+            "topic": "BB Traditions",
+            "question": "What is the correct response when an Officer calls your name during roll call?",
+            "options": ["Hello!", "Present, Sir/Ma'am!", "I am here!", "Yes!"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ61",
+            "topic": "Uniforms & Awards",
+            "question": "What is the correct age group for the Junior Section in Malaysia?",
+            "options": ["6 to 8 years old", "9 to 12 years old", "13 to 19 years old", "20 and above"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ62",
+            "topic": "Uniforms & Awards",
+            "question": "What color is the standard BB Junior Section shirt?",
+            "options": ["Red", "Navy Blue", "White", "Green"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ63",
+            "topic": "Uniforms & Awards",
+            "question": "Where should the Junior Section name tag be placed on the uniform?",
+            "options": ["Above the right pocket", "On the collar", "On the left sleeve", "On the back"],
+            "correct_index": 0
+        },
+        {
+            "id": "JQ64",
+            "topic": "Uniforms & Awards",
+            "question": "Which badge is awarded for knowing the history of the BB and the Company?",
+            "options": ["Target Badge", "Service Badge", "Recruit Badge", "Gold Award"],
+            "correct_index": 0
+        },
+        {
+            "id": "JQ65",
+            "topic": "Uniforms & Awards",
+            "question": "What footwear is strictly required when wearing the full BB ceremonial uniform?",
+            "options": ["Sports shoes", "Sandals", "Polished black laced shoes", "Boots"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ66",
+            "topic": "Uniforms & Awards",
+            "question": "How many years of active membership does a 'One Year Service Badge' represent?",
+            "options": ["1 year", "2 years", "3 years", "5 years"],
+            "correct_index": 0
+        },
+        {
+            "id": "JQ67",
+            "topic": "Uniforms & Awards",
+            "question": "What color is the Junior Section's cap?",
+            "options": ["White", "Navy Blue with white lines", "Black", "Red"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ68",
+            "topic": "Uniforms & Awards",
+            "question": "Which part of the uniform requires the use of 'Brasso' or metal polish to keep it shiny?",
+            "options": ["The shirt buttons", "The cloth badge", "The belt buckle and cap badge", "The shoelaces"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ69",
+            "topic": "Uniforms & Awards",
+            "question": "Who is allowed to wear an Officer's cap (peaked cap)?",
+            "options": ["Any Junior boy", "A Corporal", "A Lieutenant or Captain", "A recruit"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ70",
+            "topic": "Uniforms & Awards",
+            "question": "In the Junior Section, can a boy earn the 'President's Badge'?",
+            "options": ["Yes, anytime", "No, it is only for the Senior Section", "Only if he is the best boy", "Yes, if he pays for it"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ71",
+            "topic": "Citizenship",
+            "question": "Which is the longest river in Malaysia?",
+            "options": ["Kinabatangan River", "Pahang River", "Rajang River", "Klang River"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ72",
+            "topic": "Citizenship",
+            "question": "What is the capital city of Sarawak?",
+            "options": ["Sibu", "Miri", "Kuching", "Bintulu"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ73",
+            "topic": "Citizenship",
+            "question": "The Rukun Negara has how many principles?",
+            "options": ["3", "4", "5", "6"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ74",
+            "topic": "Citizenship",
+            "question": "What animal is depicted on the national emblem (Jata Negara) holding the shield?",
+            "options": ["Hornbill", "Malayan Tiger", "Orangutan", "Elephant"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ75",
+            "topic": "Citizenship",
+            "question": "What does the 14-point star on the Malaysian flag represent?",
+            "options": ["14 states and federal territories", "14 Prime Ministers", "14 rivers", "14 mountains"],
+            "correct_index": 0
+        },
+        {
+            "id": "JQ76",
+            "topic": "Citizenship",
+            "question": "On what date do we celebrate Malaysia Day?",
+            "options": ["31 August", "16 September", "1 May", "25 December"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ77",
+            "topic": "Citizenship",
+            "question": "What is the official title of the Head of State of Malaysia?",
+            "options": ["Prime Minister", "President", "Yang di-Pertuan Agong", "Chief Minister"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ78",
+            "topic": "Citizenship",
+            "question": "What is the national language of Malaysia?",
+            "options": ["English", "Tamil", "Mandarin", "Bahasa Melayu"],
+            "correct_index": 3
+        },
+        {
+            "id": "JQ79",
+            "topic": "Citizenship",
+            "question": "Which state in Malaysia does NOT have a Sultan?",
+            "options": ["Johor", "Pahang", "Penang", "Selangor"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ80",
+            "topic": "Citizenship",
+            "question": "What is the meaning of the dark blue square on the Malaysian flag?",
+            "options": ["The deep ocean", "Unity of the people of Malaysia", "The royal family", "The sky"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ81",
+            "topic": "Camping Knowledge",
+            "question": "If you hear 3 short blasts on a whistle during a camp, what does it usually mean?",
+            "options": ["Time to eat", "Time to sleep", "Emergency / SOS", "Start playing games"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ82",
+            "topic": "Camping Knowledge",
+            "question": "Why should you never eat wild mushrooms or berries found in the forest?",
+            "options": ["They taste bad", "They might be poisonous", "They belong to the animals", "They are too dirty"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ83",
+            "topic": "Camping Knowledge",
+            "question": "What is the 'Buddy System' in camping?",
+            "options": ["Bringing a soft toy", "Always having a partner with you for safety", "Sleeping in the same sleeping bag", "Sharing all your food"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ84",
+            "topic": "Camping Knowledge",
+            "question": "When setting up a tent, what do we use to secure the ropes to the ground?",
+            "options": ["Heavy books", "Tent pegs", "Water bottles", "Shoes"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ85",
+            "topic": "Camping Knowledge",
+            "question": "What is the most important rule before you sleep inside a tent?",
+            "options": ["Zip the tent door completely closed to keep insects out", "Leave the door open for fresh air", "Keep your shoes inside the sleeping bag", "Turn on all the lights"],
+            "correct_index": 0
+        },
+        {
+            "id": "JQ86",
+            "topic": "Camping Knowledge",
+            "question": "Which item is NOT suitable to put inside a camp First Aid Kit?",
+            "options": ["Band-aids", "Antiseptic cream", "Chocolate bars", "Cotton wool"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ87",
+            "topic": "Camping Knowledge",
+            "question": "What should you do with your rubbish when the camp is over?",
+            "options": ["Bury it in the sand", "Throw it in the river", "Leave it near the tent", "Pack it in a trash bag and take it to a proper bin"],
+            "correct_index": 3
+        },
+        {
+            "id": "JQ88",
+            "topic": "Camping Knowledge",
+            "question": "Why do we build a small ditch (trench) around the tent?",
+            "options": ["To catch fish", "To prevent rain water from flowing into the tent", "To trap insects", "To plant flowers"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ89",
+            "topic": "Camping Knowledge",
+            "question": "What is a 'Groundsheet'?",
+            "options": ["A map of the ground", "A waterproof mat placed under or inside the tent", "A blanket for sleeping", "A towel for showering"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ90",
+            "topic": "Camping Knowledge",
+            "question": "If your clothes catch on fire, what is the golden rule you must follow?",
+            "options": ["Run very fast", "Stop, Drop, and Roll", "Jump up and down", "Blow on it"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ91",
+            "topic": "2026 Current Issues",
+            "question": "What is the general emergency hotline number to call police or ambulance in Malaysia?",
+            "options": ["911", "999", "112", "994"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ92",
+            "topic": "2026 Current Issues",
+            "question": "To prevent Dengue fever, we must stop the breeding of which mosquito?",
+            "options": ["Anopheles", "Culex", "Aedes", "Tiger mosquito"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ93",
+            "topic": "2026 Current Issues",
+            "question": "What does a green recycling bin typically collect in Malaysia?",
+            "options": ["Glass", "Paper", "Plastics and Aluminum", "Food waste"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ94",
+            "topic": "2026 Current Issues",
+            "question": "When using a zebra crossing, what must you do before crossing?",
+            "options": ["Run quickly", "Look right, look left, and look right again", "Close your eyes", "Walk while looking at your phone"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ95",
+            "topic": "2026 Current Issues",
+            "question": "In 2026, many schools promote 'Digital Etiquette'. Which of these is a bad digital habit?",
+            "options": ["Asking permission before posting a friend's photo", "Cyberbullying or writing mean comments online", "Setting strong passwords", "Limiting screen time"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ96",
+            "topic": "2026 Current Issues",
+            "question": "What is the safest way to travel in a moving car?",
+            "options": ["Standing on the seat", "Putting your head out the window", "Sitting quietly and wearing a seatbelt", "Playing with the door handle"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ97",
+            "topic": "2026 Current Issues",
+            "question": "Which of the following is a good habit for conserving water at home?",
+            "options": ["Leaving the tap running while brushing teeth", "Taking 1-hour long showers", "Turning off the tap when applying soap", "Playing with the garden hose daily"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ98",
+            "topic": "2026 Current Issues",
+            "question": "What should you do if a stranger offers you free food or a ride home?",
+            "options": ["Say thank you and follow them", "Politely refuse, walk away quickly, and tell a trusted adult", "Ask them for money too", "Get into their car to see where they go"],
+            "correct_index": 1
+        },
+        {
+            "id": "JQ99",
+            "topic": "2026 Current Issues",
+            "question": "In the food pyramid, which type of food should we eat the least of to stay healthy?",
+            "options": ["Fruits and vegetables", "Rice and bread", "Sweets, fats, and sugary drinks", "Fish and chicken"],
+            "correct_index": 2
+        },
+        {
+            "id": "JQ100",
+            "topic": "2026 Current Issues",
+            "question": "If you find a wallet on the street with money and an ID card, what is the right thing to do as a BB member?",
+            "options": ["Keep the money and throw the wallet away", "Leave it there", "Hand it over to a police station or a trusted adult", "Buy snacks with the money"],
+            "correct_index": 2
+        }
         ];
 
-        // ⚠️ 3. 如果你有 Senior 的 JSON 数据，贴在这里。没有的话先空着。
+        // Senior 数据
         const seniorQuestions = [
         {
             "id": "SQ1",
@@ -1449,9 +1448,7 @@
         }
         ];
 
-        // ==========================================
-        // 4. 真正负责上传的函数 (读取每题自带的 id)
-        // ==========================================
+        // 4. 真正负责上传的函数
         window.uploadData = function(collectionName, dataArray) {
             if (dataArray.length === 0 || !dataArray[0].id) {
                 document.getElementById("status").innerText = `⚠️ 数组是空的，或者题目里没有 "id" 字段！`;
@@ -1464,10 +1461,7 @@
             let uploadPromises = [];
 
             dataArray.forEach((question) => {
-                // 直接读取你在 JSON 里写好的 id (比如 JQ01, SQ1)
                 let docId = question.id; 
-                
-                // 将题目存入 Firestore，并且强制使用该 ID
                 let promise = db.collection(collectionName).doc(docId).set(question);
                 uploadPromises.push(promise);
             });
