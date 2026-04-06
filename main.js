@@ -5,12 +5,13 @@ import { getFirestore, collection, getDocs, doc, setDoc, serverTimestamp } from 
 
 // 从 .env 读取配置
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
+            authDomain: "bb-quiz-app.firebaseapp.com",
+            projectId: "bb-quiz-app",
+            storageBucket: "bb-quiz-app.firebasestorage.app",
+            messagingSenderId: "370671276686",
+            appId: "1:370671276686:web:204abb8c375f130b3a2fdf",
+            measurementId: "G-R83HJ2EDQG"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -122,23 +123,32 @@ document.getElementById('nextBtn').onclick = () => {
 
 // 6. 结束并上传 (Replace Score)
 async function finishGame() {
-    pages.quiz.classList.add('hidden');
-    pages.result.classList.remove('hidden');
+    // 1. 切换到结算页面 UI
+    document.getElementById("page3-quiz").classList.add("hidden");
+    document.getElementById("page4-result").classList.remove("hidden");
 
-    document.getElementById('finalName').innerText = playerName;
-    document.getElementById('finalScore').innerText = score;
-    document.getElementById('finalCombo').innerText = maxStreak;
-    document.getElementById('finalCorrect').innerText = correctCount;
+    // 2. 显示结果
+    document.getElementById("finalName").innerText = playerName;
+    document.getElementById("finalScore").innerText = score;
+    document.getElementById("finalCorrect").innerText = totalCorrect;
 
-    // 使用 Role_Name 作为 ID 实现覆盖
-    await setDoc(doc(db, "Leaderboard", `${currentRole}_${playerName}`), {
-        name: playerName,
-        role: currentRole,
-        score: score,
-        maxCombo: maxStreak,
-        correctAnswers: correctCount,
-        timestamp: serverTimestamp()
-    });
+    // 3. 【关键：存入数据库】
+    // 我们用 "组别_名字" 作为 ID (例如：Junior_ALEX)
+    // 这样同一个组别的同一个人再次游玩时，ID 是一样的，分数就会被覆盖。
+    let playerDocId = `${currentRole}_${playerName}`;
+
+    try {
+        await db.collection("Leaderboard").doc(playerDocId).set({
+            name: playerName,        // 玩家名字（全大写）
+            role: currentRole,      // 组别 (Junior/Senior)
+            score: score,           // 总分
+            correctAnswers: totalCorrect, // 答对题数
+            timestamp: firebase.firestore.FieldValue.serverTimestamp() // 记录时间
+        });
+        console.log("数据已更新！如果是老玩家，旧分数已被替换。");
+    } catch (error) {
+        console.error("保存失败: ", error);
+    }
 }
 
 document.getElementById('btnRestart').onclick = () => location.reload();
