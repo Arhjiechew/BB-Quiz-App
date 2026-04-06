@@ -16,26 +16,27 @@
 
     <div class="box">
         <h2>⬆️ 题库一键上传工具</h2>
-        <p>请确保代码里已经填好了 Firebase Config 和 JSON 题目数据。</p>
+        <p>请点击下方按钮，将代码中的题目上传至 Firebase。</p>
         
-        <button onclick="uploadData('JuniorQuestions', juniorQuestions, 'JQ')">1. 上传 Junior 题库</button>
-        <button onclick="uploadData('SeniorQuestions', seniorQuestions, 'SQ')">2. 上传 Senior 题库</button>
+        <button onclick="window.uploadData('JuniorQuestions', juniorQuestions)">1. 上传 Junior 题库 (100题)</button>
+        <button onclick="window.uploadData('SeniorQuestions', seniorQuestions)">2. 上传 Senior 题库 (100题)</button>
 
         <p id="status">等待操作...</p>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script type="module" src="/main.js"></script>
-    <script>
-        // ⚠️ 1. 在这里换成你的 Firebase 钥匙
+
+    <script type="module">
+        // 1. 读取 .env 里的 Firebase 钥匙
         const firebaseConfig = {
-        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_FIREBASE_APP_ID
+            apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
+            authDomain: "bb-quiz-app.firebaseapp.com",
+            projectId: "bb-quiz-app",
+            storageBucket: "bb-quiz-app.firebasestorage.app",
+            messagingSenderId: "370671276686",
+            appId: "1:370671276686:web:204abb8c375f130b3a2fdf",
+            measurementId: "G-R83HJ2EDQG"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1448,79 +1449,39 @@
         }
         ];
 
-        // 核心上传逻辑
-        // 【功能1升级】：名字大写，并从总题库中随机抽取 50 题
-        function startQuiz() {
-            // .toUpperCase() 会自动把输入的英文字母变成全大写
-            playerName = document.getElementById("playerName").value.trim().toUpperCase();
-            
-            if (playerName === "") {
-                alert("Please enter your full name per IC!");
+        // ==========================================
+        // 4. 真正负责上传的函数 (读取每题自带的 id)
+        // ==========================================
+        window.uploadData = function(collectionName, dataArray) {
+            if (dataArray.length === 0 || !dataArray[0].id) {
+                document.getElementById("status").innerText = `⚠️ 数组是空的，或者题目里没有 "id" 字段！`;
                 return;
             }
 
-            // 切换页面
-            document.getElementById("page2-name").classList.add("hidden");
-            document.getElementById("page3-quiz").classList.remove("hidden");
-            document.getElementById("questionText").innerText = "Loading questions... (抽取题库中)";
+            document.getElementById("status").innerText = `⏳ 正在上传 ${dataArray.length} 道题到 ${collectionName}...`;
+            document.getElementById("status").style.color = "#f39c12";
 
-            // 决定拉取哪个题库
-            let collectionName = currentRole === "Junior" ? "JuniorQuestions" : "SeniorQuestions";
-            
-            db.collection(collectionName).get().then((querySnapshot) => {
-                questions = [];
-                querySnapshot.forEach((doc) => {
-                    questions.push(doc.data());
-                });
-                
-                if(questions.length === 0) {
-                    document.getElementById("questionText").innerText = "No questions found in database!";
-                    return;
-                }
+            let uploadPromises = [];
 
-                // 核心逻辑 1：先把数据库里的所有题目彻底打乱 (Shuffle)
-                questions.sort(() => Math.random() - 0.5);
+            dataArray.forEach((question) => {
+                // 直接读取你在 JSON 里写好的 id (比如 JQ01, SQ1)
+                let docId = question.id; 
                 
-                // 核心逻辑 2：只截取前 50 题！
-                // 哪怕你数据库有 100 题，这里也只拿打乱后的前 50 题来玩
-                questions = questions.slice(0, 50); 
-                
-                // 加载第一题
-                loadQuestionUI();
+                // 将题目存入 Firestore，并且强制使用该 ID
+                let promise = db.collection(collectionName).doc(docId).set(question);
+                uploadPromises.push(promise);
+            });
+
+            // 等待所有题目上传完毕
+            Promise.all(uploadPromises).then(() => {
+                document.getElementById("status").innerText = `✅ 成功！${dataArray.length} 道题已全部按你的 ID 存入 ${collectionName}！`;
+                document.getElementById("status").style.color = "#2ecc71";
             }).catch(error => {
-                document.getElementById("questionText").innerText = "Error loading database!";
-                console.error(error);
+                console.error("上传出错: ", error);
+                document.getElementById("status").innerText = `❌ 上传失败，请按 F12 检查控制台报错。`;
+                document.getElementById("status").style.color = "#e74c3c";
             });
-        }
-
-        // 【功能5升级】：排行榜成绩覆盖 (Replace)
-        function endGame() {
-            document.getElementById("page3-quiz").classList.add("hidden");
-            document.getElementById("page4-result").classList.remove("hidden");
-
-            document.getElementById("finalName").innerText = playerName + " (" + currentRole + ")";
-            document.getElementById("finalScore").innerText = score;
-            document.getElementById("finalCombo").innerText = maxStreak;
-            document.getElementById("finalCorrect").innerText = totalCorrect;
-            
-            // 核心逻辑 3：用玩家的 "组别+名字" 做专属 ID，实现覆盖！
-            // 比如：JUNIOR_ALI BIN ABU。如果他再玩一次，这个专属 ID 就会覆盖旧的记录。
-            let playerDocId = currentRole + "_" + playerName;
-
-            db.collection("Leaderboard").doc(playerDocId).set({
-                name: playerName, // 已经是全大写了
-                role: currentRole,
-                score: score,
-                maxCombo: maxStreak,
-                correctAnswers: totalCorrect,
-                timeSeconds: 0, // 如果你之前有计时器代码，把变量放这
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                console.log("最新成绩已覆盖至排行榜！");
-            }).catch((error) => {
-                console.error("上传失败: ", error);
-            });
-        }
+        };
     </script>
 </body>
 </html>
