@@ -7,25 +7,43 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* 1. 基础布局修复：确保 body 始终是居中的容器 */
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden; /* 防止光晕引起横向滚动 */
         }
         
-        .bg-orb-1 { position: absolute; top: -10%; left: -10%; width: 300px; height: 300px; background: rgba(99, 102, 241, 0.4); border-radius: 50%; filter: blur(80px); animation: float 6s infinite alternate; }
-        .bg-orb-2 { position: absolute; bottom: -10%; right: -10%; width: 300px; height: 300px; background: rgba(236, 72, 153, 0.3); border-radius: 50%; filter: blur(80px); animation: float 8s infinite alternate-reverse; }
+        /* 2. 背景光晕修复：使用 fixed 确保不占位 */
+        .bg-orb-1 { 
+            position: fixed; top: -10%; left: -10%; width: 300px; height: 300px; 
+            background: rgba(99, 102, 241, 0.4); border-radius: 50%; filter: blur(80px); 
+            animation: float 6s infinite alternate; z-index: 0;
+        }
+        .bg-orb-2 { 
+            position: fixed; bottom: -10%; right: -10%; width: 300px; height: 300px; 
+            background: rgba(236, 72, 153, 0.3); border-radius: 50%; filter: blur(80px); 
+            animation: float 8s infinite alternate-reverse; z-index: 0;
+        }
 
         @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.1); } }
 
+        /* 3. 毛玻璃主卡片 */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 10; /* 确保在光晕上方 */
         }
 
         .page-enter { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -34,27 +52,24 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
+        /* 4. 按钮交互样式 */
         .option-btn { transition: all 0.2s ease-in-out; }
         .option-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: #6366f1; background: #e0e7ff; }
-        
-        /* 选中状态（还未Confirm） */
         .option-btn.selected { border-color: #6366f1 !important; background: #e0e7ff !important; transform: scale(1.01); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
-
         .option-btn.correct { background: linear-gradient(135deg, #10b981, #059669) !important; color: white !important; border-color: #047857 !important; transform: scale(1.02); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); font-weight: bold; }
         .option-btn.wrong { background: linear-gradient(135deg, #f43f5e, #e11d48) !important; color: white !important; border-color: #be123c !important; animation: shake 0.4s; }
         
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        
         .option-btn:disabled { cursor: not-allowed; opacity: 0.9; }
     </style>
 </head>
 
-<body class="relative flex items-center justify-center p-4 overflow-hidden">
+<body class="p-4">
 
-    <div class="bg-orb-1 z-0"></div>
-    <div class="bg-orb-2 z-0"></div>
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
 
-    <div id="mainContainer" class="glass-card w-full max-w-[420px] rounded-[2rem] p-6 sm:p-8 relative z-10 flex flex-col min-h-[600px] page-enter">
+    <div id="mainContainer" class="glass-card w-full max-w-[420px] rounded-[2rem] p-6 sm:p-8 flex flex-col min-h-[600px] page-enter">
         
         <div id="page1-role" class="flex flex-col h-full justify-center page-enter">
             <div class="text-center mb-8">
@@ -66,10 +81,10 @@
             </div>
 
             <div class="space-y-4 mt-4">
-                <button onclick="selectRole('Junior')" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-5 rounded-2xl shadow-lg shadow-blue-500/30 transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-blue-400/50">
+                <button onclick="selectRole('Junior')" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-blue-400/50">
                     <i class="fa-solid fa-child-reaching text-2xl"></i> Junior (小学组)
                 </button>
-                <button onclick="selectRole('Senior')" class="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white font-bold py-5 rounded-2xl shadow-lg shadow-rose-500/30 transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-rose-400/50">
+                <button onclick="selectRole('Senior')" class="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-rose-400/50">
                     <i class="fa-solid fa-user-graduate text-2xl"></i> Senior (中学组)
                 </button>
             </div>
@@ -92,7 +107,7 @@
                        class="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none text-slate-800 font-bold uppercase shadow-inner transition-all text-center tracking-wide">
             </div>
 
-            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/40 transform transition-all active:scale-95 flex justify-center items-center gap-2 border border-indigo-500/50 text-lg">
+            <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex justify-center items-center gap-2 border border-indigo-500/50 text-lg">
                 <i class="fa-solid fa-play"></i> Start Challenge
             </button>
             
@@ -102,7 +117,6 @@
         </div>
 
         <div id="page3-quiz" class="hidden flex-col h-full page-enter">
-            
             <div class="flex justify-between items-center bg-slate-800 p-3 rounded-2xl mb-3 shadow-inner border border-slate-700 text-white">
                 <div class="flex flex-col items-center px-3">
                     <span class="text-[10px] text-slate-400 font-bold uppercase">Score</span>
@@ -148,18 +162,18 @@
                 </button>
             </div>
 
-            <button id="confirmBtn" onclick="confirmAnswer()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/40 transform transition-all active:scale-95 flex justify-center items-center gap-2 mt-auto">
+            <button id="confirmBtn" onclick="confirmAnswer()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex justify-center items-center gap-2 mt-auto">
                 <i class="fa-solid fa-check-double"></i> Confirm Answer
             </button>
 
-            <button id="nextBtn" onclick="nextQuestion()" class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/40 transform transition-all active:scale-95 flex justify-center items-center gap-2 mt-auto">
+            <button id="nextBtn" onclick="nextQuestion()" class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex justify-center items-center gap-2 mt-auto">
                 Next Question <i class="fa-solid fa-arrow-right"></i>
             </button>
         </div>
 
         <div id="page4-result" class="hidden flex-col h-full justify-center page-enter">
             <div class="text-center mb-6">
-                <i class="fa-solid fa-trophy text-6xl text-amber-400 drop-shadow-lg mb-4 animate-[bounce_2s_infinite]"></i>
+                <i class="fa-solid fa-trophy text-6xl text-amber-400 drop-shadow-lg mb-4"></i>
                 <h1 class="text-3xl font-extrabold text-slate-800">Challenge Complete!</h1>
                 <h2 id="finalName" class="text-lg font-bold text-indigo-600 mt-2 bg-indigo-50 inline-block px-4 py-1 rounded-full border border-indigo-100"></h2>
             </div>
@@ -183,15 +197,13 @@
                 <i class="fa-solid fa-rotate-right"></i> Play Again
             </button>
         </div>
-
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // ⚠️⚠️⚠️ 替换为你的 Firebase 钥匙 ⚠️⚠️⚠️
+        // 配置 Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
             authDomain: "bb-quiz-app.firebaseapp.com",
@@ -204,11 +216,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 游戏变量
+        // 变量初始化
         let currentRole = "", playerName = "", questions = [], currentQIndex = 0;
         let score = 0, currentStreak = 0, maxStreak = 0, totalCorrect = 0;
-        let currentSelectedOption = null; 
-        let isPlaying = false; // 🌟 新增：记录是否在答题中以防止刷新
+        let currentSelectedOption = null, isPlaying = false;
 
         function switchPage(hideId, showId) {
             document.getElementById(hideId).classList.add("hidden");
@@ -230,66 +241,37 @@
         function startQuiz() {
             let nameInput = document.getElementById("playerName").value.trim();
             if (nameInput === "") { 
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Oops!',
-                    text: 'Please enter your FULL NAME! (请输入您的名字)',
-                    confirmButtonColor: '#4f46e5',
-                    confirmButtonText: 'OK'
-                });
+                Swal.fire({ icon: 'warning', title: 'Oops!', text: 'Please enter your FULL NAME!', confirmButtonColor: '#4f46e5' });
                 return; 
             }
             playerName = nameInput.toUpperCase(); 
-
-            isPlaying = true; // 🌟 开启防刷新保护
+            isPlaying = true;
 
             switchPage("page2-name", "page3-quiz");
-            document.getElementById("questionText").innerHTML = '<i class="fa-solid fa-spinner fa-spin text-indigo-500 mr-2"></i> Loading from database...';
+            document.getElementById("questionText").innerHTML = '<i class="fa-solid fa-spinner fa-spin text-indigo-500 mr-2"></i> Loading questions...';
 
             let collectionName = currentRole === "Junior" ? "JuniorQuestions" : "SeniorQuestions";
-            
-            db.collection(collectionName).get().then((querySnapshot) => {
-                questions = [];
-                querySnapshot.forEach((doc) => questions.push(doc.data()));
-                
-                if(questions.length === 0) { document.getElementById("questionText").innerText = "No questions found!"; return; }
-
+            db.collection(collectionName).get().then((snapshot) => {
+                questions = snapshot.docs.map(doc => doc.data());
+                if(questions.length === 0) {
+                    document.getElementById("questionText").innerText = "No questions found!";
+                    return;
+                }
                 questions.sort(() => Math.random() - 0.5);
                 questions = questions.slice(0, 50); 
-                
                 loadQuestionUI();
-            });
-        }
-
-        function endGameHalfway() {
-            Swal.fire({
-                title: 'End Challenge?',
-                html: "Are you sure you want to end early?<br>Your current score will be saved.<br><br><span style='color:gray; font-size:14px;'>确定要提前结束吗？系统会保存您当前的分数。</span>",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#4f46e5', 
-                cancelButtonColor: '#f43f5e',  
-                confirmButtonText: '<i class="fa-solid fa-power-off"></i> Yes, End Game',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    questions.length = currentQIndex + 1; 
-                    endGame();
-                }
             });
         }
 
         function loadQuestionUI() {
             let q = questions[currentQIndex];
-            currentSelectedOption = null; 
-
+            currentSelectedOption = null;
             document.getElementById("progressText").innerHTML = `<i class="fa-solid fa-bars-progress"></i> Question ${currentQIndex + 1} of ${questions.length}`;
             document.getElementById("questionText").innerText = q.question;
             
             for(let i=0; i<4; i++) {
                 let btn = document.getElementById("btn" + i);
                 document.getElementById("opt" + i).innerText = q.options[i];
-                
                 btn.className = "option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3";
                 btn.disabled = false;         
             }
@@ -299,24 +281,17 @@
 
         function selectOption(index) {
             currentSelectedOption = index;
-            
             for(let i=0; i<4; i++) {
                 let btn = document.getElementById("btn" + i);
-                if (i === index) {
-                    btn.classList.add("selected"); 
-                } else {
-                    btn.classList.remove("selected"); 
-                }
+                i === index ? btn.classList.add("selected") : btn.classList.remove("selected");
             }
             document.getElementById("confirmBtn").classList.remove("hidden");
         }
 
         function confirmAnswer() {
-            if (currentSelectedOption === null) return; 
-
+            if (currentSelectedOption === null) return;
             let q = questions[currentQIndex];
             let correctIndex = q.correct_index;
-
             for(let i=0; i<4; i++) {
                 let btn = document.getElementById("btn" + i);
                 btn.disabled = true;
@@ -328,7 +303,7 @@
                 currentStreak++;
                 totalCorrect++;
                 if (currentStreak > maxStreak) maxStreak = currentStreak;
-                score += 10 * Math.pow(2, currentStreak - 1);
+                score += 10 * Math.pow(2, Math.min(currentStreak - 1, 5)); // 连击得分上限
             } else {
                 document.getElementById("btn" + currentSelectedOption).classList.add("wrong");
                 document.getElementById("btn" + correctIndex).classList.add("correct");
@@ -338,23 +313,35 @@
             document.getElementById("scoreDisplay").innerText = score;
             document.getElementById("streakDisplay").innerText = currentStreak;
             document.getElementById("correctDisplay").innerText = `${totalCorrect}/${questions.length}`;
-            
             document.getElementById("confirmBtn").classList.add("hidden");
             document.getElementById("nextBtn").classList.remove("hidden");
         }
 
         function nextQuestion() {
             currentQIndex++;
-            if (currentQIndex < questions.length) {
-                loadQuestionUI();
-            } else {
-                endGame();
-            }
+            currentQIndex < questions.length ? loadQuestionUI() : endGame();
+        }
+
+        function endGameHalfway() {
+            Swal.fire({
+                title: 'End Challenge?',
+                html: "Are you sure you want to end early?<br>Your score will be saved.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4f46e5', 
+                cancelButtonColor: '#f43f5e',  
+                confirmButtonText: 'Yes, End Game',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    questions.length = currentQIndex + 1; 
+                    endGame();
+                }
+            });
         }
 
         async function endGame() {
-            isPlaying = false; // 🌟 游戏结束，关闭防刷新保护
-
+            isPlaying = false;
             switchPage("page3-quiz", "page4-result");
 
             document.getElementById("finalName").innerText = playerName;
@@ -373,17 +360,12 @@
                     correctAnswers: totalCorrect,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-            } catch (error) {
-                console.error("保存失败: ", error);
-            }
+            } catch (e) { console.error("Save error: ", e); }
         }
 
-        // 🌟 核心：监听浏览器的刷新/关闭事件
-        window.addEventListener('beforeunload', function (e) {
-            if (isPlaying) {
-                e.preventDefault(); 
-                e.returnValue = 'Are you sure you want to leave? Your progress will be lost.'; 
-            }
+        // 防刷新拦截
+        window.addEventListener('beforeunload', (e) => {
+            if (isPlaying) { e.preventDefault(); e.returnValue = ''; }
         });
     </script>
 </body>
