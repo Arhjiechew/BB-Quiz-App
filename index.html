@@ -188,6 +188,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         // ⚠️⚠️⚠️ 替换为你的 Firebase 钥匙 ⚠️⚠️⚠️
@@ -227,7 +228,17 @@
 
         function startQuiz() {
             let nameInput = document.getElementById("playerName").value.trim();
-            if (nameInput === "") { alert("Please enter your name!"); return; }
+            if (nameInput === "") { 
+                // 🌟 升级：漂亮的名字为空提示
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops!',
+                    text: 'Please enter your FULL NAME! (请输入您的名字)',
+                    confirmButtonColor: '#4f46e5',
+                    confirmButtonText: 'OK'
+                });
+                return; 
+            }
             playerName = nameInput.toUpperCase(); 
 
             switchPage("page2-name", "page3-quiz");
@@ -245,6 +256,26 @@
                 questions = questions.slice(0, 50); 
                 
                 loadQuestionUI();
+            });
+        }
+
+        // 🌟 升级：漂亮的提前结束确认弹窗
+        function endGameHalfway() {
+            Swal.fire({
+                title: 'End Challenge?',
+                html: "Are you sure you want to end early?<br>Your current score will be saved.<br><br><span style='color:gray; font-size:14px;'>确定要提前结束吗？系统会保存您当前的分数。</span>",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#4f46e5', // 优雅的靛蓝色
+                cancelButtonColor: '#f43f5e',  // 玫瑰红
+                confirmButtonText: '<i class="fa-solid fa-power-off"></i> Yes, End Game',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 如果玩家点击了 Yes
+                    questions.length = currentQIndex + 1; 
+                    endGame();
+                }
             });
         }
 
