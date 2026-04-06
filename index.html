@@ -10,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* 1. 基础布局修复：确保 body 始终是居中的容器 */
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             min-height: 100vh;
@@ -19,40 +18,31 @@
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow-x: hidden; /* 防止光晕引起横向滚动 */
+            overflow-x: hidden;
         }
         
-        /* 2. 背景光晕修复：使用 fixed 确保不占位 */
-        .bg-orb-1 { 
-            position: fixed; top: -10%; left: -10%; width: 300px; height: 300px; 
-            background: rgba(99, 102, 241, 0.4); border-radius: 50%; filter: blur(80px); 
-            animation: float 6s infinite alternate; z-index: 0;
-        }
-        .bg-orb-2 { 
-            position: fixed; bottom: -10%; right: -10%; width: 300px; height: 300px; 
-            background: rgba(236, 72, 153, 0.3); border-radius: 50%; filter: blur(80px); 
-            animation: float 8s infinite alternate-reverse; z-index: 0;
-        }
+        .bg-orb-1 { position: fixed; top: -10%; left: -10%; width: 300px; height: 300px; background: rgba(99, 102, 241, 0.4); border-radius: 50%; filter: blur(80px); animation: float 6s infinite alternate; z-index: 0; }
+        .bg-orb-2 { position: fixed; bottom: -10%; right: -10%; width: 300px; height: 300px; background: rgba(236, 72, 153, 0.3); border-radius: 50%; filter: blur(80px); animation: float 8s infinite alternate-reverse; z-index: 0; }
 
         @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.1); } }
 
-        /* 3. 毛玻璃主卡片 */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            z-index: 10; /* 确保在光晕上方 */
+            z-index: 10;
+        }
+
+        /* 排行榜深色卡片特效 */
+        .dark-glass-card {
+            background: linear-gradient(180deg, #1a1635 0%, #0d0b1a 100%);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .page-enter { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* 4. 按钮交互样式 */
         .option-btn { transition: all 0.2s ease-in-out; }
         .option-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: #6366f1; background: #e0e7ff; }
         .option-btn.selected { border-color: #6366f1 !important; background: #e0e7ff !important; transform: scale(1.01); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
@@ -61,18 +51,26 @@
         
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         .option-btn:disabled { cursor: not-allowed; opacity: 0.9; }
+
+        /* 隐藏滚动条但保留功能 */
+        .hide-scrollbar::-webkit-scrollbar { width: 0px; }
+        .hide-scrollbar { scrollbar-width: none; }
     </style>
 </head>
 
 <body class="p-4">
+    <div class="bg-orb-1"></div><div class="bg-orb-2"></div>
 
-    <div class="bg-orb-1"></div>
-    <div class="bg-orb-2"></div>
-
-    <div id="mainContainer" class="glass-card w-full max-w-[420px] rounded-[2rem] p-6 sm:p-8 flex flex-col min-h-[600px] page-enter">
+    <div id="mainContainer" class="glass-card w-full max-w-[420px] rounded-[2rem] p-6 sm:p-8 relative flex flex-col min-h-[650px] page-enter overflow-hidden">
         
         <div id="page1-role" class="flex flex-col h-full justify-center page-enter">
-            <div class="text-center mb-8">
+            <div class="absolute top-4 right-4 z-20">
+                <button onclick="openLeaderboard()" class="text-indigo-600 bg-indigo-100 hover:bg-indigo-200 px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
+                    <i class="fa-solid fa-ranking-star"></i> Leaderboard
+                </button>
+            </div>
+            
+            <div class="text-center mb-8 mt-6">
                 <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner border-4 border-white">
                     <i class="fa-solid fa-anchor text-4xl text-indigo-600"></i>
                 </div>
@@ -148,24 +146,15 @@
             </div>
             
             <div class="space-y-3 mb-6">
-                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn0" onclick="selectOption(0)">
-                    <span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">A</span><span id="opt0"></span>
-                </button>
-                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn1" onclick="selectOption(1)">
-                    <span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">B</span><span id="opt1"></span>
-                </button>
-                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn2" onclick="selectOption(2)">
-                    <span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">C</span><span id="opt2"></span>
-                </button>
-                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn3" onclick="selectOption(3)">
-                    <span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">D</span><span id="opt3"></span>
-                </button>
+                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn0" onclick="selectOption(0)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">A</span><span id="opt0"></span></button>
+                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn1" onclick="selectOption(1)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">B</span><span id="opt1"></span></button>
+                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn2" onclick="selectOption(2)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">C</span><span id="opt2"></span></button>
+                <button class="option-btn w-full p-4 bg-white border-2 border-slate-200 rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn3" onclick="selectOption(3)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">D</span><span id="opt3"></span></button>
             </div>
 
             <button id="confirmBtn" onclick="confirmAnswer()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex justify-center items-center gap-2 mt-auto">
                 <i class="fa-solid fa-check-double"></i> Confirm Answer
             </button>
-
             <button id="nextBtn" onclick="nextQuestion()" class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex justify-center items-center gap-2 mt-auto">
                 Next Question <i class="fa-solid fa-arrow-right"></i>
             </button>
@@ -178,7 +167,7 @@
                 <h2 id="finalName" class="text-lg font-bold text-indigo-600 mt-2 bg-indigo-50 inline-block px-4 py-1 rounded-full border border-indigo-100"></h2>
             </div>
             
-            <div class="bg-slate-50 rounded-2xl p-6 shadow-inner border border-slate-200 space-y-4 mb-8">
+            <div class="bg-slate-50 rounded-2xl p-6 shadow-inner border border-slate-200 space-y-4 mb-6">
                 <div class="flex justify-between items-center pb-4 border-b border-slate-200">
                     <span class="text-slate-500 font-bold flex items-center gap-2"><i class="fa-solid fa-star text-amber-500"></i> Total Score</span>
                     <strong id="finalScore" class="text-2xl font-black text-slate-800 font-mono">0</strong>
@@ -193,17 +182,48 @@
                 </div>
             </div>
             
-            <button onclick="location.reload()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-xl transform transition-all active:scale-95 flex justify-center items-center gap-2 border border-slate-700">
-                <i class="fa-solid fa-rotate-right"></i> Play Again
-            </button>
+            <div class="flex gap-2 mt-auto">
+                <button onclick="openLeaderboard()" class="w-1/3 bg-indigo-100 hover:bg-indigo-200 text-indigo-600 font-bold py-4 rounded-xl shadow-sm transform transition-all active:scale-95 flex flex-col justify-center items-center gap-1 border border-indigo-200">
+                    <i class="fa-solid fa-ranking-star text-xl"></i> <span class="text-xs">Ranking</span>
+                </button>
+                <button onclick="location.reload()" class="w-2/3 bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-xl transform transition-all active:scale-95 flex justify-center items-center gap-2 border border-slate-700">
+                    <i class="fa-solid fa-rotate-right"></i> Play Again
+                </button>
+            </div>
         </div>
+
+        <div id="page5-leaderboard" class="hidden absolute inset-0 z-50 dark-glass-card flex flex-col page-enter">
+            
+            <div class="px-6 pt-6 pb-2 flex justify-between items-center relative z-10">
+                <button onclick="closeLeaderboard()" class="text-indigo-400 hover:text-white transition-colors w-8"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+                <h2 class="text-white font-extrabold text-xl tracking-wider">LEADERBOARD</h2>
+                <div class="w-8"></div>
+            </div>
+
+            <div class="flex justify-center gap-3 p-4 relative z-10">
+                <button id="tabJunior" onclick="loadLeaderboardData('Junior')" class="px-6 py-2 rounded-full text-sm font-bold transition-all border border-transparent shadow-[0_0_15px_rgba(99,102,241,0.5)] bg-indigo-600 text-white">Junior</button>
+                <button id="tabSenior" onclick="loadLeaderboardData('Senior')" class="px-6 py-2 rounded-full text-sm font-bold transition-all border border-slate-600 text-slate-400 bg-slate-800/50 hover:bg-slate-700">Senior</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-4 pb-8 hide-scrollbar relative z-10">
+                <div id="lbLoading" class="text-center text-indigo-400 mt-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl"></i><p class="mt-3 font-bold text-sm">Syncing Data...</p></div>
+                <div id="lbEmpty" class="hidden text-center text-slate-500 mt-20"><i class="fa-solid fa-ghost text-4xl"></i><p class="mt-3 font-bold text-sm">No records found</p></div>
+                
+                <div id="lbPodium" class="hidden flex justify-center items-end mt-12 mb-8 px-2 gap-2 h-40">
+                    </div>
+
+                <div id="lbList" class="hidden flex flex-col space-y-3">
+                    </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-        // 配置 Firebase
+        // ⚠️⚠️⚠️ 替换为你的 Firebase 钥匙 ⚠️⚠️⚠️
         const firebaseConfig = {
             apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
             authDomain: "bb-quiz-app.firebaseapp.com",
@@ -216,11 +236,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 变量初始化
+        // 全局变量
         let currentRole = "", playerName = "", questions = [], currentQIndex = 0;
         let score = 0, currentStreak = 0, maxStreak = 0, totalCorrect = 0;
         let currentSelectedOption = null, isPlaying = false;
+        let currentLeaderboardTab = "Junior";
 
+        // --- 核心页面切换 ---
         function switchPage(hideId, showId) {
             document.getElementById(hideId).classList.add("hidden");
             const showEl = document.getElementById(showId);
@@ -230,12 +252,12 @@
             showEl.classList.add("page-enter");
         }
 
+        // --- 游戏流程逻辑 ---
         function selectRole(role) {
             currentRole = role;
             document.getElementById("displayRole").innerText = role;
             switchPage("page1-role", "page2-name");
         }
-
         function goBack() { switchPage("page2-name", "page1-role"); }
 
         function startQuiz() {
@@ -253,13 +275,23 @@
             let collectionName = currentRole === "Junior" ? "JuniorQuestions" : "SeniorQuestions";
             db.collection(collectionName).get().then((snapshot) => {
                 questions = snapshot.docs.map(doc => doc.data());
-                if(questions.length === 0) {
-                    document.getElementById("questionText").innerText = "No questions found!";
-                    return;
-                }
+                if(questions.length === 0) { document.getElementById("questionText").innerText = "No questions found!"; return; }
+                
                 questions.sort(() => Math.random() - 0.5);
                 questions = questions.slice(0, 50); 
                 loadQuestionUI();
+            });
+        }
+
+        function endGameHalfway() {
+            Swal.fire({
+                title: 'End Challenge?',
+                html: "Are you sure you want to end early?<br>Your score will be saved.",
+                icon: 'warning', showCancelButton: true,
+                confirmButtonColor: '#4f46e5', cancelButtonColor: '#f43f5e',  
+                confirmButtonText: 'Yes, End Game', cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) { questions.length = currentQIndex + 1; endGame(); }
             });
         }
 
@@ -290,20 +322,18 @@
 
         function confirmAnswer() {
             if (currentSelectedOption === null) return;
-            let q = questions[currentQIndex];
-            let correctIndex = q.correct_index;
+            let q = questions[currentQIndex]; let correctIndex = q.correct_index;
+
             for(let i=0; i<4; i++) {
                 let btn = document.getElementById("btn" + i);
-                btn.disabled = true;
-                btn.classList.remove("selected");
+                btn.disabled = true; btn.classList.remove("selected");
             }
 
             if (currentSelectedOption === correctIndex) {
                 document.getElementById("btn" + currentSelectedOption).classList.add("correct");
-                currentStreak++;
-                totalCorrect++;
+                currentStreak++; totalCorrect++;
                 if (currentStreak > maxStreak) maxStreak = currentStreak;
-                score += 10 * Math.pow(2, Math.min(currentStreak - 1, 5)); // 连击得分上限
+                score += 10 * Math.pow(2, Math.min(currentStreak - 1, 5)); 
             } else {
                 document.getElementById("btn" + currentSelectedOption).classList.add("wrong");
                 document.getElementById("btn" + correctIndex).classList.add("correct");
@@ -320,24 +350,6 @@
         function nextQuestion() {
             currentQIndex++;
             currentQIndex < questions.length ? loadQuestionUI() : endGame();
-        }
-
-        function endGameHalfway() {
-            Swal.fire({
-                title: 'End Challenge?',
-                html: "Are you sure you want to end early?<br>Your score will be saved.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#4f46e5', 
-                cancelButtonColor: '#f43f5e',  
-                confirmButtonText: 'Yes, End Game',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    questions.length = currentQIndex + 1; 
-                    endGame();
-                }
-            });
         }
 
         async function endGame() {
@@ -363,10 +375,141 @@
             } catch (e) { console.error("Save error: ", e); }
         }
 
-        // 防刷新拦截
-        window.addEventListener('beforeunload', (e) => {
-            if (isPlaying) { e.preventDefault(); e.returnValue = ''; }
-        });
+        // --- 防刷新 ---
+        window.addEventListener('beforeunload', (e) => { if (isPlaying) { e.preventDefault(); e.returnValue = ''; }});
+
+        // ==========================================
+        // 👑 排行榜系统 (全新酷炫逻辑)
+        // ==========================================
+        function openLeaderboard() {
+            // 自动跳到玩家当前游玩的组别
+            currentLeaderboardTab = currentRole || "Junior"; 
+            document.getElementById("page5-leaderboard").classList.remove("hidden");
+            loadLeaderboardData(currentLeaderboardTab);
+        }
+
+        function closeLeaderboard() {
+            document.getElementById("page5-leaderboard").classList.add("hidden");
+        }
+
+        function loadLeaderboardData(tabName) {
+            currentLeaderboardTab = tabName;
+            
+            // 切换 Tab UI
+            const activeClass = ["bg-indigo-600", "text-white", "shadow-[0_0_15px_rgba(99,102,241,0.5)]", "border-transparent"];
+            const inactiveClass = ["bg-slate-800/50", "text-slate-400", "border-slate-600", "hover:bg-slate-700"];
+            
+            let tabJ = document.getElementById("tabJunior");
+            let tabS = document.getElementById("tabSenior");
+            
+            if(tabName === 'Junior') {
+                tabJ.classList.remove(...inactiveClass); tabJ.classList.add(...activeClass);
+                tabS.classList.remove(...activeClass); tabS.classList.add(...inactiveClass);
+            } else {
+                tabS.classList.remove(...inactiveClass); tabS.classList.add(...activeClass);
+                tabJ.classList.remove(...activeClass); tabJ.classList.add(...inactiveClass);
+            }
+
+            // 重置状态
+            document.getElementById("lbLoading").classList.remove("hidden");
+            document.getElementById("lbEmpty").classList.add("hidden");
+            document.getElementById("lbPodium").classList.add("hidden");
+            document.getElementById("lbList").classList.add("hidden");
+
+            // 拉取数据并在前端排序 (防止 Firebase 索引报错)
+            db.collection("Leaderboard").where("role", "==", tabName).get().then((snapshot) => {
+                let players = snapshot.docs.map(doc => doc.data());
+                
+                if (players.length === 0) {
+                    document.getElementById("lbLoading").classList.add("hidden");
+                    document.getElementById("lbEmpty").classList.remove("hidden");
+                    return;
+                }
+
+                // 排序规则: 总分 > 连击数 > 答对题数
+                players.sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    if (b.maxCombo !== a.maxCombo) return b.maxCombo - a.maxCombo;
+                    return b.correctAnswers - a.correctAnswers;
+                });
+
+                renderLeaderboardUI(players);
+            });
+        }
+
+        function renderLeaderboardUI(players) {
+            document.getElementById("lbLoading").classList.add("hidden");
+            
+            const podium = document.getElementById("lbPodium");
+            const list = document.getElementById("lbList");
+            podium.innerHTML = ""; list.innerHTML = "";
+
+            // 👑 渲染前三名 (2, 1, 3 的顺序排列)
+            if (players.length > 0) {
+                podium.classList.remove("hidden");
+                
+                let p1 = players[0] || null;
+                let p2 = players[1] || null;
+                let p3 = players[2] || null;
+
+                // 生成 Avatar 圆圈 (提取名字首字母)
+                const getAvatar = (name, colorClass) => `<div class="w-14 h-14 rounded-full ${colorClass} flex items-center justify-center text-white text-xl font-extrabold shadow-lg border-2 border-white/20 mb-2">${name.charAt(0)}</div>`;
+
+                let html = "";
+                
+                // 第2名 (银)
+                if (p2) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-4">
+                    <i class="fa-solid fa-crown text-slate-300 text-xl mb-1 shadow-sm"></i>
+                    ${getAvatar(p2.name, "bg-gradient-to-br from-slate-400 to-slate-600")}
+                    <p class="text-white text-xs font-bold truncate w-full px-1">${p2.name}</p>
+                    <p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p2.score}</p>
+                </div>`;
+                else html += `<div class="w-1/3"></div>`;
+
+                // 第1名 (金)
+                if (p1) html += `<div class="w-1/3 flex flex-col items-center text-center relative z-10 transform -translate-y-2">
+                    <i class="fa-solid fa-crown text-yellow-400 text-3xl mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"></i>
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-black shadow-[0_0_20px_rgba(250,204,21,0.5)] border-2 border-yellow-200 mb-2">${p1.name.charAt(0)}</div>
+                    <p class="text-white text-sm font-bold truncate w-full px-1">${p1.name}</p>
+                    <p class="text-emerald-400 font-mono font-black text-base mt-1 drop-shadow-md"><i class="fa-solid fa-caret-up text-xs"></i> ${p1.score}</p>
+                </div>`;
+
+                // 第3名 (铜)
+                if (p3) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-6">
+                    <i class="fa-solid fa-crown text-orange-400 text-lg mb-1"></i>
+                    ${getAvatar(p3.name, "bg-gradient-to-br from-orange-400 to-amber-700")}
+                    <p class="text-white text-xs font-bold truncate w-full px-1">${p3.name}</p>
+                    <p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p3.score}</p>
+                </div>`;
+                else html += `<div class="w-1/3"></div>`;
+
+                podium.innerHTML = html;
+            }
+
+            // 📃 渲染第4名及以后
+            if (players.length > 3) {
+                list.classList.remove("hidden");
+                let listHtml = "";
+                for(let i = 3; i < players.length; i++) {
+                    let p = players[i];
+                    let rank = i + 1;
+                    listHtml += `
+                    <div class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl p-3 flex items-center transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-indigo-500/30 text-indigo-200 flex items-center justify-center font-bold text-lg border border-indigo-400/20 shrink-0">
+                            ${p.name.charAt(0)}
+                        </div>
+                        <div class="ml-4 flex-1 overflow-hidden">
+                            <p class="text-white font-bold text-sm truncate">${p.name}</p>
+                            <p class="text-emerald-400 font-mono text-xs mt-0.5"><i class="fa-solid fa-caret-up"></i> ${p.score}</p>
+                        </div>
+                        <div class="text-slate-500 font-black italic text-lg px-2">
+                            ${rank}<span class="text-xs">th</span>
+                        </div>
+                    </div>`;
+                }
+                list.innerHTML = listHtml;
+            }
+        }
     </script>
 </body>
 </html>
