@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase 批量上传工具</title>
+    <title>Firebase 批量上传工具 (Bilingual / 双语版)</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
-        .box { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .box { background: white; padding: 30px; border-radius: 10px; max-width: 600px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         button { background: #3498db; color: white; padding: 15px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; margin: 10px; width: 80%; }
         button:hover { background: #2980b9; }
-        #status { margin-top: 20px; font-weight: bold; color: #e74c3c; }
+        #status { margin-top: 20px; font-weight: bold; color: #e74c3c; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div class="box">
-        <h2>⬆️ 题库一键上传工具</h2>
-        <p>请点击下方按钮，将代码中的题目上传至 Firebase。</p>
+        <h2>⬆️ 题库一键上传工具 (双语版)</h2>
+        <p>请点击下方按钮，将中英双语的题目上传至 Firebase。</p>
         
         <button onclick="window.uploadData('JuniorQuestions', juniorQuestions)">1. 上传 Junior 题库 (100题)</button>
         <button onclick="window.uploadData('SeniorQuestions', seniorQuestions)">2. 上传 Senior 题库 (100题)</button>
@@ -28,6 +28,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
+        // ⚠️ 请确认下方是你真实的 Firebase 钥匙
         const firebaseConfig = {
             apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
             authDomain: "bb-quiz-app.firebaseapp.com",
@@ -40,1422 +41,228 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // Junior 数据
+        // ==========================================
+        // 👦 Junior 题库 (1-100题) - 中英双语
+        // ==========================================
         const juniorQuestions = [
-        {
-            "id": "JQ01",
-            "topic": "History",
-            "question": "Who is the founder of the Boys' Brigade?",
-            "options": ["Lord Baden-Powell", "Sir William Alexander Smith", "Henry Dunant", "George Williams"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ02",
-            "topic": "History",
-            "question": "In which year was the Boys' Brigade founded?",
-            "options": ["1883", "1908", "1946", "1850"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ03",
-            "topic": "BB Malaysia & Asia",
-            "question": "Where was the first Boys' Brigade Company in Malaysia formed?",
-            "options": ["Kuala Lumpur", "Kuching", "Penang", "Johor Bahru"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ04",
-            "topic": "BB Traditions",
-            "question": "What is the official motto of the Boys' Brigade?",
-            "options": ["Be Prepared", "Sure & Stedfast", "Serve to Lead", "Always Ready"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ05",
-            "topic": "BB Uniforms",
-            "question": "What is the main symbol featured on the Boys' Brigade crest?",
-            "options": ["A shield", "A sword", "An anchor", "A star"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ06",
-            "topic": "Citizenship",
-            "question": "What is the national flower of Malaysia?",
-            "options": ["Orchid", "Rose", "Hibiscus (Bunga Raya)", "Sunflower"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ07",
-            "topic": "Citizenship",
-            "question": "How many stripes are there on the Malaysian flag (Jalur Gemilang)?",
-            "options": ["11", "13", "14", "15"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ08",
-            "topic": "2026 Current Issues",
-            "question": "What major national campaign is Malaysia actively running in the year 2026 to boost the country's economy?",
-            "options": ["Visit Malaysia 2026", "Malaysia Boleh 2026", "Wawasan 2026", "Green Malaysia 2026"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ09",
-            "topic": "Camping Knowledge",
-            "question": "Which of the following is the safest and best place to pitch a camping tent?",
-            "options": ["Under a very tall, old tree with dead branches", "On flat, dry ground away from river edges", "Right next to a campfire", "At the bottom of a steep hill"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ10",
-            "topic": "Camping Knowledge",
-            "question": "What is the most important item to bring on a camping trip to ensure you stay safely hydrated?",
-            "options": ["A compass", "Clean drinking water", "A flashlight", "A sleeping bag"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ11",
-            "topic": "BB Traditions",
-            "question": "What should a Boys' Brigade member do when the national anthem is played?",
-            "options": ["Sit down quietly", "Stand at attention", "Keep walking", "Talk to friends"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ12",
-            "topic": "History",
-            "question": "In which city was the Boys' Brigade first started?",
-            "options": ["London", "Glasgow", "Edinburgh", "Manchester"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ13",
-            "topic": "BB Uniforms",
-            "question": "Where is the Boys' Brigade badge worn on the Junior uniform?",
-            "options": ["On the left chest", "On the right sleeve", "On the belt", "On the cap"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ14",
-            "topic": "Citizenship",
-            "question": "What is the capital city of Malaysia?",
-            "options": ["Putrajaya", "Kuala Lumpur", "George Town", "Malacca City"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ15",
-            "topic": "2026 Current Issues",
-            "question": "Which major public transport line in the Klang Valley is focusing on expansion in 2026?",
-            "options": ["KTM Komuter", "Monorail", "MRT 3", "BRT"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ16",
-            "topic": "Camping Knowledge",
-            "question": "What is the basic knot used to tie a bandage for first aid during a camp?",
-            "options": ["Reef Knot", "Clove Hitch", "Bowline", "Figure of Eight"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ17",
-            "topic": "BB Traditions",
-            "question": "What is the main objective of the Boys' Brigade?",
-            "options": ["To learn how to fight", "The advancement of Christ's kingdom among Boys", "To go on holidays", "To earn money"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ18",
-            "topic": "BB Malaysia & Asia",
-            "question": "Who started the first Boys' Brigade company in Malaysia?",
-            "options": ["Robert Davis", "William Smith", "James Fraser", "John Wesley"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ19",
-            "topic": "BB Uniforms",
-            "question": "Which color is NOT part of the traditional Boys' Brigade uniform?",
-            "options": ["Navy Blue", "White", "Neon Green", "Silver"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ20",
-            "topic": "Camping Knowledge",
-            "question": "Why is it important to keep your campsite clean before leaving?",
-            "options": ["To protect the environment and wildlife", "To make sure nobody else can use it", "To practice sweeping", "To hide from animals"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ21",
-            "topic": "BB Uniforms",
-            "question": "Which award is the highest achievement for a Junior Section member?",
-            "options": ["One Year Service Badge", "Gold Award", "Target Badge", "Bronze Award"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ22",
-            "topic": "2026 Current Issues",
-            "question": "Which state in Malaysia is known for its 'Gateway to Borneo' campaign in early 2026?",
-            "options": ["Selangor", "Sarawak", "Pahang", "Perlis"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ23",
-            "topic": "BB Traditions",
-            "question": "What is the 'BB Vesper'?",
-            "options": ["A type of food", "A closing song/prayer", "A game", "A uniform part"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ24",
-            "topic": "History",
-            "question": "Where was Sir William Alexander Smith born?",
-            "options": ["London, England", "Glasgow, Scotland", "Thurso, Scotland", "Kuala Lumpur, Malaysia"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ25",
-            "topic": "Citizenship",
-            "question": "How many states are there in Malaysia?",
-            "options": ["11", "12", "13", "14"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ26",
-            "topic": "Camping Knowledge",
-            "question": "If you are lost in the woods, what is the best thing to do?",
-            "options": ["Run as fast as you can", "Stay in one place and blow a whistle for help", "Climb a tree and stay there forever", "Hide under leaves"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ27",
-            "topic": "BB Traditions",
-            "question": "Who is the 'Patron' of the Boys' Brigade in Malaysia?",
-            "options": ["The Prime Minister", "The Yang di-Pertuan Agong", "The Minister of Youth and Sports", "The Chief Minister"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ28",
-            "topic": "BB Uniforms",
-            "question": "What should you use to polish the metal parts of your uniform?",
-            "options": ["Water only", "Metal polish (e.g., Brasso)", "Sandpaper", "Ink"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ29",
-            "topic": "2026 Current Issues",
-            "question": "In early 2026, Malaysia introduced a new 'Digital ID'. What is it primarily for?",
-            "options": ["To play video games", "To verify identity online safely", "To replace the physical passport", "To buy groceries for free"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ30",
-            "topic": "Camping Knowledge",
-            "question": "Which of these is a 'Basic First Aid' item for camping?",
-            "options": ["Antiseptic cream and bandages", "A comic book", "A bag of chips", "A toy car"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ31",
-            "topic": "History",
-            "question": "In which country did the Boys' Brigade start?",
-            "options": ["USA", "Scotland", "Australia", "China"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ32",
-            "topic": "BB Traditions",
-            "question": "What is the meaning of the word 'SURE' in the BB motto?",
-            "options": ["Fast", "Reliable and Certain", "Loud", "Brave"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ33",
-            "topic": "BB Uniforms",
-            "question": "What is the correct way to wear your BB cap?",
-            "options": ["Facing backwards", "Tilted to the right, two fingers above the eyebrow", "Covering your eyes", "Hanging on your belt"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ34",
-            "topic": "Citizenship",
-            "question": "Which of these is NOT a color on the Malaysian flag?",
-            "options": ["Red", "Blue", "Green", "Yellow"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ35",
-            "topic": "2026 Current Issues",
-            "question": "Which major public holiday occurs around March/April in 2026?",
-            "options": ["Hari Raya Aidilfitri", "Deepavali", "Christmas", "National Day"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ36",
-            "topic": "Camping Knowledge",
-            "question": "What is a 'Groundsheet' used for?",
-            "options": ["To cover your head", "To place under the tent to keep it dry", "To use as a towel", "To wrap around food"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ37",
-            "topic": "BB Traditions",
-            "question": "What is the BB 'Company'?",
-            "options": ["A business that sells shoes", "The basic unit or group of the Boys' Brigade", "A movie studio", "A type of car"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ38",
-            "topic": "History",
-            "question": "What was the occupation of Sir William Alexander Smith before starting BB?",
-            "options": ["A chef", "A volunteer soldier and businessman", "A pilot", "A doctor"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ39",
-            "topic": "Citizenship",
-            "question": "What is the national language of Malaysia?",
-            "options": ["English", "Bahasa Melayu", "Mandarin", "Tamil"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ40",
-            "topic": "Camping Knowledge",
-            "question": "Which tool is used to find directions (North, South, East, West)?",
-            "options": ["A Ruler", "A Compass", "A Thermometer", "A Magnifying glass"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ41",
-            "topic": "BB Uniforms",
-            "question": "When should you wear your full BB uniform?",
-            "options": ["Only when sleeping", "During parades and official BB meetings", "Only during swimming", "When playing football with friends"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ42",
-            "topic": "2026 Current Issues",
-            "question": "What is the main currency used in Malaysia?",
-            "options": ["Dollar", "Ringgit (MYR)", "Baht", "Rupiah"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ43",
-            "topic": "BB Traditions",
-            "question": "What does the 'B.B.' stand for?",
-            "options": ["Bad Boys", "Best Buddies", "Boys' Brigade", "Brave Boys"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ44",
-            "topic": "History",
-            "question": "How many Boys attended the very first BB meeting in 1883?",
-            "options": ["5", "12", "28", "100"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ45",
-            "topic": "Citizenship",
-            "question": "Which state in Malaysia is known as the 'Land of the Hornbills'?",
-            "options": ["Sabah", "Sarawak", "Penang", "Perak"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ46",
-            "topic": "Camping Knowledge",
-            "question": "Why do we use a 'Whistle' during a hike?",
-            "options": ["To play music", "To signal for help if lost", "To scare away birds", "To wake up friends"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ47",
-            "topic": "BB Uniforms",
-            "question": "What color are the socks usually worn with the BB Junior uniform?",
-            "options": ["Bright red", "White", "Dark blue or black", "Pink"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ48",
-            "topic": "Citizenship",
-            "question": "Which city is the administrative center of the Malaysian government?",
-            "options": ["Ipoh", "Putrajaya", "Miri", "Sandakan"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ49",
-            "topic": "BB Traditions",
-            "question": "What is the 'Fall In' command used for?",
-            "options": ["To tell everyone to go home", "To ask the squad to form a line and get ready", "To ask everyone to sit down", "To tell a joke"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ50",
-            "topic": "Camping Knowledge",
-            "question": "What is the most important rule for the 'Campfire'?",
-            "options": ["Keep it as big as a house", "Never leave it unattended and put it out completely", "Throw plastic bottles into it", "Use it to dry your wet shoes inside the fire"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ51",
-            "topic": "History",
-            "question": "What was the name of the very first Boys' Brigade Company formed in 1883?",
-            "options": ["1st London", "1st Glasgow", "1st Edinburgh", "1st Wales"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ52",
-            "topic": "History",
-            "question": "Before founding the BB, Sir William Alexander Smith was a volunteer in which army?",
-            "options": ["Royal Navy", "1st Lanarkshire Rifle Volunteers", "Air Force", "Cavalry"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ53",
-            "topic": "History",
-            "question": "In which month do BB members worldwide usually celebrate Founder's Day?",
-            "options": ["January", "April", "October", "December"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ54",
-            "topic": "History",
-            "question": "Who was the first Patron of the Boys' Brigade?",
-            "options": ["King George VI", "Queen Victoria", "King Edward VII", "Prince Albert"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ55",
-            "topic": "History",
-            "question": "Which of these is known as the 'Twin Pillars' of the Boys' Brigade?",
-            "options": ["Sports and Study", "Religion and Discipline", "Singing and Marching", "Camping and Hiking"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ56",
-            "topic": "BB Traditions",
-            "question": "What is the primary 'Object' of the Boys' Brigade?",
-            "options": ["To play games", "The advancement of Christ's kingdom among Boys", "To learn how to cook", "To go camping every week"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ57",
-            "topic": "BB Traditions",
-            "question": "Which book of the Bible is the motto 'Sure & Stedfast' taken from?",
-            "options": ["Genesis", "Psalms", "Hebrews", "Revelation"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ58",
-            "topic": "BB Traditions",
-            "question": "What is the name of the song usually sung at the end of a BB meeting?",
-            "options": ["The BB March", "The BB Vesper", "The National Anthem", "Happy Birthday"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ59",
-            "topic": "BB Traditions",
-            "question": "During BB week, what do Boys usually do to raise funds for their Company?",
-            "options": ["Sell cars", "Distribute donation cards and do chores", "Stay at home", "Ask the school for money"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ60",
-            "topic": "BB Traditions",
-            "question": "What is the correct response when an Officer calls your name during roll call?",
-            "options": ["Hello!", "Present, Sir/Ma'am!", "I am here!", "Yes!"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ61",
-            "topic": "Uniforms & Awards",
-            "question": "What is the correct age group for the Junior Section in Malaysia?",
-            "options": ["6 to 8 years old", "9 to 12 years old", "13 to 19 years old", "20 and above"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ62",
-            "topic": "Uniforms & Awards",
-            "question": "What color is the standard BB Junior Section shirt?",
-            "options": ["Red", "Navy Blue", "White", "Green"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ63",
-            "topic": "Uniforms & Awards",
-            "question": "Where should the Junior Section name tag be placed on the uniform?",
-            "options": ["Above the right pocket", "On the collar", "On the left sleeve", "On the back"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ64",
-            "topic": "Uniforms & Awards",
-            "question": "Which badge is awarded for knowing the history of the BB and the Company?",
-            "options": ["Target Badge", "Service Badge", "Recruit Badge", "Gold Award"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ65",
-            "topic": "Uniforms & Awards",
-            "question": "What footwear is strictly required when wearing the full BB ceremonial uniform?",
-            "options": ["Sports shoes", "Sandals", "Polished black laced shoes", "Boots"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ66",
-            "topic": "Uniforms & Awards",
-            "question": "How many years of active membership does a 'One Year Service Badge' represent?",
-            "options": ["1 year", "2 years", "3 years", "5 years"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ67",
-            "topic": "Uniforms & Awards",
-            "question": "What color is the Junior Section's cap?",
-            "options": ["White", "Navy Blue with white lines", "Black", "Red"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ68",
-            "topic": "Uniforms & Awards",
-            "question": "Which part of the uniform requires the use of 'Brasso' or metal polish to keep it shiny?",
-            "options": ["The shirt buttons", "The cloth badge", "The belt buckle and cap badge", "The shoelaces"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ69",
-            "topic": "Uniforms & Awards",
-            "question": "Who is allowed to wear an Officer's cap (peaked cap)?",
-            "options": ["Any Junior boy", "A Corporal", "A Lieutenant or Captain", "A recruit"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ70",
-            "topic": "Uniforms & Awards",
-            "question": "In the Junior Section, can a boy earn the 'President's Badge'?",
-            "options": ["Yes, anytime", "No, it is only for the Senior Section", "Only if he is the best boy", "Yes, if he pays for it"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ71",
-            "topic": "Citizenship",
-            "question": "Which is the longest river in Malaysia?",
-            "options": ["Kinabatangan River", "Pahang River", "Rajang River", "Klang River"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ72",
-            "topic": "Citizenship",
-            "question": "What is the capital city of Sarawak?",
-            "options": ["Sibu", "Miri", "Kuching", "Bintulu"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ73",
-            "topic": "Citizenship",
-            "question": "The Rukun Negara has how many principles?",
-            "options": ["3", "4", "5", "6"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ74",
-            "topic": "Citizenship",
-            "question": "What animal is depicted on the national emblem (Jata Negara) holding the shield?",
-            "options": ["Hornbill", "Malayan Tiger", "Orangutan", "Elephant"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ75",
-            "topic": "Citizenship",
-            "question": "What does the 14-point star on the Malaysian flag represent?",
-            "options": ["14 states and federal territories", "14 Prime Ministers", "14 rivers", "14 mountains"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ76",
-            "topic": "Citizenship",
-            "question": "On what date do we celebrate Malaysia Day?",
-            "options": ["31 August", "16 September", "1 May", "25 December"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ77",
-            "topic": "Citizenship",
-            "question": "What is the official title of the Head of State of Malaysia?",
-            "options": ["Prime Minister", "President", "Yang di-Pertuan Agong", "Chief Minister"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ78",
-            "topic": "Citizenship",
-            "question": "What is the national language of Malaysia?",
-            "options": ["English", "Tamil", "Mandarin", "Bahasa Melayu"],
-            "correct_index": 3
-        },
-        {
-            "id": "JQ79",
-            "topic": "Citizenship",
-            "question": "Which state in Malaysia does NOT have a Sultan?",
-            "options": ["Johor", "Pahang", "Penang", "Selangor"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ80",
-            "topic": "Citizenship",
-            "question": "What is the meaning of the dark blue square on the Malaysian flag?",
-            "options": ["The deep ocean", "Unity of the people of Malaysia", "The royal family", "The sky"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ81",
-            "topic": "Camping Knowledge",
-            "question": "If you hear 3 short blasts on a whistle during a camp, what does it usually mean?",
-            "options": ["Time to eat", "Time to sleep", "Emergency / SOS", "Start playing games"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ82",
-            "topic": "Camping Knowledge",
-            "question": "Why should you never eat wild mushrooms or berries found in the forest?",
-            "options": ["They taste bad", "They might be poisonous", "They belong to the animals", "They are too dirty"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ83",
-            "topic": "Camping Knowledge",
-            "question": "What is the 'Buddy System' in camping?",
-            "options": ["Bringing a soft toy", "Always having a partner with you for safety", "Sleeping in the same sleeping bag", "Sharing all your food"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ84",
-            "topic": "Camping Knowledge",
-            "question": "When setting up a tent, what do we use to secure the ropes to the ground?",
-            "options": ["Heavy books", "Tent pegs", "Water bottles", "Shoes"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ85",
-            "topic": "Camping Knowledge",
-            "question": "What is the most important rule before you sleep inside a tent?",
-            "options": ["Zip the tent door completely closed to keep insects out", "Leave the door open for fresh air", "Keep your shoes inside the sleeping bag", "Turn on all the lights"],
-            "correct_index": 0
-        },
-        {
-            "id": "JQ86",
-            "topic": "Camping Knowledge",
-            "question": "Which item is NOT suitable to put inside a camp First Aid Kit?",
-            "options": ["Band-aids", "Antiseptic cream", "Chocolate bars", "Cotton wool"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ87",
-            "topic": "Camping Knowledge",
-            "question": "What should you do with your rubbish when the camp is over?",
-            "options": ["Bury it in the sand", "Throw it in the river", "Leave it near the tent", "Pack it in a trash bag and take it to a proper bin"],
-            "correct_index": 3
-        },
-        {
-            "id": "JQ88",
-            "topic": "Camping Knowledge",
-            "question": "Why do we build a small ditch (trench) around the tent?",
-            "options": ["To catch fish", "To prevent rain water from flowing into the tent", "To trap insects", "To plant flowers"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ89",
-            "topic": "Camping Knowledge",
-            "question": "What is a 'Groundsheet'?",
-            "options": ["A map of the ground", "A waterproof mat placed under or inside the tent", "A blanket for sleeping", "A towel for showering"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ90",
-            "topic": "Camping Knowledge",
-            "question": "If your clothes catch on fire, what is the golden rule you must follow?",
-            "options": ["Run very fast", "Stop, Drop, and Roll", "Jump up and down", "Blow on it"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ91",
-            "topic": "2026 Current Issues",
-            "question": "What is the general emergency hotline number to call police or ambulance in Malaysia?",
-            "options": ["911", "999", "112", "994"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ92",
-            "topic": "2026 Current Issues",
-            "question": "To prevent Dengue fever, we must stop the breeding of which mosquito?",
-            "options": ["Anopheles", "Culex", "Aedes", "Tiger mosquito"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ93",
-            "topic": "2026 Current Issues",
-            "question": "What does a green recycling bin typically collect in Malaysia?",
-            "options": ["Glass", "Paper", "Plastics and Aluminum", "Food waste"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ94",
-            "topic": "2026 Current Issues",
-            "question": "When using a zebra crossing, what must you do before crossing?",
-            "options": ["Run quickly", "Look right, look left, and look right again", "Close your eyes", "Walk while looking at your phone"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ95",
-            "topic": "2026 Current Issues",
-            "question": "In 2026, many schools promote 'Digital Etiquette'. Which of these is a bad digital habit?",
-            "options": ["Asking permission before posting a friend's photo", "Cyberbullying or writing mean comments online", "Setting strong passwords", "Limiting screen time"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ96",
-            "topic": "2026 Current Issues",
-            "question": "What is the safest way to travel in a moving car?",
-            "options": ["Standing on the seat", "Putting your head out the window", "Sitting quietly and wearing a seatbelt", "Playing with the door handle"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ97",
-            "topic": "2026 Current Issues",
-            "question": "Which of the following is a good habit for conserving water at home?",
-            "options": ["Leaving the tap running while brushing teeth", "Taking 1-hour long showers", "Turning off the tap when applying soap", "Playing with the garden hose daily"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ98",
-            "topic": "2026 Current Issues",
-            "question": "What should you do if a stranger offers you free food or a ride home?",
-            "options": ["Say thank you and follow them", "Politely refuse, walk away quickly, and tell a trusted adult", "Ask them for money too", "Get into their car to see where they go"],
-            "correct_index": 1
-        },
-        {
-            "id": "JQ99",
-            "topic": "2026 Current Issues",
-            "question": "In the food pyramid, which type of food should we eat the least of to stay healthy?",
-            "options": ["Fruits and vegetables", "Rice and bread", "Sweets, fats, and sugary drinks", "Fish and chicken"],
-            "correct_index": 2
-        },
-        {
-            "id": "JQ100",
-            "topic": "2026 Current Issues",
-            "question": "If you find a wallet on the street with money and an ID card, what is the right thing to do as a BB member?",
-            "options": ["Keep the money and throw the wallet away", "Leave it there", "Hand it over to a police station or a trusted adult", "Buy snacks with the money"],
-            "correct_index": 2
-        }
+            {"id": "JQ01", "topic": "History (历史)", "question": "Who is the founder of the Boys' Brigade? (谁是男少年军的创办人？)", "options": ["Lord Baden-Powell (贝登堡勋爵)", "Sir William Alexander Smith (威廉·亚历山大·史密斯爵士)", "Henry Dunant (亨利·杜南)", "George Williams (乔治·威廉斯)"], "correct_index": 1},
+            {"id": "JQ02", "topic": "History (历史)", "question": "In which year was the Boys' Brigade founded? (男少年军是在哪一年创办的？)", "options": ["1883", "1908", "1946", "1850"], "correct_index": 0},
+            {"id": "JQ03", "topic": "BB Malaysia & Asia (大马与亚洲男少年军)", "question": "Where was the first Boys' Brigade Company in Malaysia formed? (马来西亚第一支男少年军是在哪里成立的？)", "options": ["Kuala Lumpur (吉隆坡)", "Kuching (古晋)", "Penang (槟城)", "Johor Bahru (新山)"], "correct_index": 2},
+            {"id": "JQ04", "topic": "BB Traditions (传统)", "question": "What is the official motto of the Boys' Brigade? (男少年军的官方座右铭是什么？)", "options": ["Be Prepared (时刻准备)", "Sure & Stedfast (坚固牢靠)", "Serve to Lead (服务领导)", "Always Ready (时刻准备)"], "correct_index": 1},
+            {"id": "JQ05", "topic": "BB Uniforms (制服)", "question": "What is the main symbol featured on the Boys' Brigade crest? (男少年军徽章上的主要标志是什么？)", "options": ["A shield (盾牌)", "A sword (剑)", "An anchor (锚)", "A star (星星)"], "correct_index": 2},
+            {"id": "JQ06", "topic": "Citizenship (公民常识)", "question": "What is the national flower of Malaysia? (马来西亚的国花是什么？)", "options": ["Orchid (胡姬花)", "Rose (玫瑰)", "Hibiscus / Bunga Raya (大红花)", "Sunflower (向日葵)"], "correct_index": 2},
+            {"id": "JQ07", "topic": "Citizenship (公民常识)", "question": "How many stripes are there on the Malaysian flag (Jalur Gemilang)? (马来西亚国旗「辉煌条纹」上有多少条条纹？)", "options": ["11", "13", "14", "15"], "correct_index": 2},
+            {"id": "JQ08", "topic": "2026 Current Issues (2026时事)", "question": "What major national campaign is Malaysia actively running in the year 2026 to boost the country's economy? (马来西亚在2026年积极开展哪项国家级运动以促进经济？)", "options": ["Visit Malaysia 2026 (2026大马旅游年)", "Malaysia Boleh 2026 (2026大马能)", "Wawasan 2026 (2026宏愿)", "Green Malaysia 2026 (2026绿色大马)"], "correct_index": 0},
+            {"id": "JQ09", "topic": "Camping Knowledge (露营常识)", "question": "Which of the following is the safest and best place to pitch a camping tent? (以下哪个是搭建露营帐篷最安全和最好的地方？)", "options": ["Under a very tall, old tree with dead branches (有枯枝的参天老树下)", "On flat, dry ground away from river edges (远离河边的平坦干燥地面)", "Right next to a campfire (紧挨着营火)", "At the bottom of a steep hill (陡峭山丘的底部)"], "correct_index": 1},
+            {"id": "JQ10", "topic": "Camping Knowledge (露营常识)", "question": "What is the most important item to bring on a camping trip to ensure you stay safely hydrated? (在露营旅行中，确保安全补充水分最重要携带的物品是什么？)", "options": ["A compass (指南针)", "Clean drinking water (干净的饮用水)", "A flashlight (手电筒)", "A sleeping bag (睡袋)"], "correct_index": 1},
+            {"id": "JQ11", "topic": "BB Traditions (传统)", "question": "What should a Boys' Brigade member do when the national anthem is played? (当播放国歌时，男少年军成员应该怎么做？)", "options": ["Sit down quietly (安静坐下)", "Stand at attention (立正站好)", "Keep walking (继续走动)", "Talk to friends (和朋友聊天)"], "correct_index": 1},
+            {"id": "JQ12", "topic": "History (历史)", "question": "In which city was the Boys' Brigade first started? (男少年军最初是在哪个城市创立的？)", "options": ["London (伦敦)", "Glasgow (格拉斯哥)", "Edinburgh (爱丁堡)", "Manchester (曼彻斯特)"], "correct_index": 1},
+            {"id": "JQ13", "topic": "BB Uniforms (制服)", "question": "Where is the Boys' Brigade badge worn on the Junior uniform? (在初级组制服上，男少年军徽章佩戴在哪里？)", "options": ["On the left chest (左胸)", "On the right sleeve (右袖)", "On the belt (腰带上)", "On the cap (帽子上)"], "correct_index": 0},
+            {"id": "JQ14", "topic": "Citizenship (公民常识)", "question": "What is the capital city of Malaysia? (马来西亚的冷首都是哪个城市？)", "options": ["Putrajaya (布城)", "Kuala Lumpur (吉隆坡)", "George Town (乔治市)", "Malacca City (马六甲市)"], "correct_index": 1},
+            {"id": "JQ15", "topic": "2026 Current Issues (2026时事)", "question": "Which major public transport line in the Klang Valley is focusing on expansion in 2026? (巴生谷的哪条主要公共交通线路在2026年正专注于扩建？)", "options": ["KTM Komuter (电动火车)", "Monorail (单轨火车)", "MRT 3 (捷运3号线)", "BRT (快捷巴士)"], "correct_index": 2},
+            {"id": "JQ16", "topic": "Camping Knowledge (露营常识)", "question": "What is the basic knot used to tie a bandage for first aid during a camp? (在露营急救中，用来绑绷带的基本绳结是什么？)", "options": ["Reef Knot (平结)", "Clove Hitch (双套结)", "Bowline (称人结)", "Figure of Eight (八字结)"], "correct_index": 0},
+            {"id": "JQ17", "topic": "BB Traditions (传统)", "question": "What is the main objective of the Boys' Brigade? (男少年军的主要宗旨是什么？)", "options": ["To learn how to fight (学习如何战斗)", "The advancement of Christ's kingdom among Boys (在少年人中扩展基督的国度)", "To go on holidays (去度假)", "To earn money (赚钱)"], "correct_index": 1},
+            {"id": "JQ18", "topic": "BB Malaysia & Asia (大马与亚洲男少年军)", "question": "Who started the first Boys' Brigade company in Malaysia? (谁在马来西亚创立了第一支男少年军分队？)", "options": ["Robert Davis (罗伯特·戴维斯)", "William Smith (威廉·史密斯)", "James Fraser (詹姆斯·弗雷泽)", "John Wesley (约翰·卫斯理)"], "correct_index": 0},
+            {"id": "JQ19", "topic": "BB Uniforms (制服)", "question": "Which color is NOT part of the traditional Boys' Brigade uniform? (哪种颜色不属于传统的男少年军制服？)", "options": ["Navy Blue (海军蓝)", "White (白色)", "Neon Green (荧光绿)", "Silver (银色)"], "correct_index": 2},
+            {"id": "JQ20", "topic": "Camping Knowledge (露营常识)", "question": "Why is it important to keep your campsite clean before leaving? (为什么在离开前保持营地清洁很重要？)", "options": ["To protect the environment and wildlife (保护环境和野生动物)", "To make sure nobody else can use it (确保其他人不能使用)", "To practice sweeping (练习扫地)", "To hide from animals (躲避动物)"], "correct_index": 0},
+            {"id": "JQ21", "topic": "BB Uniforms (制服)", "question": "Which award is the highest achievement for a Junior Section member? (哪项奖章是初级组组员的最高成就？)", "options": ["One Year Service Badge (一年服务奖章)", "Gold Award (金章)", "Target Badge (目标奖章)", "Bronze Award (铜章)"], "correct_index": 1},
+            {"id": "JQ22", "topic": "2026 Current Issues (2026时事)", "question": "Which state in Malaysia is known for its 'Gateway to Borneo' campaign in early 2026? (马来西亚哪个州在2026年初以“婆罗洲门户”活动而闻名？)", "options": ["Selangor (雪兰莪)", "Sarawak (砂拉越)", "Pahang (彭亨)", "Perlis (玻璃市)"], "correct_index": 1},
+            {"id": "JQ23", "topic": "BB Traditions (传统)", "question": "What is the 'BB Vesper'? (什么是「BB Vesper」？)", "options": ["A type of food (一种食物)", "A closing song/prayer (一首闭会诗歌/祷告)", "A game (一个游戏)", "A uniform part (制服的一部分)"], "correct_index": 1},
+            {"id": "JQ24", "topic": "History (历史)", "question": "Where was Sir William Alexander Smith born? (威廉·亚历山大·史密斯爵士出生在哪里？)", "options": ["London, England (英格兰伦敦)", "Glasgow, Scotland (苏格兰格拉斯哥)", "Thurso, Scotland (苏格兰瑟索)", "Kuala Lumpur, Malaysia (马来西亚吉隆坡)"], "correct_index": 2},
+            {"id": "JQ25", "topic": "Citizenship (公民常识)", "question": "How many states are there in Malaysia? (马来西亚有多少个州？)", "options": ["11", "12", "13", "14"], "correct_index": 2},
+            {"id": "JQ26", "topic": "Camping Knowledge (露营常识)", "question": "If you are lost in the woods, what is the best thing to do? (如果你在树林里迷路了，最好的做法是什么？)", "options": ["Run as fast as you can (尽全力奔跑)", "Stay in one place and blow a whistle for help (留在原地并吹哨子求救)", "Climb a tree and stay there forever (爬上树永远待在上面)", "Hide under leaves (躲在树叶下)"], "correct_index": 1},
+            {"id": "JQ27", "topic": "BB Traditions (传统)", "question": "Who is the 'Patron' of the Boys' Brigade in Malaysia? (谁是马来西亚男少年军的「赞助人」？)", "options": ["The Prime Minister (首相)", "The Yang di-Pertuan Agong (最高元首)", "The Minister of Youth and Sports (青年及体育部长)", "The Chief Minister (首席部长)"], "correct_index": 1},
+            {"id": "JQ28", "topic": "BB Uniforms (制服)", "question": "What should you use to polish the metal parts of your uniform? (你应该用什么来擦亮制服上的金属部分？)", "options": ["Water only (只用水)", "Metal polish e.g. Brasso (金属抛光剂 如 Brasso)", "Sandpaper (砂纸)", "Ink (墨水)"], "correct_index": 1},
+            {"id": "JQ29", "topic": "2026 Current Issues (2026时事)", "question": "In early 2026, Malaysia introduced a new 'Digital ID'. What is it primarily for? (在2026年初，马来西亚推出了新的“数字身份证”。它主要用于什么？)", "options": ["To play video games (玩电子游戏)", "To verify identity online safely (安全地在线验证身份)", "To replace the physical passport (取代实体护照)", "To buy groceries for free (免费买日用品)"], "correct_index": 1},
+            {"id": "JQ30", "topic": "Camping Knowledge (露营常识)", "question": "Which of these is a 'Basic First Aid' item for camping? (以下哪项是露营的「基本急救」物品？)", "options": ["Antiseptic cream and bandages (抗菌药膏和绷带)", "A comic book (一本漫画书)", "A bag of chips (一包薯片)", "A toy car (一辆玩具车)"], "correct_index": 0},
+            {"id": "JQ31", "topic": "History (历史)", "question": "In which country did the Boys' Brigade start? (男少年军是在哪个国家开始的？)", "options": ["USA (美国)", "Scotland (苏格兰)", "Australia (澳洲)", "China (中国)"], "correct_index": 1},
+            {"id": "JQ32", "topic": "BB Traditions (传统)", "question": "What is the meaning of the word 'SURE' in the BB motto? (男少年军座右铭中的“SURE”是什么意思？)", "options": ["Fast (快速)", "Reliable and Certain (可靠与肯定)", "Loud (大声)", "Brave (勇敢)"], "correct_index": 1},
+            {"id": "JQ33", "topic": "BB Uniforms (制服)", "question": "What is the correct way to wear your BB cap? (佩戴男少年军帽子的正确方法是什么？)", "options": ["Facing backwards (反戴)", "Tilted to the right, two fingers above the eyebrow (向右倾斜，眉毛上方两指宽)", "Covering your eyes (遮住眼睛)", "Hanging on your belt (挂在腰带上)"], "correct_index": 1},
+            {"id": "JQ34", "topic": "Citizenship (公民常识)", "question": "Which of these is NOT a color on the Malaysian flag? (以下哪种不是马来西亚国旗上的颜色？)", "options": ["Red (红色)", "Blue (蓝色)", "Green (绿色)", "Yellow (黄色)"], "correct_index": 2},
+            {"id": "JQ35", "topic": "2026 Current Issues (2026时事)", "question": "Which major public holiday occurs around March/April in 2026? (在2026年的3月或4月左右，会迎来哪个重要的公共假期？)", "options": ["Hari Raya Aidilfitri (开斋节)", "Deepavali (屠妖节)", "Christmas (圣诞节)", "National Day (国庆日)"], "correct_index": 0},
+            {"id": "JQ36", "topic": "Camping Knowledge (露营常识)", "question": "What is a 'Groundsheet' used for? (「防潮垫」是用来做什么的？)", "options": ["To cover your head (盖住头)", "To place under the tent to keep it dry (垫在帐篷下保持干燥)", "To use as a towel (当毛巾用)", "To wrap around food (包住食物)"], "correct_index": 1},
+            {"id": "JQ37", "topic": "BB Traditions (传统)", "question": "What is the BB 'Company'? (什么是男少年军的「分队」？)", "options": ["A business that sells shoes (一家卖鞋的公司)", "The basic unit or group of the Boys' Brigade (男少年军的基本单位或群体)", "A movie studio (一家电影制片厂)", "A type of car (一种汽车)"], "correct_index": 1},
+            {"id": "JQ38", "topic": "History (历史)", "question": "What was the occupation of Sir William Alexander Smith before starting BB? (威廉·亚历山大·史密斯爵士在创办男少年军之前的职业是什么？)", "options": ["A chef (厨师)", "A volunteer soldier and businessman (志愿军人和商人)", "A pilot (飞行员)", "A doctor (医生)"], "correct_index": 1},
+            {"id": "JQ39", "topic": "Citizenship (公民常识)", "question": "What is the national language of Malaysia? (马来西亚的国语是什么？)", "options": ["English (英语)", "Bahasa Melayu (马来语)", "Mandarin (华语)", "Tamil (淡米尔语)"], "correct_index": 1},
+            {"id": "JQ40", "topic": "Camping Knowledge (露营常识)", "question": "Which tool is used to find directions (North, South, East, West)? (什么工具用来寻找方向「北、南、东、西」？)", "options": ["A Ruler (尺)", "A Compass (指南针)", "A Thermometer (温度计)", "A Magnifying glass (放大镜)"], "correct_index": 1},
+            {"id": "JQ41", "topic": "BB Uniforms (制服)", "question": "When should you wear your full BB uniform? (你什么时候应该穿上完整的男少年军制服？)", "options": ["Only when sleeping (只有睡觉时)", "During parades and official BB meetings (游行和正式的男少年军集会时)", "Only during swimming (只有游泳时)", "When playing football with friends (和朋友踢足球时)"], "correct_index": 1},
+            {"id": "JQ42", "topic": "2026 Current Issues (2026时事)", "question": "What is the main currency used in Malaysia? (马来西亚使用的主要货币是什么？)", "options": ["Dollar (美元)", "Ringgit MYR (令吉)", "Baht (泰铢)", "Rupiah (印尼盾)"], "correct_index": 1},
+            {"id": "JQ43", "topic": "BB Traditions (传统)", "question": "What does the 'B.B.' stand for? (「B.B.」代表什么？)", "options": ["Bad Boys (坏男孩)", "Best Buddies (好朋友)", "Boys' Brigade (男少年军)", "Brave Boys (勇敢的男孩)"], "correct_index": 2},
+            {"id": "JQ44", "topic": "History (历史)", "question": "How many Boys attended the very first BB meeting in 1883? (有多少名男孩参加了1883年的第一次男少年军集会？)", "options": ["5", "12", "28", "100"], "correct_index": 2},
+            {"id": "JQ45", "topic": "Citizenship (公民常识)", "question": "Which state in Malaysia is known as the 'Land of the Hornbills'? (马来西亚的哪个州被称为「犀鸟之乡」？)", "options": ["Sabah (沙巴)", "Sarawak (砂拉越)", "Penang (槟城)", "Perak (霹雳)"], "correct_index": 1},
+            {"id": "JQ46", "topic": "Camping Knowledge (露营常识)", "question": "Why do we use a 'Whistle' during a hike? (为什么我们在远足时要使用「哨子」？)", "options": ["To play music (吹奏音乐)", "To signal for help if lost (如果迷路了用来发信号求救)", "To scare away birds (吓跑鸟类)", "To wake up friends (叫醒朋友)"], "correct_index": 1},
+            {"id": "JQ47", "topic": "BB Uniforms (制服)", "question": "What color are the socks usually worn with the BB Junior uniform? (初级组制服通常搭配什么颜色的袜子？)", "options": ["Bright red (亮红色)", "White (白色)", "Dark blue or black (深蓝色或黑色)", "Pink (粉色)"], "correct_index": 2},
+            {"id": "JQ48", "topic": "Citizenship (公民常识)", "question": "Which city is the administrative center of the Malaysian government? (哪个城市是马来西亚政府的行政中心？)", "options": ["Ipoh (怡保)", "Putrajaya (布城)", "Miri (美里)", "Sandakan (山打根)"], "correct_index": 1},
+            {"id": "JQ49", "topic": "BB Traditions (传统)", "question": "What is the 'Fall In' command used for? (「Fall In / 集合」的口令是用来做什么的？)", "options": ["To tell everyone to go home (叫大家回家)", "To ask the squad to form a line and get ready (要求小队排成一排并准备好)", "To ask everyone to sit down (叫大家坐下)", "To tell a joke (讲笑话)"], "correct_index": 1},
+            {"id": "JQ50", "topic": "Camping Knowledge (露营常识)", "question": "What is the most important rule for the 'Campfire'? (关于「营火」最重要的一条规则是什么？)", "options": ["Keep it as big as a house (让它像房子一样大)", "Never leave it unattended and put it out completely (绝不让它无人看管，并在最后彻底扑灭)", "Throw plastic bottles into it (把塑料瓶扔进去)", "Use it to dry your wet shoes inside the fire (把湿鞋子放进火里烤干)"], "correct_index": 1},
+            {"id": "JQ51", "topic": "History (历史)", "question": "What was the name of the very first Boys' Brigade Company formed in 1883? (1883年成立的第一支男少年军分队名称是什么？)", "options": ["1st London (伦敦第1分队)", "1st Glasgow (格拉斯哥第1分队)", "1st Edinburgh (爱丁堡第1分队)", "1st Wales (威尔士第1分队)"], "correct_index": 1},
+            {"id": "JQ52", "topic": "History (历史)", "question": "Before founding the BB, Sir William Alexander Smith was a volunteer in which army? (在创立男少年军之前，威廉·亚历山大·史密斯爵士在哪支军队做志愿兵？)", "options": ["Royal Navy (皇家海军)", "1st Lanarkshire Rifle Volunteers (第一拉纳克郡步枪志愿军)", "Air Force (空军)", "Cavalry (骑兵队)"], "correct_index": 1},
+            {"id": "JQ53", "topic": "History (历史)", "question": "In which month do BB members worldwide usually celebrate Founder's Day? (世界各地的男少年军成员通常在几个月庆祝创办人日？)", "options": ["January (一月)", "April (四月)", "October (十月)", "December (十二月)"], "correct_index": 2},
+            {"id": "JQ54", "topic": "History (历史)", "question": "Who was the first Patron of the Boys' Brigade? (谁是男少年军的第一位赞助人？)", "options": ["King George VI (乔治六世国王)", "Queen Victoria (维多利亚女王)", "King Edward VII (爱德华七世国王)", "Prince Albert (阿尔伯特亲王)"], "correct_index": 2},
+            {"id": "JQ55", "topic": "History (历史)", "question": "Which of these is known as the 'Twin Pillars' of the Boys' Brigade? (以下哪项被称为男少年军的「两大支柱」？)", "options": ["Sports and Study (运动与学习)", "Religion and Discipline (宗教与纪律)", "Singing and Marching (唱歌与步操)", "Camping and Hiking (露营与远足)"], "correct_index": 1},
+            {"id": "JQ56", "topic": "BB Traditions (传统)", "question": "What is the primary 'Object' of the Boys' Brigade? (男少年军的主要「宗旨」是什么？)", "options": ["To play games (玩游戏)", "The advancement of Christ's kingdom among Boys (在少年人中扩展基督的国度)", "To learn how to cook (学习烹饪)", "To go camping every week (每周去露营)"], "correct_index": 1},
+            {"id": "JQ57", "topic": "BB Traditions (传统)", "question": "Which book of the Bible is the motto 'Sure & Stedfast' taken from? (「坚固牢靠」的座右铭取自圣经的哪一卷书？)", "options": ["Genesis (创世纪)", "Psalms (诗篇)", "Hebrews (希伯来书)", "Revelation (启示录)"], "correct_index": 2},
+            {"id": "JQ58", "topic": "BB Traditions (传统)", "question": "What is the name of the song usually sung at the end of a BB meeting? (通常在男少年军集会结束时唱的歌叫什么名字？)", "options": ["The BB March (男少年军进行曲)", "The BB Vesper (闭会诗歌)", "The National Anthem (国歌)", "Happy Birthday (生日快乐)"], "correct_index": 1},
+            {"id": "JQ59", "topic": "BB Traditions (传统)", "question": "During BB week, what do Boys usually do to raise funds for their Company? (在男少年军周期间，队员们通常做什么来为分队筹款？)", "options": ["Sell cars (卖车)", "Distribute donation cards and do chores (派发捐款卡并做家务)", "Stay at home (待在家里)", "Ask the school for money (向学校要钱)"], "correct_index": 1},
+            {"id": "JQ60", "topic": "BB Traditions (传统)", "question": "What is the correct response when an Officer calls your name during roll call? (在点名时，当军官叫到你的名字，正确的回答是什么？)", "options": ["Hello! (你好！)", "Present, Sir/Ma'am! (到，长官！)", "I am here! (我在这里！)", "Yes! (是！)"], "correct_index": 1},
+            {"id": "JQ61", "topic": "Uniforms & Awards (制服与奖章)", "question": "What is the correct age group for the Junior Section in Malaysia? (在马来西亚，初级组的正确年龄段是什么？)", "options": ["6 to 8 years old (6至8岁)", "9 to 12 years old (9至12岁)", "13 to 19 years old (13至19岁)", "20 and above (20岁及以上)"], "correct_index": 1},
+            {"id": "JQ62", "topic": "Uniforms & Awards (制服与奖章)", "question": "What color is the standard BB Junior Section shirt? (男少年军初级组的标准衬衫是什么颜色？)", "options": ["Red (红色)", "Navy Blue (海军蓝)", "White (白色)", "Green (绿色)"], "correct_index": 1},
+            {"id": "JQ63", "topic": "Uniforms & Awards (制服与奖章)", "question": "Where should the Junior Section name tag be placed on the uniform? (初级组的名牌应该放在制服的哪个位置？)", "options": ["Above the right pocket (右口袋上方)", "On the collar (衣领上)", "On the left sleeve (左袖上)", "On the back (背面上)"], "correct_index": 0},
+            {"id": "JQ64", "topic": "Uniforms & Awards (制服与奖章)", "question": "Which badge is awarded for knowing the history of the BB and the Company? (了解男少年军和分队历史会获得什么奖章？)", "options": ["Target Badge (目标奖章)", "Service Badge (服务奖章)", "Recruit Badge (新兵奖章)", "Gold Award (金章)"], "correct_index": 0},
+            {"id": "JQ65", "topic": "Uniforms & Awards (制服与奖章)", "question": "What footwear is strictly required when wearing the full BB ceremonial uniform? (穿戴完整的男少年军礼服时，严格要求穿什么鞋子？)", "options": ["Sports shoes (运动鞋)", "Sandals (凉鞋)", "Polished black laced shoes (擦亮的黑色系带皮鞋)", "Boots (靴子)"], "correct_index": 2},
+            {"id": "JQ66", "topic": "Uniforms & Awards (制服与奖章)", "question": "How many years of active membership does a 'One Year Service Badge' represent? (「一年服务奖章」代表多少年的活跃会员资格？)", "options": ["1 year (1年)", "2 years (2年)", "3 years (3年)", "5 years (5年)"], "correct_index": 0},
+            {"id": "JQ67", "topic": "Uniforms & Awards (制服与奖章)", "question": "What color is the Junior Section's cap? (初级组的帽子是什么颜色的？)", "options": ["White (白色)", "Navy Blue with white lines (海军蓝带白线)", "Black (黑色)", "Red (红色)"], "correct_index": 1},
+            {"id": "JQ68", "topic": "Uniforms & Awards (制服与奖章)", "question": "Which part of the uniform requires the use of 'Brasso' or metal polish to keep it shiny? (制服的哪个部分需要使用「Brasso」或金属抛光剂来保持光亮？)", "options": ["The shirt buttons (衬衫纽扣)", "The cloth badge (布徽章)", "The belt buckle and cap badge (皮带扣和帽徽)", "The shoelaces (鞋带)"], "correct_index": 2},
+            {"id": "JQ69", "topic": "Uniforms & Awards (制服与奖章)", "question": "Who is allowed to wear an Officer's cap (peaked cap)? (谁被允许戴军官帽「大盘帽」？)", "options": ["Any Junior boy (任何初级组男孩)", "A Corporal (下士)", "A Lieutenant or Captain (中尉或上尉)", "A recruit (新兵)"], "correct_index": 2},
+            {"id": "JQ70", "topic": "Uniforms & Awards (制服与奖章)", "question": "In the Junior Section, can a boy earn the 'President's Badge'? (在初级组中，男孩能获得「会长章」吗？)", "options": ["Yes, anytime (是的，随时)", "No, it is only for the Senior Section (不能，它只适用于高级组)", "Only if he is the best boy (只有当他是最优秀的男孩时才可以)", "Yes, if he pays for it (是的，如果他付钱买的话)"], "correct_index": 1},
+            {"id": "JQ71", "topic": "Citizenship (公民常识)", "question": "Which is the longest river in Malaysia? (马来西亚最长的河流是哪一条？)", "options": ["Kinabatangan River (京那巴当岸河)", "Pahang River (彭亨河)", "Rajang River (拉让江)", "Klang River (巴生河)"], "correct_index": 2},
+            {"id": "JQ72", "topic": "Citizenship (公民常识)", "question": "What is the capital city of Sarawak? (砂拉越的首都是哪个城市？)", "options": ["Sibu (诗巫)", "Miri (美里)", "Kuching (古晋)", "Bintulu (民都鲁)"], "correct_index": 2},
+            {"id": "JQ73", "topic": "Citizenship (公民常识)", "question": "The Rukun Negara has how many principles? (国家原则「Rukun Negara」有多少项原则？)", "options": ["3", "4", "5", "6"], "correct_index": 2},
+            {"id": "JQ74", "topic": "Citizenship (公民常识)", "question": "What animal is depicted on the national emblem (Jata Negara) holding the shield? (国徽上扶着盾牌的是什么动物？)", "options": ["Hornbill (犀鸟)", "Malayan Tiger (马来亚虎)", "Orangutan (红毛猩猩)", "Elephant (大象)"], "correct_index": 1},
+            {"id": "JQ75", "topic": "Citizenship (公民常识)", "question": "What does the 14-point star on the Malaysian flag represent? (马来西亚国旗上的14角星代表什么？)", "options": ["14 states and federal territories (14个州和联邦直辖区)", "14 Prime Ministers (14位首相)", "14 rivers (14条河流)", "14 mountains (14座山)"], "correct_index": 0},
+            {"id": "JQ76", "topic": "Citizenship (公民常识)", "question": "On what date do we celebrate Malaysia Day? (我们在哪一天庆祝马来西亚日？)", "options": ["31 August (8月31日)", "16 September (9月16日)", "1 May (5月1日)", "25 December (12月25日)"], "correct_index": 1},
+            {"id": "JQ77", "topic": "Citizenship (公民常识)", "question": "What is the official title of the Head of State of Malaysia? (马来西亚国家元首的官方头衔是什么？)", "options": ["Prime Minister (首相)", "President (总统)", "Yang di-Pertuan Agong (最高元首)", "Chief Minister (首席部长)"], "correct_index": 2},
+            {"id": "JQ78", "topic": "Citizenship (公民常识)", "question": "What is the national language of Malaysia? (马来西亚的国语是什么？)", "options": ["English (英语)", "Tamil (淡米尔语)", "Mandarin (华语)", "Bahasa Melayu (马来语)"], "correct_index": 3},
+            {"id": "JQ79", "topic": "Citizenship (公民常识)", "question": "Which state in Malaysia does NOT have a Sultan? (马来西亚哪个州没有苏丹？)", "options": ["Johor (柔佛)", "Pahang (彭亨)", "Penang (槟城)", "Selangor (雪兰莪)"], "correct_index": 2},
+            {"id": "JQ80", "topic": "Citizenship (公民常识)", "question": "What is the meaning of the dark blue square on the Malaysian flag? (马来西亚国旗上的深蓝色正方形代表什么？)", "options": ["The deep ocean (深海)", "Unity of the people of Malaysia (马来西亚人民的团结)", "The royal family (王室)", "The sky (天空)"], "correct_index": 1},
+            {"id": "JQ81", "topic": "Camping Knowledge (露营常识)", "question": "If you hear 3 short blasts on a whistle during a camp, what does it usually mean? (如果在露营时听到3声短促的哨声，通常是什么意思？)", "options": ["Time to eat (吃饭时间)", "Time to sleep (睡觉时间)", "Emergency / SOS (紧急情况 / 求救)", "Start playing games (开始玩游戏)"], "correct_index": 2},
+            {"id": "JQ82", "topic": "Camping Knowledge (露营常识)", "question": "Why should you never eat wild mushrooms or berries found in the forest? (为什么绝不应该吃在森林里找到的野生蘑菇或浆果？)", "options": ["They taste bad (它们很难吃)", "They might be poisonous (它们可能有毒)", "They belong to the animals (它们属于动物)", "They are too dirty (它们太脏了)"], "correct_index": 1},
+            {"id": "JQ83", "topic": "Camping Knowledge (露营常识)", "question": "What is the 'Buddy System' in camping? (露营中的「伙伴制度」是什么？)", "options": ["Bringing a soft toy (带一个毛绒玩具)", "Always having a partner with you for safety (为了安全起见，始终有一个同伴在身边)", "Sleeping in the same sleeping bag (睡在同一个睡袋里)", "Sharing all your food (分享所有的食物)"], "correct_index": 1},
+            {"id": "JQ84", "topic": "Camping Knowledge (露营常识)", "question": "When setting up a tent, what do we use to secure the ropes to the ground? (搭帐篷时，我们用什么把绳子固定在地上？)", "options": ["Heavy books (厚重的书)", "Tent pegs (帐篷地钉)", "Water bottles (水瓶)", "Shoes (鞋子)"], "correct_index": 1},
+            {"id": "JQ85", "topic": "Camping Knowledge (露营常识)", "question": "What is the most important rule before you sleep inside a tent? (在帐篷里睡觉前最重要的一条规则是什么？)", "options": ["Zip the tent door completely closed to keep insects out (将帐篷门完全拉上以防止昆虫进入)", "Leave the door open for fresh air (把门打开透气)", "Keep your shoes inside the sleeping bag (把鞋子放在睡袋里)", "Turn on all the lights (打开所有的灯)"], "correct_index": 0},
+            {"id": "JQ86", "topic": "Camping Knowledge (露营常识)", "question": "Which item is NOT suitable to put inside a camp First Aid Kit? (哪个物品不适合放在露营急救箱里？)", "options": ["Band-aids (创可贴)", "Antiseptic cream (抗菌药膏)", "Chocolate bars (巧克力棒)", "Cotton wool (棉花)"], "correct_index": 2},
+            {"id": "JQ87", "topic": "Camping Knowledge (露营常识)", "question": "What should you do with your rubbish when the camp is over? (露营结束后，你应该如何处理垃圾？)", "options": ["Bury it in the sand (把它埋在沙子里)", "Throw it in the river (把它扔进河里)", "Leave it near the tent (把它留在帐篷附近)", "Pack it in a trash bag and take it to a proper bin (把它装进垃圾袋并带到适当的垃圾桶)"], "correct_index": 3},
+            {"id": "JQ88", "topic": "Camping Knowledge (露营常识)", "question": "Why do we build a small ditch (trench) around the tent? (为什么要在帐篷周围挖一条小沟渠？)", "options": ["To catch fish (为了抓鱼)", "To prevent rain water from flowing into the tent (为了防止雨水流进帐篷)", "To trap insects (为了困住昆虫)", "To plant flowers (为了种花)"], "correct_index": 1},
+            {"id": "JQ89", "topic": "Camping Knowledge (露营常识)", "question": "What is a 'Groundsheet'? (什么是「防潮垫 / 地布」？)", "options": ["A map of the ground (地面的地图)", "A waterproof mat placed under or inside the tent (放在帐篷下面或里面的防水垫)", "A blanket for sleeping (用来睡觉的毯子)", "A towel for showering (用来洗澡的毛巾)"], "correct_index": 1},
+            {"id": "JQ90", "topic": "Camping Knowledge (露营常识)", "question": "If your clothes catch on fire, what is the golden rule you must follow? (如果你的衣服着火了，你必须遵守的黄金法则是什么？)", "options": ["Run very fast (跑得非常快)", "Stop, Drop, and Roll (停下、倒下、打滚)", "Jump up and down (上下跳跃)", "Blow on it (朝它吹气)"], "correct_index": 1},
+            {"id": "JQ91", "topic": "2026 Current Issues (2026时事)", "question": "What is the general emergency hotline number to call police or ambulance in Malaysia? (在马来西亚，呼叫警察或救护车的通用紧急热线号码是多少？)", "options": ["911", "999", "112", "994"], "correct_index": 1},
+            {"id": "JQ92", "topic": "2026 Current Issues (2026时事)", "question": "To prevent Dengue fever, we must stop the breeding of which mosquito? (为了预防骨痛热症，我们必须阻止哪种蚊子的繁殖？)", "options": ["Anopheles (按蚊)", "Culex (库蚊)", "Aedes (黑斑蚊 / 伊蚊)", "Tiger mosquito (老虎蚊)"], "correct_index": 2},
+            {"id": "JQ93", "topic": "2026 Current Issues (2026时事)", "question": "What does a green recycling bin typically collect in Malaysia? (在马来西亚，绿色的回收垃圾桶通常收集什么？)", "options": ["Glass (玻璃)", "Paper (纸张)", "Plastics and Aluminum (塑料和铝)", "Food waste (厨余)"], "correct_index": 1},
+            {"id": "JQ94", "topic": "2026 Current Issues (2026时事)", "question": "When using a zebra crossing, what must you do before crossing? (使用斑马线时，过马路前你必须做什么？)", "options": ["Run quickly (快速跑过去)", "Look right, look left, and look right again (向右看，向左看，再向右看)", "Close your eyes (闭上眼睛)", "Walk while looking at your phone (边走边看手机)"], "correct_index": 1},
+            {"id": "JQ95", "topic": "2026 Current Issues (2026时事)", "question": "In 2026, many schools promote 'Digital Etiquette'. Which of these is a bad digital habit? (2026年，许多学校提倡“数字礼仪”。以下哪项是糟糕的数字习惯？)", "options": ["Asking permission before posting a friend's photo (发布朋友照片前征求同意)", "Cyberbullying or writing mean comments online (网络霸凌或在网上写刻薄的评论)", "Setting strong passwords (设置强密码)", "Limiting screen time (限制屏幕时间)"], "correct_index": 1},
+            {"id": "JQ96", "topic": "2026 Current Issues (2026时事)", "question": "What is the safest way to travel in a moving car? (在行驶的汽车中，最安全的出行方式是什么？)", "options": ["Standing on the seat (站在座位上)", "Putting your head out the window (把头伸出窗外)", "Sitting quietly and wearing a seatbelt (安静地坐着并系好安全带)", "Playing with the door handle (玩车门把手)"], "correct_index": 2},
+            {"id": "JQ97", "topic": "2026 Current Issues (2026时事)", "question": "Which of the following is a good habit for conserving water at home? (以下哪项是在家节约用水的好习惯？)", "options": ["Leaving the tap running while brushing teeth (刷牙时让水龙头一直流水)", "Taking 1-hour long showers (洗一个小时的澡)", "Turning off the tap when applying soap (抹肥皂时关掉水龙头)", "Playing with the garden hose daily (每天玩花园的水管)"], "correct_index": 2},
+            {"id": "JQ98", "topic": "2026 Current Issues (2026时事)", "question": "What should you do if a stranger offers you free food or a ride home? (如果陌生人给你免费食物或要载你回家，你应该怎么做？)", "options": ["Say thank you and follow them (说声谢谢并跟着他们)", "Politely refuse, walk away quickly, and tell a trusted adult (礼貌拒绝，迅速走开，并告诉值得信赖的成年人)", "Ask them for money too (也向他们要钱)", "Get into their car to see where they go (上他们的车看看他们去哪里)"], "correct_index": 1},
+            {"id": "JQ99", "topic": "2026 Current Issues (2026时事)", "question": "In the food pyramid, which type of food should we eat the least of to stay healthy? (在食物金字塔中，为了保持健康，我们应该最少吃哪种类型的食物？)", "options": ["Fruits and vegetables (水果和蔬菜)", "Rice and bread (米饭和面包)", "Sweets, fats, and sugary drinks (甜食、脂肪和含糖饮料)", "Fish and chicken (鱼和鸡肉)"], "correct_index": 2},
+            {"id": "JQ100", "topic": "2026 Current Issues (2026时事)", "question": "If you find a wallet on the street with money and an ID card, what is the right thing to do as a BB member? (如果你在街上找到一个装有钱和身份证的钱包，作为男少年军成员，正确的做法是什么？)", "options": ["Keep the money and throw the wallet away (把钱拿走，把钱包扔掉)", "Leave it there (把它留在那里)", "Hand it over to a police station or a trusted adult (把它交给警察局或值得信赖的成年人)", "Buy snacks with the money (用这些钱买零食)"], "correct_index": 2}
         ];
 
-        // Senior 数据
+        // ==========================================
+        // 👨 Senior 题库 (1-100题) - 中英双语
+        // ==========================================
         const seniorQuestions = [
-        {
-            "id": "SQ01",
-            "topic": "History",
-            "question": "Sir William Alexander Smith founded the Boys' Brigade out of a desire to instill discipline among the youth. In which specific church did the first meeting take place?",
-            "options": ["St. Paul's Cathedral", "Free Church Mission Hall, Woodside", "Westminster Abbey", "Christ Church, Glasgow"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ02",
-            "topic": "BB Malaysia & Asia",
-            "question": "The Boys' Brigade in Malaysia was initially formed in Penang in 1946. What was the designation of this first pioneer company?",
-            "options": ["1st Penang Company", "Penang State Company", "1st Malaya Company", "George Town 1st"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ03",
-            "topic": "BB Traditions",
-            "question": "The Anchor emblem of the Boys' Brigade is accompanied by the motto 'Sure & Stedfast'. From which biblical book is this motto derived?",
-            "options": ["Psalms 23:1", "Proverbs 3:5", "Hebrews 6:19", "Matthew 5:9"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ04",
-            "topic": "BB Uniforms & Awards",
-            "question": "In the Senior Section, what is the highest award a Boy can achieve, symbolizing exemplary leadership and dedication?",
-            "options": ["The President's Badge", "The Founder's Badge", "The Queen's Badge", "The Gold Anchor Award"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ05",
-            "topic": "Citizenship",
-            "question": "According to the Malaysian Constitution, the Yang di-Pertuan Agong is elected for a term of how many years?",
-            "options": ["3 years", "4 years", "5 years", "6 years"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ06",
-            "topic": "2026 Current Issues",
-            "question": "In 2026, Malaysia holds the chairmanship for which major regional intergovernmental organization?",
-            "options": ["OPEC", "ASEAN", "BRICS", "NATO"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ07",
-            "topic": "Camping Knowledge",
-            "question": "When building a campfire for cooking, which type of wood arrangement provides the most stable and long-lasting heat?",
-            "options": ["Teepee fire", "Log cabin fire", "Star fire", "Lean-to fire"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ08",
-            "topic": "Camping Knowledge",
-            "question": "In map reading, if your forward bearing to a mountain peak is 045 degrees, what is your back bearing?",
-            "options": ["090 degrees", "135 degrees", "225 degrees", "315 degrees"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ09",
-            "topic": "BB Uniforms & Awards",
-            "question": "Which of the following describes the correct placement of the haversack sling on the ceremonial uniform?",
-            "options": ["Over the left shoulder, resting on right hip", "Over the right shoulder, resting on left hip", "Tied securely around the waist", "Draped loosely around the neck"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ10",
-            "topic": "Citizenship",
-            "question": "The Rukun Negara consists of five national principles. What is the fifth and final principle?",
-            "options": ["Belief in God", "Loyalty to King and Country", "Courtesy and Morality", "Supremacy of the Constitution"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ11",
-            "topic": "History",
-            "question": "Before founding the Boys' Brigade, William Alexander Smith was an officer in which military organization?",
-            "options": ["The Royal Navy", "1st Lanarkshire Rifle Volunteers", "The British Army Infantry", "The Royal Air Force"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ12",
-            "topic": "BB Traditions",
-            "question": "What is the primary purpose of the 'Object' of the Boys' Brigade as stated in the handbook?",
-            "options": ["To prepare boys for military service", "To promote habits of Obedience, Reverence, Discipline, Self-respect", "To organize international sports", "To provide affordable education"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ13",
-            "topic": "BB Malaysia & Asia",
-            "question": "Following its establishment in Penang, the Boys' Brigade expanded. In which year was the BB officially formed in Sarawak?",
-            "options": ["1959", "1961", "1966", "1970"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ14",
-            "topic": "2026 Current Issues",
-            "question": "To boost the tech economy in 2026, the Malaysian government has heavily invested in infrastructure for which emerging sector?",
-            "options": ["Coal mining", "Artificial Intelligence (AI) and Data Centers", "CD-ROM manufacturing", "Film photography"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ15",
-            "topic": "Camping Knowledge",
-            "question": "If someone suffers a minor burn while cooking at a campsite, what is the immediate first aid response?",
-            "options": ["Apply butter or oil", "Pop any blisters", "Cool the burn under cool running water for at least 10 minutes", "Wrap it tightly with a dry bandage"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ16",
-            "topic": "Citizenship",
-            "question": "Which body is responsible for interpreting the laws in Malaysia?",
-            "options": ["The Executive", "The Legislature (Parliament)", "The Judiciary", "The Royal Council"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ17",
-            "topic": "BB Uniforms & Awards",
-            "question": "For a Senior Member to earn the Target Badge, what fundamental training must they complete?",
-            "options": ["Advanced First Aid", "Recruit's training focusing on BB knowledge and basic drill", "A 50km hike", "Organizing a state event"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ18",
-            "topic": "BB Traditions",
-            "question": "During a formal BB parade, what command brings the squad from 'Stand at Ease' to a fully upright and still position?",
-            "options": ["Quick March", "Attention (Sedia)", "Right Turn", "Fall In"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ19",
-            "topic": "BB Malaysia & Asia",
-            "question": "Who was the first Malaysian to be appointed as the Brigade President of BB Malaysia?",
-            "options": ["Mr. Geh Hun Kheng", "Tan Sri Khoo Kay Kim", "Mr. Michael Khor", "Mr. Robert Davis"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ20",
-            "topic": "2026 Current Issues",
-            "question": "Which major public transport infrastructure project in the Klang Valley is a key focus of development in 2026?",
-            "options": ["High-Speed Rail to Bangkok", "MRT Line 3 (Circle Line)", "KTM Steam Trains", "LRT 1 Extension"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ21",
-            "topic": "History",
-            "question": "In 1886, Sir William Alexander Smith held the first ever Boys' Brigade camp. Where was it located?",
-            "options": ["London", "Tighnabruaich", "Edinburgh", "Cardiff"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ22",
-            "topic": "BB Uniforms & Awards",
-            "question": "What is the correct Non-Commissioned Officer (NCO) rank hierarchy in the BB, from lowest to highest?",
-            "options": ["Corporal, Sergeant, Lance Corporal", "Lance Corporal, Corporal, Sergeant, Staff Sergeant", "Sergeant, Corporal, Lance Corporal", "Private, Captain, Lieutenant"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ23",
-            "topic": "Citizenship",
-            "question": "The Malaysian Parliament is bicameral. It consists of the Dewan Rakyat and which other house?",
-            "options": ["Dewan Undangan Negeri", "Dewan Negara (Senate)", "Dewan Bahasa", "Dewan Diraja"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ24",
-            "topic": "Camping Knowledge",
-            "question": "Which knot is best used to tie two ropes of unequal thickness together?",
-            "options": ["Reef Knot", "Clove Hitch", "Sheet Bend", "Sheepshank"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ25",
-            "topic": "BB Traditions",
-            "question": "What are the 'Twin Pillars' of the Boys' Brigade?",
-            "options": ["Sports and Academics", "Religion and Discipline", "Drill and Camping", "Music and Arts"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ26",
-            "topic": "2026 Current Issues",
-            "question": "In early 2026, Malaysia enforced stricter regulations on which type of consumer products to reduce environmental pollution?",
-            "options": ["Single-use plastics and packaging", "Cotton clothing", "Wooden furniture", "Bicycles"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ27",
-            "topic": "BB Malaysia & Asia",
-            "question": "Where is the current Secretariat headquarters for Boys' Brigade Asia located?",
-            "options": ["Singapore", "Kuala Lumpur, Malaysia", "Jakarta, Indonesia", "Manila, Philippines"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ28",
-            "topic": "History",
-            "question": "What was the name of the Sunday School where William Alexander Smith taught before founding the BB?",
-            "options": ["St. Peter's Mission", "Woodside North Church Sunday School", "Glasgow Central School", "West End Mission"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ29",
-            "topic": "Camping Knowledge",
-            "question": "When performing CPR on an adult during a camp emergency, what is the recommended ratio of chest compressions to rescue breaths?",
-            "options": ["15:2", "30:2", "50:1", "100:0"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ30",
-            "topic": "Uniforms & Awards",
-            "question": "To obtain the President's Badge, a Senior must first earn the Founder's Badge. Is this statement true or false?",
-            "options": ["True", "False, the President's Badge must be earned before the Founder's Badge", "False, they are unrelated", "True, but only in the UK"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ31",
-            "topic": "Citizenship",
-            "question": "Malaysia Day commemorates the formation of the Malaysian federation. On what date is it celebrated?",
-            "options": ["31 August", "16 September", "1 May", "25 December"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ32",
-            "topic": "BB Traditions",
-            "question": "Which of the following best describes the 'BB Vesper'?",
-            "options": ["A marching tune", "A prayer song sung at the close of a BB meeting", "The official BB handshake", "A type of drill formation"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ33",
-            "topic": "2026 Current Issues",
-            "question": "The Malaysian government launched the 'PADU' system recently. What is its main function?",
-            "options": ["To track public buses", "A central database hub for targeted government subsidies", "To register new voters", "A national gaming platform"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ34",
-            "topic": "Camping Knowledge",
-            "question": "When reading a topographical map, what do closely spaced contour lines indicate?",
-            "options": ["A flat plain", "A lake or river", "A steep slope or cliff", "A dense forest"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ35",
-            "topic": "BB Malaysia & Asia",
-            "question": "Which of these countries is NOT a member of the Boys' Brigade Asia regional fellowship?",
-            "options": ["Indonesia", "Thailand", "Japan", "Saudi Arabia"],
-            "correct_index": 3
-        },
-        {
-            "id": "SQ36",
-            "topic": "History",
-            "question": "In what year did Sir William Alexander Smith pass away?",
-            "options": ["1910", "1914", "1920", "1945"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ37",
-            "topic": "Uniforms & Awards",
-            "question": "What is the distinguishing feature on the uniform of a BB Officer (Lieutenant or Captain) compared to a Boy's uniform?",
-            "options": ["They wear red shirts", "They do not wear a uniform", "They wear a Glengarry cap or peaked cap and an officer's lanyard", "They carry a sword"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ38",
-            "topic": "Citizenship",
-            "question": "Who is the Head of State for the state of Sarawak?",
-            "options": ["The Sultan", "The Prime Minister", "The Yang di-Pertua Negeri (Governor)", "The Chief Minister"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ39",
-            "topic": "2026 Current Issues",
-            "question": "To address national food security in 2026, Malaysia has been heavily promoting 'Smart Farming'. What does this involve?",
-            "options": ["Using more manual labor", "Integrating IoT (Internet of Things) and drones into agriculture", "Stopping all imports of food", "Growing only rice"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ40",
-            "topic": "Camping Knowledge",
-            "question": "What is the primary purpose of a 'Clove Hitch' knot?",
-            "options": ["To tie a bandage", "To secure a rope to a spar or pole, often to start a lashing", "To rescue someone from water", "To shorten a rope"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ41",
-            "topic": "BB Traditions",
-            "question": "In BB Drill, when the command 'Senang Diri' (Stand at Ease) is given, what is the correct movement?",
-            "options": ["Move the right foot away from the left", "Move the left foot away from the right and place hands behind the back", "Sit down immediately", "Salute the officer"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ42",
-            "topic": "History",
-            "question": "Sir William Alexander Smith was knighted for his services to boys. Who knighted him?",
-            "options": ["Queen Victoria", "King Edward VII", "King George V", "Queen Elizabeth II"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ43",
-            "topic": "Citizenship",
-            "question": "How old must a Malaysian citizen be to be eligible to vote in a general election (under current UNDI18 laws)?",
-            "options": ["16", "18", "21", "25"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ44",
-            "topic": "Camping Knowledge",
-            "question": "If you suspect a campmate has a sprained ankle, which first aid method should you apply?",
-            "options": ["CPR", "The Heimlich Maneuver", "The R.I.C.E. method (Rest, Ice, Compression, Elevation)", "Apply a hot towel immediately"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ45",
-            "topic": "BB Uniforms & Awards",
-            "question": "Which badge signifies a Senior Member's proficiency in Christian Education?",
-            "options": ["The Drill Badge", "The Target Badge", "The Christian Education (CE) Badge", "The Community Service Badge"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ46",
-            "topic": "2026 Current Issues",
-            "question": "As of early 2026, which neighboring country is Malaysia working closely with to develop the Johor-Singapore Special Economic Zone (JS-SEZ)?",
-            "options": ["Thailand", "Indonesia", "Singapore", "Brunei"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ47",
-            "topic": "BB Malaysia & Asia",
-            "question": "In BB terminology, what does 'NCO' stand for?",
-            "options": ["National Council Officer", "Non-Commissioned Officer", "New Company Organizer", "Navigational Command Officer"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ48",
-            "topic": "Camping Knowledge",
-            "question": "Which type of lashing is used to bind two poles together that cross each other at a 90-degree angle?",
-            "options": ["Diagonal Lashing", "Square Lashing", "Sheer Lashing", "Figure of Eight Lashing"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ49",
-            "topic": "Citizenship",
-            "question": "The national anthem of Malaysia is 'Negaraku'. What was the tune originally based on?",
-            "options": ["A British marching song", "The state anthem of Perak", "An Indonesian folk song", "A traditional Sarawakian melody"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ50",
-            "topic": "BB Traditions",
-            "question": "What does the 'Cross' behind the anchor in the BB crest symbolize?",
-            "options": ["The medical corps", "The Christian faith and the advancement of Christ's kingdom", "A compass star", "The four points of the compass"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ51",
-            "topic": "Sejarah Penubuhan Briged Putera",
-            "question": "On what exact date was the first Boys' Brigade company formed?",
-            "options": ["4 October 1883", "14 October 1883", "4 November 1883", "14 November 1883"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ52",
-            "topic": "Sejarah Penubuhan Briged Putera",
-            "question": "What was the initial number of Boys who enrolled during the very first BB meeting?",
-            "options": ["12", "28", "35", "59"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ53",
-            "topic": "Sejarah Penubuhan Briged Putera",
-            "question": "Sir William Alexander Smith introduced a specific activity to keep the Sunday School boys disciplined. What was it?",
-            "options": ["Football", "Choir singing", "Military drill and gymnastics", "Painting"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ54",
-            "topic": "Sejarah Penubuhan Briged Putera",
-            "question": "In 1886, the first BB camp was held. Where was this historic camp located?",
-            "options": ["London", "Glasgow", "Tighnabruaich", "Edinburgh"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ55",
-            "topic": "Sejarah Penubuhan Briged Putera",
-            "question": "Who was the first BB Captain of the 1st Glasgow Company?",
-            "options": ["John R. Hill", "James R. Sandilands", "William Alexander Smith", "Lord Baden-Powell"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ56",
-            "topic": "Briged Putera Malaysia dan Asia",
-            "question": "The Boys' Brigade was introduced to Malaya in 1946. Who was the founder of the 1st Penang Company?",
-            "options": ["Robert Davis", "Geh Hun Kheng", "Michael Khor", "James Fraser"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ57",
-            "topic": "Briged Putera Malaysia dan Asia",
-            "question": "Which of these Asian countries was the first to establish a Boys' Brigade company in 1930?",
-            "options": ["Malaysia", "Singapore", "Hong Kong", "Indonesia"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ58",
-            "topic": "Briged Putera Malaysia dan Asia",
-            "question": "The BB Asia regional fellowship was officially formed to unite BB across the continent. In which year was it established?",
-            "options": ["1957", "1992", "2003", "2010"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ59",
-            "topic": "Briged Putera Malaysia dan Asia",
-            "question": "Which body serves as the highest decision-making authority for the Boys' Brigade in Malaysia?",
-            "options": ["The Brigade Executive", "The National Council (Brigade Council)", "The State Council", "The Company Officers' Meeting"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ60",
-            "topic": "Briged Putera Malaysia dan Asia",
-            "question": "In Sarawak, the Boys' Brigade has a strong presence. Which town in Sarawak saw the formation of the 1st Kuching Company in 1961?",
-            "options": ["Sibu", "Miri", "Kuching", "Bintulu"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ61",
-            "topic": "Tradisi dan Amalan BB",
-            "question": "The BB Object mentions the promotion of four habits. Which of the following correctly lists three of them?",
-            "options": ["Obedience, Reverence, Courage", "Obedience, Reverence, Discipline", "Discipline, Self-respect, Honesty", "Reverence, Discipline, Charity"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ62",
-            "topic": "Tradisi dan Amalan BB",
-            "question": "According to BB traditions, what should a member do when passing an uncased set of Colours (Flags) during a parade?",
-            "options": ["Stand still", "Salute", "Take off their cap", "Bow their head"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ63",
-            "topic": "Tradisi dan Amalan BB",
-            "question": "What is the meaning of the red cross on the BB crest?",
-            "options": ["Medical aid", "The Christian faith and Christ's kingdom", "The British flag", "Sacrifice in war"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ64",
-            "topic": "Tradisi dan Amalan BB",
-            "question": "In BB Drill, what is the English translation for the command 'Ke Kanan Pusing'?",
-            "options": ["Right Turn", "Left Turn", "About Turn", "Quick March"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ65",
-            "topic": "Tradisi dan Amalan BB",
-            "question": "Which of these is a core component of the BB Vesper?",
-            "options": ["A pledge to the King", "A prayer asking God to bless the Boys' Brigade", "A song about camping", "A marching cadence"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ66",
-            "topic": "Pakaian seragam dan penganugerahan BB",
-            "question": "For a Senior NCO, what is the highest rank they can achieve before becoming an Officer/Primer?",
-            "options": ["Corporal", "Sergeant", "Staff Sergeant", "Warrant Officer"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ67",
-            "topic": "Pakaian seragam dan penganugerahan BB",
-            "question": "Where are the NCO chevron ranks (stripes) worn on the long-sleeved ceremonial uniform?",
-            "options": ["On the left chest", "On the right upper arm", "On the epaulettes (shoulders)", "On both forearms"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ68",
-            "topic": "Pakaian seragam dan penganugerahan BB",
-            "question": "What colour lanyard does a Staff Sergeant wear?",
-            "options": ["White", "Red", "Blue", "Gold"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ69",
-            "topic": "Pakaian seragam dan penganugerahan BB",
-            "question": "The Founder's Badge is the highest award in the BB. What is the minimum age requirement to attain this badge?",
-            "options": ["14 years old", "15 years old", "16 years old", "17 years old"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ70",
-            "topic": "Pakaian seragam dan penganugerahan BB",
-            "question": "In the Senior Section badge structure, the 'Four-Square' program consists of four main categories. Which of these is NOT one of them?",
-            "options": ["Spiritual", "Physical", "Financial", "Educational"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ71",
-            "topic": "Kewarganegaraan",
-            "question": "The Malaysian Parliament consists of two houses. The upper house is known as Dewan Negara, while the lower house is called:",
-            "options": ["Dewan Undangan Negeri", "Dewan Rakyat", "Dewan Diraja", "Dewan Merdeka"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ72",
-            "topic": "Kewarganegaraan",
-            "question": "How many states in Malaysia are ruled by a Sultan or a Raja/Yang di-Pertuan Besar?",
-            "options": ["7", "9", "11", "13"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ73",
-            "topic": "Kewarganegaraan",
-            "question": "The Federal Constitution of Malaysia is the supreme law of the land. It came into force in which year?",
-            "options": ["1946", "1957", "1963", "1969"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ74",
-            "topic": "Kewarganegaraan",
-            "question": "Under the principle of Separation of Powers in Malaysia, which branch is responsible for drafting and passing laws?",
-            "options": ["The Executive", "The Judiciary", "The Legislature", "The Armed Forces"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ75",
-            "topic": "Kewarganegaraan",
-            "question": "What is the primary function of the Election Commission (Suruhanjaya Pilihan Raya) in Malaysia?",
-            "options": ["To collect taxes", "To conduct and manage elections", "To appoint the Prime Minister", "To draft new laws"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ76",
-            "topic": "Kewarganegaraan",
-            "question": "Which of these states was part of the formation of Malaysia in 1963 but left the federation in 1965?",
-            "options": ["Brunei", "Singapore", "Sabah", "Sarawak"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ77",
-            "topic": "Kewarganegaraan",
-            "question": "What does the crescent moon on the Malaysian flag (Jalur Gemilang) symbolize?",
-            "options": ["The royal rulers", "Islam as the religion of the Federation", "Peace and harmony", "The geographical shape of the country"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ78",
-            "topic": "Kewarganegaraan",
-            "question": "Who is the supreme commander of the Malaysian Armed Forces?",
-            "options": ["The Prime Minister", "The Minister of Defence", "The Chief of Defence Forces", "The Yang di-Pertuan Agong"],
-            "correct_index": 3
-        },
-        {
-            "id": "SQ79",
-            "topic": "Isu-isu semasa (Jan-Mei 2026)",
-            "question": "In 2026, Malaysia officially took over the Chairmanship of which major regional intergovernmental organization?",
-            "options": ["APEC", "ASEAN", "OIC", "Commonwealth"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ80",
-            "topic": "Isu-isu semasa (Jan-Mei 2026)",
-            "question": "What is the primary objective of the 'Visit Malaysia 2026' (VM2026) campaign?",
-            "options": ["To restrict foreign entry", "To promote local agriculture", "To revitalize the tourism industry and attract international visitors", "To build more airports"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ81",
-            "topic": "Isu-isu semasa (Jan-Mei 2026)",
-            "question": "Sarawak has been heavily developing a new form of clean energy for public transport (like the ART buses) in 2026. What is it?",
-            "options": ["Nuclear energy", "Hydrogen fuel cells", "Coal power", "Geothermal energy"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ82",
-            "topic": "Isu-isu semasa (Jan-Mei 2026)",
-            "question": "In early 2026, the Malaysian government emphasized 'TVET' education for youths. What does TVET stand for?",
-            "options": ["Technical and Vocational Education and Training", "Technology, Vision, Engineering, and Teaching", "Tertiary Vocation and Enterprise Testing", "Teachers' Voluntary Educational Trust"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ83",
-            "topic": "Isu-isu semasa (Jan-Mei 2026)",
-            "question": "Which major socioeconomic database system was actively implemented in Malaysia to ensure targeted subsidies for citizens?",
-            "options": ["MySejahtera", "PADU (Pangkalan Data Utama)", "e-Kasih", "BR1M"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ84",
-            "topic": "Isu-isu semasa (Jan-Mei 2026)",
-            "question": "As of early 2026, the global shift towards Electric Vehicles (EVs) saw Malaysia introducing more policies for EVs. Which ministry is primarily responsible for the 'Green Technology' masterplan?",
-            "options": ["Ministry of Education", "Ministry of Energy Transition and Water Transformation", "Ministry of Health", "Ministry of Youth and Sports"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ85",
-            "topic": "Isu-isu semasa (Jan-Mei 2026)",
-            "question": "To combat cyber scams in 2026, Bank Negara Malaysia enforced stricter regulations involving which security measure?",
-            "options": ["Abolishing online banking", "Kill Switches and biometric authentication", "Banning credit cards", "Using only physical cash"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ86",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "When tying a knot, which of the following is used specifically to tie two ropes of the same thickness together?",
-            "options": ["Reef Knot (Square Knot)", "Sheet Bend", "Clove Hitch", "Bowline"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ87",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "What knot should you use to create a secure, non-slipping loop at the end of a rope, often used in rescue operations?",
-            "options": ["Sheepshank", "Figure of Eight", "Bowline", "Timber Hitch"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ88",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "In map reading, what color is used on a topographical map to represent vegetation and forests?",
-            "options": ["Blue", "Brown", "Green", "Black"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ89",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "If you are facing North (0 degrees), what bearing is South-East on a compass?",
-            "options": ["90 degrees", "135 degrees", "225 degrees", "270 degrees"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ90",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "When constructing a camp gadget using wooden spars, which lashing is used to join two poles at a 90-degree angle?",
-            "options": ["Square Lashing", "Diagonal Lashing", "Sheer Lashing", "Tripod Lashing"],
-            "correct_index": 0
-        },
-        {
-            "id": "SQ91",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "In First Aid, if a camper suffers an arm fracture, what should you use to immobilize the arm against the chest?",
-            "options": ["A tourniquet", "A tight rope", "An arm sling made from a triangular bandage", "A loose towel"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ92",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "What is the universal distress signal using a whistle or flashlight?",
-            "options": ["Two short signals", "Three short signals (SOS)", "One long continuous signal", "Five rapid signals"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ93",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "When storing food in a campsite, why is it recommended to hang the food bag from a tree branch?",
-            "options": ["To keep the food warm", "To protect the food from wild animals and pests", "To dry wet food", "To make it easier for birds to eat"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ94",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "Which of these is the most effective method to purify river water for drinking at a camp?",
-            "options": ["Filtering it through a shirt", "Adding salt", "Boiling it vigorously for at least 1 minute", "Leaving it in the sun for an hour"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ95",
-            "topic": "Ilmu asas perkhemahan",
-            "question": "What is the primary purpose of a 'Timber Hitch' knot?",
-            "options": ["To tie bandages", "To secure a rope to a cylindrical object, like dragging a log", "To shorten a rope without cutting it", "To join two ropes"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ96",
-            "topic": "Kewarganegaraan",
-            "question": "The national flower of Malaysia is the Bunga Raya (Hibiscus). It has five petals. What do these five petals symbolize?",
-            "options": ["The 5 main races", "The 5 principles of Rukun Negara", "The 5 pillars of Islam", "The 5 regions of Malaysia"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ97",
-            "topic": "Tradisi dan Amalan BB",
-            "question": "A typical BB parade consists of a sequence of commands. Which command dismisses the squad?",
-            "options": ["Sedia", "Rehatkan Diri", "Keluar Baris", "Buka Barisan"],
-            "correct_index": 2
-        },
-        {
-            "id": "SQ98",
-            "topic": "Pakaian seragam dan penganugerahan BB",
-            "question": "A Boy in the Senior Section is allowed to wear an armlet (brassard) on his right arm. What is this armlet used for?",
-            "options": ["To show his rank", "To display his proficiency badges", "To wipe sweat", "To carry a compass"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ99",
-            "topic": "Sejarah Penubuhan Briged Putera",
-            "question": "Sir William Alexander Smith was knighted for his services to the Boys' Brigade. In what year did this happen?",
-            "options": ["1883", "1909", "1914", "1946"],
-            "correct_index": 1
-        },
-        {
-            "id": "SQ100",
-            "topic": "Briged Putera Malaysia dan Asia",
-            "question": "The Boys' Brigade operates across different divisions. Which age group does the 'Pre-Junior Section' generally cater to?",
-            "options": ["6 to 8 years old", "9 to 12 years old", "13 to 19 years old", "Adults only"],
-            "correct_index": 0
-        }
+            {"id": "SQ01", "topic": "History (历史)", "question": "Sir William Alexander Smith founded the Boys' Brigade out of a desire to instill discipline among the youth. In which specific church did the first meeting take place? (威廉·亚历山大·史密斯爵士为了培养青少年的纪律而创办了男少年军。第一次集会是在哪座特定的教堂举行的？)", "options": ["St. Paul's Cathedral (圣保罗大教堂)", "Free Church Mission Hall, Woodside (伍德赛德自由教会宣教厅)", "Westminster Abbey (威斯敏斯特教堂)", "Christ Church, Glasgow (格拉斯哥基督教堂)"], "correct_index": 1},
+            {"id": "SQ02", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "The Boys' Brigade in Malaysia was initially formed in Penang in 1946. What was the designation of this first pioneer company? (马来西亚男少年军于1946年最初在槟城成立。这支首创先锋分队的番号是什么？)", "options": ["1st Penang Company (槟城第1分队)", "Penang State Company (槟城州分队)", "1st Malaya Company (马来亚第1分队)", "George Town 1st (乔治市第1分队)"], "correct_index": 0},
+            {"id": "SQ03", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "The Anchor emblem of the Boys' Brigade is accompanied by the motto 'Sure & Stedfast'. From which biblical book is this motto derived? (男少年军的锚形徽章伴随着「坚固牢靠」的座右铭。这个座右铭源自圣经的哪一卷书？)", "options": ["Psalms 23:1 (诗篇 23:1)", "Proverbs 3:5 (箴言 3:5)", "Hebrews 6:19 (希伯来书 6:19)", "Matthew 5:9 (马太福音 5:9)"], "correct_index": 2},
+            {"id": "SQ04", "topic": "Uniforms & Awards (制服与奖章)", "question": "In the Senior Section, what is the highest award a Boy can achieve, symbolizing exemplary leadership and dedication? (在高级组中，男孩能获得的最高奖章是什么？它象征着模范领导力和奉献精神。)", "options": ["The President's Badge (会长章)", "The Founder's Badge (创办人章)", "The Queen's Badge (女王章)", "The Gold Anchor Award (金锚奖)"], "correct_index": 1},
+            {"id": "SQ05", "topic": "Citizenship (公民常识)", "question": "According to the Malaysian Constitution, the Yang di-Pertuan Agong is elected for a term of how many years? (根据马来西亚宪法，最高元首的任期为多少年？)", "options": ["3 years (3年)", "4 years (4年)", "5 years (5年)", "6 years (6年)"], "correct_index": 2},
+            {"id": "SQ06", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "In 2026, Malaysia holds the chairmanship for which major regional intergovernmental organization? (在2026年，马来西亚担任哪个主要区域政府间组织的主席国？)", "options": ["OPEC (石油输出国组织)", "ASEAN (东盟/亚细安)", "BRICS (金砖国家)", "NATO (北约)"], "correct_index": 1},
+            {"id": "SQ07", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "When building a campfire for cooking, which type of wood arrangement provides the most stable and long-lasting heat? (生营火做饭时，哪种木材排列方式能提供最稳定持久的热量？)", "options": ["Teepee fire (圆锥形火堆)", "Log cabin fire (井字形火堆)", "Star fire (星形火堆)", "Lean-to fire (靠墙形火堆)"], "correct_index": 1},
+            {"id": "SQ08", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "In map reading, if your forward bearing to a mountain peak is 045 degrees, what is your back bearing? (在读图时，如果你看向山峰的正方位角是 045 度，你的反方位角是多少？)", "options": ["090 degrees (090度)", "135 degrees (135度)", "225 degrees (225度)", "315 degrees (315度)"], "correct_index": 2},
+            {"id": "SQ09", "topic": "Uniforms & Awards (制服与奖章)", "question": "Which of the following describes the correct placement of the haversack sling on the ceremonial uniform? (以下哪项描述了在礼服上佩戴斜挎包(Haversack)肩带的正确位置？)", "options": ["Over the left shoulder, resting on right hip (挎过左肩，放在右臀上)", "Over the right shoulder, resting on left hip (挎过右肩，放在左臀上)", "Tied securely around the waist (紧紧系在腰间)", "Draped loosely around the neck (宽松地挂在脖子上)"], "correct_index": 1},
+            {"id": "SQ10", "topic": "Citizenship (公民常识)", "question": "The Rukun Negara consists of five national principles. What is the fifth and final principle? (国家原则由五项原则组成。第五项也就是最后一项原则是什么？)", "options": ["Belief in God (信奉上苍)", "Loyalty to King and Country (忠于君国)", "Courtesy and Morality (培养德行)", "Supremacy of the Constitution (维护宪法)"], "correct_index": 2},
+            {"id": "SQ11", "topic": "History (历史)", "question": "Before founding the Boys' Brigade, William Alexander Smith was an officer in which military organization? (在创立男少年军之前，威廉·亚历山大·史密斯是哪个军事组织的军官？)", "options": ["The Royal Navy (皇家海军)", "1st Lanarkshire Rifle Volunteers (第一拉纳克郡步枪志愿军)", "The British Army Infantry (英国陆军步兵)", "The Royal Air Force (皇家空军)"], "correct_index": 1},
+            {"id": "SQ12", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "What is the primary purpose of the 'Object' of the Boys' Brigade as stated in the handbook? (如手册所述，男少年军「宗旨」的主要目的是什么？)", "options": ["To prepare boys for military service (为男孩的服兵役做准备)", "To promote habits of Obedience, Reverence, Discipline, Self-respect (培养服从、虔诚、纪律、自爱的习惯)", "To organize international sports (组织国际体育比赛)", "To provide affordable education (提供负担得起的教育)"], "correct_index": 1},
+            {"id": "SQ13", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "Following its establishment in Penang, the Boys' Brigade expanded. In which year was the BB officially formed in Sarawak? (继在槟城成立后，男少年军不断扩大。男少年军在哪一年正式在砂拉越成立？)", "options": ["1959", "1961", "1966", "1970"], "correct_index": 0},
+            {"id": "SQ14", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "To boost the tech economy in 2026, the Malaysian government has heavily invested in infrastructure for which emerging sector? (为了推动2026年的科技经济，马来西亚政府大力投资了哪个新兴领域的基础设施？)", "options": ["Coal mining (煤矿开采)", "Artificial Intelligence (AI) and Data Centers (人工智能与数据中心)", "CD-ROM manufacturing (光盘制造)", "Film photography (胶片摄影)"], "correct_index": 1},
+            {"id": "SQ15", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "If someone suffers a minor burn while cooking at a campsite, what is the immediate first aid response? (如果在营地做饭时有人轻度烫伤，立即的急救措施是什么？)", "options": ["Apply butter or oil (涂抹黄油或油)", "Pop any blisters (挑破水泡)", "Cool the burn under cool running water for at least 10 minutes (在凉爽的流动水下冲洗烧伤处至少10分钟)", "Wrap it tightly with a dry bandage (用干绷带紧紧包扎)"], "correct_index": 2},
+            {"id": "SQ16", "topic": "Citizenship (公民常识)", "question": "Which body is responsible for interpreting the laws in Malaysia? (在马来西亚，哪个机构负责解释法律？)", "options": ["The Executive (行政机构 / 内阁)", "The Legislature / Parliament (立法机构 / 国会)", "The Judiciary (司法机构 / 法院)", "The Royal Council (马来统治者理事会)"], "correct_index": 2},
+            {"id": "SQ17", "topic": "Uniforms & Awards (制服与奖章)", "question": "For a Senior Member to earn the Target Badge, what fundamental training must they complete? (高级组组员要获得「目标奖章」，必须完成什么基础训练？)", "options": ["Advanced First Aid (高级急救)", "Recruit's training focusing on BB knowledge and basic drill (专注于男少年军知识和基本步操的新兵训练)", "A 50km hike (50公里徒步)", "Organizing a state event (组织一场州级活动)"], "correct_index": 1},
+            {"id": "SQ18", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "During a formal BB parade, what command brings the squad from 'Stand at Ease' to a fully upright and still position? (在正式的男少年军检阅中，什么口令能让小队从「稍息」状态恢复到完全挺直静止的姿势？)", "options": ["Quick March (快步走)", "Attention / Sedia (立正)", "Right Turn (向右转)", "Fall In (集合)"], "correct_index": 1},
+            {"id": "SQ19", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "Who was the first Malaysian to be appointed as the Brigade President of BB Malaysia? (谁是第一位被任命为马来西亚男少年军全国会长的马来西亚人？)", "options": ["Mr. Geh Hun Kheng (倪汉清先生)", "Tan Sri Khoo Kay Kim (丹斯里邱家金)", "Mr. Michael Khor (许天成先生)", "Mr. Robert Davis (罗伯特·戴维斯先生)"], "correct_index": 0},
+            {"id": "SQ20", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "Which major public transport infrastructure project in the Klang Valley is a key focus of development in 2026? (在巴生谷，哪项重大的公共交通基础设施项目是2026年发展的重点？)", "options": ["High-Speed Rail to Bangkok (曼谷高铁)", "MRT Line 3 / Circle Line (捷运3号线/环线)", "KTM Steam Trains (电动火车蒸汽列车)", "LRT 1 Extension (轻快铁1号线延长线)"], "correct_index": 1},
+            {"id": "SQ21", "topic": "History (历史)", "question": "In 1886, Sir William Alexander Smith held the first ever Boys' Brigade camp. Where was it located? (1886年，威廉·亚历山大·史密斯爵士举办了有史以来的第一次男少年军露营。地点在哪里？)", "options": ["London (伦敦)", "Tighnabruaich (泰纳布鲁埃奇)", "Edinburgh (爱丁堡)", "Cardiff (卡迪夫)"], "correct_index": 1},
+            {"id": "SQ22", "topic": "Uniforms & Awards (制服与奖章)", "question": "What is the correct Non-Commissioned Officer (NCO) rank hierarchy in the BB, from lowest to highest? (在男少年军中，非军官(NCO)的正确军阶等级从低到高是什么？)", "options": ["Corporal, Sergeant, Lance Corporal (下士、中士、准下士)", "Lance Corporal, Corporal, Sergeant, Staff Sergeant (准下士、下士、中士、上士)", "Sergeant, Corporal, Lance Corporal (中士、下士、准下士)", "Private, Captain, Lieutenant (列兵、上尉、中尉)"], "correct_index": 1},
+            {"id": "SQ23", "topic": "Citizenship (公民常识)", "question": "The Malaysian Parliament is bicameral. It consists of the Dewan Rakyat and which other house? (马来西亚国会是两院制。它由下议院（Dewan Rakyat）和哪个其他议院组成？)", "options": ["Dewan Undangan Negeri (州议会)", "Dewan Negara / Senate (上议院)", "Dewan Bahasa (国家语文局)", "Dewan Diraja (皇室理事会)"], "correct_index": 1},
+            {"id": "SQ24", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "Which knot is best used to tie two ropes of unequal thickness together? (哪种绳结最适合把两根粗细不等的绳子系在一起？)", "options": ["Reef Knot (平结)", "Clove Hitch (双套结)", "Sheet Bend (接绳结)", "Sheepshank (缩绳结)"], "correct_index": 2},
+            {"id": "SQ25", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "What are the 'Twin Pillars' of the Boys' Brigade? (男少年军的「两大支柱」是什么？)", "options": ["Sports and Academics (体育与学术)", "Religion and Discipline (宗教与纪律)", "Drill and Camping (步操与露营)", "Music and Arts (音乐与艺术)"], "correct_index": 1},
+            {"id": "SQ26", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "In early 2026, Malaysia enforced stricter regulations on which type of consumer products to reduce environmental pollution? (在2026年初，马来西亚对哪类消费品实施了更严格的规定以减少环境污染？)", "options": ["Single-use plastics and packaging (一次性塑料和包装)", "Cotton clothing (棉质服装)", "Wooden furniture (木制家具)", "Bicycles (自行车)"], "correct_index": 0},
+            {"id": "SQ27", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "Where is the current Secretariat headquarters for Boys' Brigade Asia located? (亚洲男少年军秘书处现总部位于何处？)", "options": ["Singapore (新加坡)", "Kuala Lumpur, Malaysia (马来西亚吉隆坡)", "Jakarta, Indonesia (印尼雅加达)", "Manila, Philippines (菲律宾马尼拉)"], "correct_index": 1},
+            {"id": "SQ28", "topic": "History (历史)", "question": "What was the name of the Sunday School where William Alexander Smith taught before founding the BB? (威廉·亚历山大·史密斯在创办男少年军之前任教的主日学叫什么名字？)", "options": ["St. Peter's Mission (圣彼得教会)", "Woodside North Church Sunday School (伍德赛德北教堂主日学)", "Glasgow Central School (格拉斯哥中央学校)", "West End Mission (西区宣教中心)"], "correct_index": 1},
+            {"id": "SQ29", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "When performing CPR on an adult during a camp emergency, what is the recommended ratio of chest compressions to rescue breaths? (在营地紧急情况下对成人进行心肺复苏术(CPR)时，推荐的胸外按压与人工呼吸的比例是多少？)", "options": ["15:2", "30:2", "50:1", "100:0"], "correct_index": 1},
+            {"id": "SQ30", "topic": "Uniforms & Awards (制服与奖章)", "question": "To obtain the President's Badge, a Senior must first earn the Founder's Badge. Is this statement true or false? (要获得「会长章」，高级组组员必须先获得「创办人章」。这句话是真是假？)", "options": ["True (真)", "False, the President's Badge must be earned before the Founder's Badge (假，必须先获得会长章才能获得创办人章)", "False, they are unrelated (假，它们互不相关)", "True, but only in the UK (真，但这只在英国适用)"], "correct_index": 1},
+            {"id": "SQ31", "topic": "Citizenship (公民常识)", "question": "Malaysia Day commemorates the formation of the Malaysian federation. On what date is it celebrated? (马来西亚日是为了纪念马来西亚联邦的成立。它是在哪一天庆祝的？)", "options": ["31 August (8月31日)", "16 September (9月16日)", "1 May (5月1日)", "25 December (12月25日)"], "correct_index": 1},
+            {"id": "SQ32", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "Which of the following best describes the 'BB Vesper'? (以下哪项最能准确描述「BB Vesper」？)", "options": ["A marching tune (一首行军曲)", "A prayer song sung at the close of a BB meeting (在男少年军集会结束时唱的祈祷诗歌)", "The official BB handshake (男少年军官方握手礼)", "A type of drill formation (一种步操队形)"], "correct_index": 1},
+            {"id": "SQ33", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "The Malaysian government launched the 'PADU' system recently. What is its main function? (马来西亚政府最近推出了「PADU」系统。它的主要功能是什么？)", "options": ["To track public buses (追踪公共巴士)", "A central database hub for targeted government subsidies (用于针对性政府补贴的中央数据库中心)", "To register new voters (登记新选民)", "A national gaming platform (国家级游戏平台)"], "correct_index": 1},
+            {"id": "SQ34", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "When reading a topographical map, what do closely spaced contour lines indicate? (在阅读地形图时，紧密排列的等高线表示什么？)", "options": ["A flat plain (平坦的平原)", "A lake or river (湖泊或河流)", "A steep slope or cliff (陡峭的斜坡或悬崖)", "A dense forest (茂密的森林)"], "correct_index": 2},
+            {"id": "SQ35", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "Which of these countries is NOT a member of the Boys' Brigade Asia regional fellowship? (以下哪个国家不是亚洲男少年军区域团契的成员？)", "options": ["Indonesia (印尼)", "Thailand (泰国)", "Japan (日本)", "Saudi Arabia (沙特阿拉伯)"], "correct_index": 3},
+            {"id": "SQ36", "topic": "History (历史)", "question": "In what year did Sir William Alexander Smith pass away? (威廉·亚历山大·史密斯爵士在哪一年逝世？)", "options": ["1910", "1914", "1920", "1945"], "correct_index": 1},
+            {"id": "SQ37", "topic": "Uniforms & Awards (制服与奖章)", "question": "What is the distinguishing feature on the uniform of a BB Officer (Lieutenant or Captain) compared to a Boy's uniform? (与组员的制服相比，男少年军军官「中尉或上尉」制服上的显著特征是什么？)", "options": ["They wear red shirts (他们穿红衬衫)", "They do not wear a uniform (他们不穿制服)", "They wear a Glengarry cap or peaked cap and an officer's lanyard (他们戴船形帽或大盘帽并佩戴军官肩绳)", "They carry a sword (他们佩剑)"], "correct_index": 2},
+            {"id": "SQ38", "topic": "Citizenship (公民常识)", "question": "Who is the Head of State for the state of Sarawak? (谁是砂拉越州的国家元首「州元首」？)", "options": ["The Sultan (苏丹)", "The Prime Minister (首相)", "The Yang di-Pertua Negeri / Governor (州元首)", "The Chief Minister (首席部长)"], "correct_index": 2},
+            {"id": "SQ39", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "To address national food security in 2026, Malaysia has been heavily promoting 'Smart Farming'. What does this involve? (为了解决2026年的国家粮食安全问题，马来西亚一直在大力推广「智能农业」。这包括什么？)", "options": ["Using more manual labor (使用更多体力劳动)", "Integrating IoT (Internet of Things) and drones into agriculture (将物联网和无人机技术融入农业)", "Stopping all imports of food (停止所有食品进口)", "Growing only rice (只种植水稻)"], "correct_index": 1},
+            {"id": "SQ40", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "What is the primary purpose of a 'Clove Hitch' knot? (「双套结 / Clove Hitch」的主要用途是什么？)", "options": ["To tie a bandage (用来绑绷带)", "To secure a rope to a spar or pole, often to start a lashing (将绳子固定在木柱或杆子上，通常用于开始绑扎)", "To rescue someone from water (将人从水中救出)", "To shorten a rope (把绳子缩短)"], "correct_index": 1},
+            {"id": "SQ41", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "In BB Drill, when the command 'Senang Diri' (Stand at Ease) is given, what is the correct movement? (在男少年军步操中，当发出「Senang Diri / 稍息」口令时，正确的动作是什么？)", "options": ["Move the right foot away from the left (把右脚从左脚移开)", "Move the left foot away from the right and place hands behind the back (把左脚从右脚移开，并把双手放在背后)", "Sit down immediately (立刻坐下)", "Salute the officer (向军官敬礼)"], "correct_index": 1},
+            {"id": "SQ42", "topic": "History (历史)", "question": "Sir William Alexander Smith was knighted for his services to boys. Who knighted him? (威廉·亚历山大·史密斯爵士因其对男孩的服务而被封为爵士。是谁为他授勋的？)", "options": ["Queen Victoria (维多利亚女王)", "King Edward VII (爱德华七世国王)", "King George V (乔治五世国王)", "Queen Elizabeth II (伊丽莎白二世女王)"], "correct_index": 1},
+            {"id": "SQ43", "topic": "Citizenship (公民常识)", "question": "How old must a Malaysian citizen be to be eligible to vote in a general election (under current UNDI18 laws)? (在现行 UNDI18 法律下，马来西亚公民必须满多少岁才有资格在大选中投票？)", "options": ["16", "18", "21", "25"], "correct_index": 1},
+            {"id": "SQ44", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "If you suspect a campmate has a sprained ankle, which first aid method should you apply? (如果你怀疑一个营友扭伤了脚踝，你应该使用哪种急救方法？)", "options": ["CPR (心肺复苏术)", "The Heimlich Maneuver (海姆立克急救法)", "The R.I.C.E. method (Rest, Ice, Compression, Elevation) (R.I.C.E. 方法：休息、冰敷、加压、抬高)", "Apply a hot towel immediately (立即敷上热毛巾)"], "correct_index": 2},
+            {"id": "SQ45", "topic": "Uniforms & Awards (制服与奖章)", "question": "Which badge signifies a Senior Member's proficiency in Christian Education? (哪个奖章标志着高级组组员在基督教教育方面的熟练程度？)", "options": ["The Drill Badge (步操章)", "The Target Badge (目标章)", "The Christian Education (CE) Badge (基督教教育章)", "The Community Service Badge (社区服务章)"], "correct_index": 2},
+            {"id": "SQ46", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "As of early 2026, which neighboring country is Malaysia working closely with to develop the Johor-Singapore Special Economic Zone (JS-SEZ)? (截至2026年初，马来西亚正与哪个邻国密切合作开发柔佛-新加坡经济特区(JS-SEZ)？)", "options": ["Thailand (泰国)", "Indonesia (印尼)", "Singapore (新加坡)", "Brunei (文莱)"], "correct_index": 2},
+            {"id": "SQ47", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "In BB terminology, what does 'NCO' stand for? (在男少年军术语中，「NCO」代表什么？)", "options": ["National Council Officer (全国理事会军官)", "Non-Commissioned Officer (非委任军官 / 士官)", "New Company Organizer (新分队组织者)", "Navigational Command Officer (导航指挥军官)"], "correct_index": 1},
+            {"id": "SQ48", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "Which type of lashing is used to bind two poles together that cross each other at a 90-degree angle? (哪种绑扎法用于将两根以90度角交叉的木棍绑在一起？)", "options": ["Diagonal Lashing (十字结 / 对角绑扎)", "Square Lashing (方回结 / 方形绑扎)", "Sheer Lashing (剪立结)", "Figure of Eight Lashing (八字结绑扎)"], "correct_index": 1},
+            {"id": "SQ49", "topic": "Citizenship (公民常识)", "question": "The national anthem of Malaysia is 'Negaraku'. What was the tune originally based on? (马来西亚的国歌是《Negaraku》。这首曲子的原曲是基于什么？)", "options": ["A British marching song (一首英国行军曲)", "The state anthem of Perak (霹雳州州歌)", "An Indonesian folk song (一首印尼民歌)", "A traditional Sarawakian melody (一首传统的砂拉越旋律)"], "correct_index": 1},
+            {"id": "SQ50", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "What does the 'Cross' behind the anchor in the BB crest symbolize? (男少年军徽章中锚后面的「十字架」象征着什么？)", "options": ["The medical corps (医疗队)", "The Christian faith and the advancement of Christ's kingdom (基督教信仰与扩展基督的国度)", "A compass star (指南针星)", "The four points of the compass (指南针的四个方向)"], "correct_index": 1},
+            {"id": "SQ51", "topic": "History of the Boys' Brigade (男少年军创立历史)", "question": "On what exact date was the first Boys' Brigade company formed? (第一支男少年军分队是在哪年哪月哪日成立的？)", "options": ["4 October 1883 (1883年10月4日)", "14 October 1883 (1883年10月14日)", "4 November 1883 (1883年11月4日)", "14 November 1883 (1883年11月14日)"], "correct_index": 0},
+            {"id": "SQ52", "topic": "History of the Boys' Brigade (男少年军创立历史)", "question": "What was the initial number of Boys who enrolled during the very first BB meeting? (在第一次男少年军集会上，最初报名的男孩人数是多少？)", "options": ["12", "28", "35", "59"], "correct_index": 2},
+            {"id": "SQ53", "topic": "History of the Boys' Brigade (男少年军创立历史)", "question": "Sir William Alexander Smith introduced a specific activity to keep the Sunday School boys disciplined. What was it? (威廉·亚历山大·史密斯爵士引入了一项特定的活动来让主日学的男孩们守纪律。那是什么？)", "options": ["Football (足球)", "Choir singing (合唱团唱歌)", "Military drill and gymnastics (军事步操和体操)", "Painting (画画)"], "correct_index": 2},
+            {"id": "SQ54", "topic": "History of the Boys' Brigade (男少年军创立历史)", "question": "In 1886, the first BB camp was held. Where was this historic camp located? (1886年，举办了第一次男少年军露营。这个历史性的露营地点在哪里？)", "options": ["London (伦敦)", "Glasgow (格拉斯哥)", "Tighnabruaich (泰纳布鲁埃奇)", "Edinburgh (爱丁堡)"], "correct_index": 2},
+            {"id": "SQ55", "topic": "History of the Boys' Brigade (男少年军创立历史)", "question": "Who was the first BB Captain of the 1st Glasgow Company? (谁是格拉斯哥第1分队的第一任男少年军上尉？)", "options": ["John R. Hill (约翰·R·希尔)", "James R. Sandilands (詹姆斯·R·桑迪兰兹)", "William Alexander Smith (威廉·亚历山大·史密斯)", "Lord Baden-Powell (贝登堡勋爵)"], "correct_index": 2},
+            {"id": "SQ56", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "The Boys' Brigade was introduced to Malaya in 1946. Who was the founder of the 1st Penang Company? (男少年军于1946年被引入马来亚。谁是槟城第1分队的创办人？)", "options": ["Robert Davis (罗伯特·戴维斯)", "Geh Hun Kheng (倪汉清)", "Michael Khor (许天成)", "James Fraser (詹姆斯·弗雷泽)"], "correct_index": 0},
+            {"id": "SQ57", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "Which of these Asian countries was the first to establish a Boys' Brigade company in 1930? (以下哪个亚洲国家在1930年率先成立了男少年军分队？)", "options": ["Malaysia (马来西亚)", "Singapore (新加坡)", "Hong Kong (香港)", "Indonesia (印尼)"], "correct_index": 1},
+            {"id": "SQ58", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "The BB Asia regional fellowship was officially formed to unite BB across the continent. In which year was it established? (亚洲男少年军区域团契正式成立，以团结整个大洲的男少年军。它是在哪一年成立的？)", "options": ["1957", "1992", "2003", "2010"], "correct_index": 2},
+            {"id": "SQ59", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "Which body serves as the highest decision-making authority for the Boys' Brigade in Malaysia? (哪个机构是马来西亚男少年军的最高决策机构？)", "options": ["The Brigade Executive (全国执行委员会)", "The National Council / Brigade Council (全国理事会)", "The State Council (州理事会)", "The Company Officers' Meeting (分队军官会议)"], "correct_index": 1},
+            {"id": "SQ60", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "In Sarawak, the Boys' Brigade has a strong presence. Which town in Sarawak saw the formation of the 1st Kuching Company in 1961? (在砂拉越，男少年军有很强的影响力。1961年，砂拉越的哪个城镇成立了古晋第1分队？)", "options": ["Sibu (诗巫)", "Miri (美里)", "Kuching (古晋)", "Bintulu (民都鲁)"], "correct_index": 2},
+            {"id": "SQ61", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "The BB Object mentions the promotion of four habits. Which of the following correctly lists three of them? (男少年军的宗旨提到了培养四种习惯。以下哪项正确列出了其中的三种？)", "options": ["Obedience, Reverence, Courage (服从、虔诚、勇气)", "Obedience, Reverence, Discipline (服从、虔诚、纪律)", "Discipline, Self-respect, Honesty (纪律、自爱、诚实)", "Reverence, Discipline, Charity (虔诚、纪律、慈善)"], "correct_index": 1},
+            {"id": "SQ62", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "According to BB traditions, what should a member do when passing an uncased set of Colours (Flags) during a parade? (根据男少年军的传统，在游行中经过展开的军旗时，成员应该怎么做？)", "options": ["Stand still (站立不动)", "Salute (敬礼)", "Take off their cap (脱下帽子)", "Bow their head (低头)"], "correct_index": 1},
+            {"id": "SQ63", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "What is the meaning of the red cross on the BB crest? (男少年军徽章上的红十字代表什么意思？)", "options": ["Medical aid (医疗援助)", "The Christian faith and Christ's kingdom (基督教信仰与基督的国度)", "The British flag (英国国旗)", "Sacrifice in war (战争中的牺牲)"], "correct_index": 1},
+            {"id": "SQ64", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "In BB Drill, what is the English translation for the command 'Ke Kanan Pusing'? (在男少年军步操中，“Ke Kanan Pusing”的英文翻译是什么？)", "options": ["Right Turn (向右转)", "Left Turn (向左转)", "About Turn (向后转)", "Quick March (快步走)"], "correct_index": 0},
+            {"id": "SQ65", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "Which of these is a core component of the BB Vesper? (以下哪项是「闭会诗歌 / BB Vesper」的核心内容？)", "options": ["A pledge to the King (对国王的誓言)", "A prayer asking God to bless the Boys' Brigade (祈求上帝赐福男少年军的祷告)", "A song about camping (一首关于露营的歌)", "A marching cadence (行军口号)"], "correct_index": 1},
+            {"id": "SQ66", "topic": "Uniforms & Awards (制服与奖章)", "question": "For a Senior NCO, what is the highest rank they can achieve before becoming an Officer/Primer? (对于高级组非军官「NCO」，在成为军官/初级军官之前，他们能达到的最高军阶是什么？)", "options": ["Corporal (下士)", "Sergeant (中士)", "Staff Sergeant (上士)", "Warrant Officer (准尉)"], "correct_index": 2},
+            {"id": "SQ67", "topic": "Uniforms & Awards (制服与奖章)", "question": "Where are the NCO chevron ranks (stripes) worn on the long-sleeved ceremonial uniform? (在长袖礼服上，NCO的V形臂章（条纹）佩戴在哪里？)", "options": ["On the left chest (在左胸)", "On the right upper arm (在右上臂)", "On the epaulettes (在肩章上)", "On both forearms (在双前臂)"], "correct_index": 1},
+            {"id": "SQ68", "topic": "Uniforms & Awards (制服与奖章)", "question": "What colour lanyard does a Staff Sergeant wear? (上士佩戴什么颜色的肩绳？)", "options": ["White (白色)", "Red (红色)", "Blue (蓝色)", "Gold (金色)"], "correct_index": 1},
+            {"id": "SQ69", "topic": "Uniforms & Awards (制服与奖章)", "question": "The Founder's Badge is the highest award in the BB. What is the minimum age requirement to attain this badge? (「创办人章」是男少年军的最高荣誉。获得该奖章的最低年龄要求是多少？)", "options": ["14 years old (14岁)", "15 years old (15岁)", "16 years old (16岁)", "17 years old (17岁)"], "correct_index": 2},
+            {"id": "SQ70", "topic": "Uniforms & Awards (制服与奖章)", "question": "In the Senior Section badge structure, the 'Four-Square' program consists of four main categories. Which of these is NOT one of them? (在高级组奖章结构中，「四方」计划由四个主要类别组成。以下哪项不是其中之一？)", "options": ["Spiritual (灵性)", "Physical (体能)", "Financial (财务)", "Educational (教育)"], "correct_index": 2},
+            {"id": "SQ71", "topic": "Citizenship (公民常识)", "question": "The Malaysian Parliament consists of two houses. The upper house is known as Dewan Negara, while the lower house is called: (马来西亚国会由两院组成。上议院被称为 Dewan Negara，而下议院被称为：)", "options": ["Dewan Undangan Negeri (州议会)", "Dewan Rakyat (下议院)", "Dewan Diraja (皇室理事会)", "Dewan Merdeka (独立议会)"], "correct_index": 1},
+            {"id": "SQ72", "topic": "Citizenship (公民常识)", "question": "How many states in Malaysia are ruled by a Sultan or a Raja/Yang di-Pertuan Besar? (马来西亚有多少个州是由苏丹或拉惹/最高统治者统治的？)", "options": ["7", "9", "11", "13"], "correct_index": 1},
+            {"id": "SQ73", "topic": "Citizenship (公民常识)", "question": "The Federal Constitution of Malaysia is the supreme law of the land. It came into force in which year? (《马来西亚联邦宪法》是国家的最高法律。它是在哪一年生效的？)", "options": ["1946", "1957", "1963", "1969"], "correct_index": 1},
+            {"id": "SQ74", "topic": "Citizenship (公民常识)", "question": "Under the principle of Separation of Powers in Malaysia, which branch is responsible for drafting and passing laws? (在马来西亚的权力分立原则下，哪个分支机构负责起草和通过法律？)", "options": ["The Executive (行政机构)", "The Judiciary (司法机构)", "The Legislature (立法机构)", "The Armed Forces (武装部队)"], "correct_index": 2},
+            {"id": "SQ75", "topic": "Citizenship (公民常识)", "question": "What is the primary function of the Election Commission (Suruhanjaya Pilihan Raya) in Malaysia? (马来西亚选举委员会「SPR」的主要职能是什么？)", "options": ["To collect taxes (征收税款)", "To conduct and manage elections (举行和管理选举)", "To appoint the Prime Minister (任命首相)", "To draft new laws (起草新法律)"], "correct_index": 1},
+            {"id": "SQ76", "topic": "Citizenship (公民常识)", "question": "Which of these states was part of the formation of Malaysia in 1963 but left the federation in 1965? (以下哪个州在1963年参与了马来西亚的成立，但在1965年脱离了联邦？)", "options": ["Brunei (文莱)", "Singapore (新加坡)", "Sabah (沙巴)", "Sarawak (砂拉越)"], "correct_index": 1},
+            {"id": "SQ77", "topic": "Citizenship (公民常识)", "question": "What does the crescent moon on the Malaysian flag (Jalur Gemilang) symbolize? (马来西亚国旗「辉煌条纹」上的新月象征着什么？)", "options": ["The royal rulers (王室统治者)", "Islam as the religion of the Federation (伊斯兰教作为联邦宗教)", "Peace and harmony (和平与和谐)", "The geographical shape of the country (国家的地理形状)"], "correct_index": 1},
+            {"id": "SQ78", "topic": "Citizenship (公民常识)", "question": "Who is the supreme commander of the Malaysian Armed Forces? (谁是马来西亚武装部队的最高统帅？)", "options": ["The Prime Minister (首相)", "The Minister of Defence (国防部长)", "The Chief of Defence Forces (国防卫队首长)", "The Yang di-Pertuan Agong (最高元首)"], "correct_index": 3},
+            {"id": "SQ79", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "In 2026, Malaysia officially took over the Chairmanship of which major regional intergovernmental organization? (在2026年，马来西亚正式接任了哪个主要区域政府间组织的主席国？)", "options": ["APEC (亚太经合组织)", "ASEAN (东盟/亚细安)", "OIC (伊斯兰合作组织)", "Commonwealth (英联邦)"], "correct_index": 1},
+            {"id": "SQ80", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "What is the primary objective of the 'Visit Malaysia 2026' (VM2026) campaign? (「2026马来西亚旅游年」活动的主要目标是什么？)", "options": ["To restrict foreign entry (限制外国人入境)", "To promote local agriculture (推广当地农业)", "To revitalize the tourism industry and attract international visitors (振兴旅游业并吸引国际游客)", "To build more airports (建设更多机场)"], "correct_index": 2},
+            {"id": "SQ81", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "Sarawak has been heavily developing a new form of clean energy for public transport (like the ART buses) in 2026. What is it? (在2026年，砂拉越一直在大力开发一种用于公共交通「如智轨列车 ART」的新型清洁能源。它是什么？)", "options": ["Nuclear energy (核能)", "Hydrogen fuel cells (氢燃料电池)", "Coal power (煤电)", "Geothermal energy (地热能)"], "correct_index": 1},
+            {"id": "SQ82", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "In early 2026, the Malaysian government emphasized 'TVET' education for youths. What does TVET stand for? (2026年初，马来西亚政府强调了针对青年的「TVET」教育。TVET 代表什么？)", "options": ["Technical and Vocational Education and Training (技术与职业教育培训)", "Technology, Vision, Engineering, and Teaching (技术、愿景、工程和教学)", "Tertiary Vocation and Enterprise Testing (高等职业和企业测试)", "Teachers' Voluntary Educational Trust (教师志愿教育信托)"], "correct_index": 0},
+            {"id": "SQ83", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "Which major socioeconomic database system was actively implemented in Malaysia to ensure targeted subsidies for citizens? (马来西亚积极实施了哪个主要的社会经济数据库系统以确保为公民提供针对性补贴？)", "options": ["MySejahtera", "PADU (主要数据库系统)", "e-Kasih (爱心计划)", "BR1M (一马援助金)"], "correct_index": 1},
+            {"id": "SQ84", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "As of early 2026, the global shift towards Electric Vehicles (EVs) saw Malaysia introducing more policies for EVs. Which ministry is primarily responsible for the 'Green Technology' masterplan? (截至2026年初，全球向电动汽车转型，马来西亚出台了更多相关政策。哪个部门主要负责“绿色科技”总体规划？)", "options": ["Ministry of Education (教育部)", "Ministry of Energy Transition and Water Transformation (能源转型及公共事业部)", "Ministry of Health (卫生部)", "Ministry of Youth and Sports (青年及体育部)"], "correct_index": 1},
+            {"id": "SQ85", "topic": "Current Issues Jan-May 2026 (2026年1-5月时事)", "question": "To combat cyber scams in 2026, Bank Negara Malaysia enforced stricter regulations involving which security measure? (为了打击2026年的网络诈骗，马来西亚国家银行实施了涉及哪项安全措施的更严格规定？)", "options": ["Abolishing online banking (废除网上银行)", "Kill Switches and biometric authentication (终止开关「Kill Switch」与生物识别认证)", "Banning credit cards (禁止信用卡)", "Using only physical cash (只使用实体现金)"], "correct_index": 1},
+            {"id": "SQ86", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "When tying a knot, which of the following is used specifically to tie two ropes of the same thickness together? (打结时，以下哪种结专门用于把两根粗细相同的绳子系在一起？)", "options": ["Reef Knot / Square Knot (平结)", "Sheet Bend (接绳结)", "Clove Hitch (双套结)", "Bowline (称人结)"], "correct_index": 0},
+            {"id": "SQ87", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "What knot should you use to create a secure, non-slipping loop at the end of a rope, often used in rescue operations? (你应该用什么结在绳子末端制作一个安全的、不滑动的环，通常用于救援行动？)", "options": ["Sheepshank (缩绳结)", "Figure of Eight (八字结)", "Bowline (称人结)", "Timber Hitch (系木结)"], "correct_index": 2},
+            {"id": "SQ88", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "In map reading, what color is used on a topographical map to represent vegetation and forests? (在读图时，地形图上用什么颜色来代表植被和森林？)", "options": ["Blue (蓝色)", "Brown (棕色)", "Green (绿色)", "Black (黑色)"], "correct_index": 2},
+            {"id": "SQ89", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "If you are facing North (0 degrees), what bearing is South-East on a compass? (如果你面向北方(0度)，指南针上的东南方方位角是多少度？)", "options": ["90 degrees (90度)", "135 degrees (135度)", "225 degrees (225度)", "270 degrees (270度)"], "correct_index": 1},
+            {"id": "SQ90", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "When constructing a camp gadget using wooden spars, which lashing is used to join two poles at a 90-degree angle? (在用木棍制作露营小工具时，哪种绑扎法用于将两根木棍以90度角连接起来？)", "options": ["Square Lashing (方回结 / 方形绑扎)", "Diagonal Lashing (十字结 / 对角绑扎)", "Sheer Lashing (剪立结)", "Tripod Lashing (三脚架绑扎)"], "correct_index": 0},
+            {"id": "SQ91", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "In First Aid, if a camper suffers an arm fracture, what should you use to immobilize the arm against the chest? (在急救中，如果一名露营者手臂骨折，你应该用什么将手臂固定在胸前？)", "options": ["A tourniquet (止血带)", "A tight rope (一根紧的绳子)", "An arm sling made from a triangular bandage (用三角巾做成的手臂吊带)", "A loose towel (一条松散的毛巾)"], "correct_index": 2},
+            {"id": "SQ92", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "What is the universal distress signal using a whistle or flashlight? (使用哨子或手电筒的全球通用遇险信号是什么？)", "options": ["Two short signals (两次短信号)", "Three short signals / SOS (三次短信号 / SOS)", "One long continuous signal (一次长而连续的信号)", "Five rapid signals (五次急促的信号)"], "correct_index": 1},
+            {"id": "SQ93", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "When storing food in a campsite, why is it recommended to hang the food bag from a tree branch? (在营地储存食物时，为什么建议把食物袋挂在树枝上？)", "options": ["To keep the food warm (为了给食物保暖)", "To protect the food from wild animals and pests (为了保护食物免受野生动物和害虫的侵害)", "To dry wet food (为了弄干湿的食物)", "To make it easier for birds to eat (为了让鸟类更容易吃到)"], "correct_index": 1},
+            {"id": "SQ94", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "Which of these is the most effective method to purify river water for drinking at a camp? (以下哪种是在营地净化河水饮用的最有效方法？)", "options": ["Filtering it through a shirt (透过衬衫过滤)", "Adding salt (加盐)", "Boiling it vigorously for at least 1 minute (剧烈煮沸至少1分钟)", "Leaving it in the sun for an hour (放在太阳下晒一个小时)"], "correct_index": 2},
+            {"id": "SQ95", "topic": "Basic Camping Knowledge (基本露营常识)", "question": "What is the primary purpose of a 'Timber Hitch' knot? (「系木结 / Timber Hitch」的主要用途是什么？)", "options": ["To tie bandages (用来绑绷带)", "To secure a rope to a cylindrical object, like dragging a log (将绳子固定在圆柱形物体上，如拖拽圆木)", "To shorten a rope without cutting it (在不剪断绳子的情况下缩短它)", "To join two ropes (用来连接两条绳子)"], "correct_index": 1},
+            {"id": "SQ96", "topic": "Citizenship (公民常识)", "question": "The national flower of Malaysia is the Bunga Raya (Hibiscus). It has five petals. What do these five petals symbolize? (马来西亚的国花是大红花「木槿花」。它有五片花瓣。这五片花瓣象征什么？)", "options": ["The 5 main races (五大主要种族)", "The 5 principles of Rukun Negara (国家五大原则)", "The 5 pillars of Islam (伊斯兰教的五功)", "The 5 regions of Malaysia (马来西亚的五个地区)"], "correct_index": 1},
+            {"id": "SQ97", "topic": "BB Traditions & Practices (男少年军传统与实践)", "question": "A typical BB parade consists of a sequence of commands. Which command dismisses the squad? (典型的男少年军检阅由一系列口令组成。哪个口令是用来解散队伍的？)", "options": ["Sedia (立正)", "Rehatkan Diri (稍息)", "Keluar Baris (解散)", "Buka Barisan (散开队伍)"], "correct_index": 2},
+            {"id": "SQ98", "topic": "Uniforms & Awards (制服与奖章)", "question": "A Boy in the Senior Section is allowed to wear an armlet (brassard) on his right arm. What is this armlet used for? (高级组的男孩被允许在右臂上佩戴臂章「brassard」。这个臂章是用来做什么的？)", "options": ["To show his rank (显示他的军阶)", "To display his proficiency badges (展示他的专科奖章)", "To wipe sweat (用来擦汗)", "To carry a compass (用来装指南针)"], "correct_index": 1},
+            {"id": "SQ99", "topic": "History of the Boys' Brigade (男少年军创立历史)", "question": "Sir William Alexander Smith was knighted for his services to the Boys' Brigade. In what year did this happen? (威廉·亚历山大·史密斯爵士因其对男少年军的服务而被封为爵士。这发生在哪一年？)", "options": ["1883", "1909", "1914", "1946"], "correct_index": 1},
+            {"id": "SQ100", "topic": "BB Malaysia & Asia (马来西亚与亚洲男少年军)", "question": "The Boys' Brigade operates across different divisions. Which age group does the 'Pre-Junior Section' generally cater to? (男少年军在不同的组别中运作。「幼级组 / Pre-Junior Section」通常针对哪个年龄段？)", "options": ["6 to 8 years old (6至8岁)", "9 to 12 years old (9至12岁)", "13 to 19 years old (13至19岁)", "Adults only (仅限成人)"], "correct_index": 0}
         ];
 
-        // 4. 真正负责上传的函数
+        // ==========================================
+        // 真正的上传执行函数
+        // ==========================================
         window.uploadData = function(collectionName, dataArray) {
             if (dataArray.length === 0 || !dataArray[0].id) {
                 document.getElementById("status").innerText = `⚠️ 数组是空的，或者题目里没有 "id" 字段！`;
                 return;
             }
 
-            document.getElementById("status").innerText = `⏳ 正在上传 ${dataArray.length} 道题到 ${collectionName}...`;
+            document.getElementById("status").innerText = `⏳ 正在准备上传 ${dataArray.length} 道双语题目到 ${collectionName}...`;
             document.getElementById("status").style.color = "#f39c12";
 
             let uploadPromises = [];
@@ -1468,7 +275,7 @@
 
             // 等待所有题目上传完毕
             Promise.all(uploadPromises).then(() => {
-                document.getElementById("status").innerText = `✅ 成功！${dataArray.length} 道题已全部按你的 ID 存入 ${collectionName}！`;
+                document.getElementById("status").innerText = `✅ 成功！${dataArray.length} 道中英双语题目\n已全部覆盖存入 ${collectionName}！`;
                 document.getElementById("status").style.color = "#2ecc71";
             }).catch(error => {
                 console.error("上传出错: ", error);
