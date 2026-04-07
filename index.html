@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BB Quiz Challenge ⚓</title>
+    <title>BB & Bible Quiz Challenge ⚓</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,21 +23,17 @@
 
         @keyframes float { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.1); } }
 
-        /* 🌟 修复 1：降低白色不透明度至 0.65，让毛玻璃更通透 (适配 iPhone) */
         .glass-card {
             background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(24px); 
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             z-index: 10;
         }
 
-        /* 排行榜深色卡片特效 */
         .dark-glass-card {
             background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
@@ -53,7 +49,6 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         .option-btn:disabled { cursor: not-allowed; opacity: 0.9; }
 
-        /* 隐藏滚动条但保留功能 */
         .hide-scrollbar::-webkit-scrollbar { width: 0px; }
         .hide-scrollbar { scrollbar-width: none; }
     </style>
@@ -67,7 +62,7 @@
         
         <div id="mainContainer" class="glass-card w-full max-w-[420px] rounded-[2rem] p-6 sm:p-8 relative flex flex-col min-h-[600px] page-enter overflow-hidden">
             
-            <div id="page1-role" class="flex flex-col h-full page-enter">
+            <div id="page0-category" class="flex flex-col h-full page-enter">
                 <div class="w-full flex justify-end mb-2">
                     <button onclick="openLeaderboard()" class="text-indigo-700 bg-white/70 backdrop-blur-md hover:bg-white px-4 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 shadow-sm border border-white/60 active:scale-95">
                         <i class="fa-solid fa-ranking-star"></i> Leaderboard
@@ -76,45 +71,76 @@
                 
                 <div class="text-center flex-1 flex flex-col justify-center mb-6">
                     <div class="w-24 h-24 bg-white/80 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border-4 border-white">
-                        <i class="fa-solid fa-anchor text-5xl text-indigo-600"></i>
+                        <i class="fa-solid fa-gamepad text-5xl text-indigo-600"></i>
                     </div>
-                    <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight drop-shadow-sm">BB Quiz</h1>
-                    <p class="text-sm text-slate-600 font-bold mt-2 uppercase tracking-widest">Select Category</p>
+                    <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight drop-shadow-sm">Select Game</h1>
+                    <p class="text-sm text-slate-600 font-bold mt-2 uppercase tracking-widest">请选择挑战模式</p>
                 </div>
 
                 <div class="space-y-4">
-                    <button onclick="selectRole('Junior')" class="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-blue-400/50">
-                        <i class="fa-solid fa-child-reaching text-2xl"></i> Junior (小学组)
+                    <button onclick="selectCategory('BB')" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-xl border border-blue-400/50">
+                        <i class="fa-solid fa-anchor text-2xl"></i> BB Quiz
                     </button>
-                    <button onclick="selectRole('Senior')" class="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-rose-400/50">
-                        <i class="fa-solid fa-user-graduate text-2xl"></i> Senior (中学组)
+                    <button onclick="selectCategory('Bible')" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-xl border border-amber-400/50">
+                        <i class="fa-solid fa-book-bible text-2xl"></i> Bible Quiz
                     </button>
                 </div>
             </div>
 
-            <div id="page2-name" class="hidden flex-col h-full justify-center page-enter">
+            <div id="page1-role" class="hidden flex-col h-full justify-center page-enter">
                 <div class="text-center mb-8">
+                    <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner border-4 border-white">
+                        <i id="roleIcon" class="fa-solid fa-users text-4xl text-indigo-600"></i>
+                    </div>
+                    <h1 id="roleTitle" class="text-3xl font-extrabold text-slate-800 tracking-tight">Select Category</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-2 uppercase tracking-widest">请选择您的组别</p>
+                </div>
+
+                <div class="space-y-4 mt-4">
+                    <button onclick="selectRole('Junior')" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-teal-400/50">
+                        <i class="fa-solid fa-child-reaching text-2xl"></i> Junior (小学组)
+                    </button>
+                    <button onclick="selectRole('Senior')" class="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold py-5 rounded-2xl shadow-lg transform transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-rose-400/50">
+                        <i class="fa-solid fa-user-graduate text-2xl"></i> Senior (中学组)
+                    </button>
+                </div>
+                
+                <button onclick="goBackToCategory()" class="mt-6 text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Games
+                </button>
+            </div>
+
+            <div id="page2-name" class="hidden flex-col h-full justify-center page-enter">
+                <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-white/80 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md border-2 border-white">
                         <i class="fa-solid fa-id-badge text-2xl text-indigo-600"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-800 drop-shadow-sm">Welcome, <span id="displayRole" class="text-indigo-600"></span>!</h2>
-                    <p class="text-xs text-slate-600 mt-2 font-bold uppercase tracking-wider">Enter your FULL NAME</p>
+                    <h2 class="text-xl font-bold text-slate-800 drop-shadow-sm">Welcome to <span id="displayGameMode" class="text-indigo-600"></span>!</h2>
+                    <h3 class="text-lg font-bold text-slate-600">Role: <span id="displayRole" class="text-rose-500"></span></h3>
                 </div>
 
-                <div class="relative mb-6">
+                <div class="relative mb-2">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <i class="fa-solid fa-user text-indigo-400"></i>
                     </div>
-                    <input type="text" id="playerName" placeholder="e.g. HENRY CHEW BOON HUEI" 
+                    <input type="text" id="playerName" placeholder="e.g. HENRY CHEW" 
                            class="w-full pl-11 pr-4 py-4 bg-white/80 border border-white/60 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white outline-none text-slate-800 font-bold uppercase shadow-inner transition-all text-center tracking-wide">
+                </div>
+                
+                <div class="bg-rose-50 border border-rose-200 rounded-lg p-3 mb-6 flex items-start gap-2 shadow-sm">
+                    <i class="fa-solid fa-circle-exclamation text-rose-500 mt-0.5"></i>
+                    <p class="text-rose-600 text-xs font-bold leading-tight">
+                        IMPORTANT: Please use the EXACT same name every time to update your leaderboard score!<br>
+                        <span class="text-gray-500">提醒：请确保每次输入的名字完全一致，以便累计和更新您的排行榜分数！</span>
+                    </p>
                 </div>
 
                 <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex justify-center items-center gap-2 border border-indigo-500/50 text-lg">
                     <i class="fa-solid fa-play"></i> Start Challenge
                 </button>
                 
-                <button onclick="goBack()" class="mt-6 text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-arrow-left"></i> Change Category
+                <button onclick="goBackToRole()" class="mt-6 text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors flex items-center justify-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Change Role
                 </button>
             </div>
 
@@ -138,22 +164,22 @@
 
                 <div class="flex justify-between items-center mb-4">
                     <div id="progressText" class="text-xs font-bold text-indigo-700 uppercase tracking-widest flex items-center gap-2 drop-shadow-sm">
-                        <i class="fa-solid fa-bars-progress"></i> Question 1 of 50
+                        <i class="fa-solid fa-bars-progress"></i> Q1
                     </div>
                     <button onclick="endGameHalfway()" class="text-[11px] font-bold text-rose-500 hover:text-white bg-white/60 backdrop-blur-sm hover:bg-rose-500 px-3 py-1.5 rounded-lg border border-white/50 shadow-sm transition-all flex items-center gap-1 active:scale-95">
                         <i class="fa-solid fa-power-off"></i> End Game
                     </button>
                 </div>
                 
-                <div id="questionText" class="text-xl sm:text-2xl font-extrabold text-slate-800 leading-snug mb-6 flex-1 flex items-center drop-shadow-sm">
+                <div id="questionText" class="text-lg sm:text-xl font-extrabold text-slate-800 leading-snug mb-4 flex-1 flex items-center drop-shadow-sm">
                     Loading questions...
                 </div>
                 
                 <div class="space-y-3 mb-6">
-                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn0" onclick="selectOption(0)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">A</span><span id="opt0"></span></button>
-                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn1" onclick="selectOption(1)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">B</span><span id="opt1"></span></button>
-                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn2" onclick="selectOption(2)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">C</span><span id="opt2"></span></button>
-                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3" id="btn3" onclick="selectOption(3)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">D</span><span id="opt3"></span></button>
+                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[14px] shadow-sm flex items-center gap-3" id="btn0" onclick="selectOption(0)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">A</span><span id="opt0"></span></button>
+                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[14px] shadow-sm flex items-center gap-3" id="btn1" onclick="selectOption(1)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">B</span><span id="opt1"></span></button>
+                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[14px] shadow-sm flex items-center gap-3" id="btn2" onclick="selectOption(2)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">C</span><span id="opt2"></span></button>
+                    <button class="option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[14px] shadow-sm flex items-center gap-3" id="btn3" onclick="selectOption(3)"><span class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">D</span><span id="opt3"></span></button>
                 </div>
 
                 <button id="confirmBtn" onclick="confirmAnswer()" class="hidden w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 flex justify-center items-center gap-2 mt-auto border border-emerald-400">
@@ -191,7 +217,7 @@
                         <i class="fa-solid fa-ranking-star text-xl"></i> <span class="text-xs">Ranking</span>
                     </button>
                     <button onclick="location.reload()" class="w-2/3 bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-xl transform transition-all active:scale-95 flex justify-center items-center gap-2 border border-slate-700">
-                        <i class="fa-solid fa-rotate-right"></i> Play Again
+                        <i class="fa-solid fa-house"></i> Home
                     </button>
                 </div>
             </div>
@@ -203,16 +229,21 @@
                     <div class="w-8"></div>
                 </div>
 
-                <div class="flex justify-center gap-3 p-4 relative z-10">
-                    <button id="tabJunior" onclick="loadLeaderboardData('Junior')" class="px-6 py-2 rounded-full text-sm font-bold transition-all border border-transparent shadow-[0_0_15px_rgba(99,102,241,0.5)] bg-indigo-600 text-white">Junior</button>
-                    <button id="tabSenior" onclick="loadLeaderboardData('Senior')" class="px-6 py-2 rounded-full text-sm font-bold transition-all border border-slate-600 text-slate-400 bg-slate-800/50 hover:bg-slate-700">Senior</button>
+                <div class="flex justify-center gap-2 px-4 pt-2 relative z-10">
+                    <button id="tabCatBB" onclick="switchLBCategory('BB')" class="w-1/2 py-2 rounded-t-lg text-sm font-bold transition-all bg-indigo-600 text-white border-b-2 border-white">BB Quiz</button>
+                    <button id="tabCatBible" onclick="switchLBCategory('Bible')" class="w-1/2 py-2 rounded-t-lg text-sm font-bold transition-all bg-slate-800/50 text-slate-400 hover:bg-slate-700 border-b-2 border-transparent">Bible Quiz</button>
+                </div>
+                
+                <div class="flex justify-center gap-3 p-3 bg-white/5 relative z-10 shadow-md">
+                    <button id="tabRoleJunior" onclick="switchLBRole('Junior')" class="px-6 py-1.5 rounded-full text-xs font-bold transition-all border border-transparent shadow-[0_0_10px_rgba(99,102,241,0.5)] bg-indigo-500 text-white">Junior</button>
+                    <button id="tabRoleSenior" onclick="switchLBRole('Senior')" class="px-6 py-1.5 rounded-full text-xs font-bold transition-all border border-slate-600 text-slate-400 bg-slate-800 hover:bg-slate-700">Senior</button>
                 </div>
 
-                <div class="flex-1 overflow-y-auto px-4 pb-8 hide-scrollbar relative z-10">
-                    <div id="lbLoading" class="text-center text-indigo-400 mt-20"><i class="fa-solid fa-circle-notch fa-spin text-4xl"></i><p class="mt-3 font-bold text-sm">Syncing Data...</p></div>
-                    <div id="lbEmpty" class="hidden text-center text-slate-500 mt-20"><i class="fa-solid fa-ghost text-4xl"></i><p class="mt-3 font-bold text-sm">No records found</p></div>
+                <div class="flex-1 overflow-y-auto px-4 pb-8 pt-4 hide-scrollbar relative z-10">
+                    <div id="lbLoading" class="text-center text-indigo-400 mt-16"><i class="fa-solid fa-circle-notch fa-spin text-4xl"></i><p class="mt-3 font-bold text-sm">Syncing Data...</p></div>
+                    <div id="lbEmpty" class="hidden text-center text-slate-500 mt-16"><i class="fa-solid fa-ghost text-4xl"></i><p class="mt-3 font-bold text-sm">No records found</p></div>
                     
-                    <div id="lbPodium" class="hidden flex justify-center items-end mt-12 mb-8 px-2 gap-2 h-40"></div>
+                    <div id="lbPodium" class="hidden flex justify-center items-end mt-10 mb-8 px-2 gap-2 h-40"></div>
                     <div id="lbList" class="hidden flex flex-col space-y-3"></div>
                 </div>
             </div>
@@ -224,22 +255,29 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
+        // ⚠️⚠️⚠️ 替换为你的 Firebase 钥匙 ⚠️⚠️⚠️
         const firebaseConfig = {
-            apiKey: "AIzaSyDZU8J6tnyCe_-amiBvFuwlwpx4fXw-uGM",
-            authDomain: "bb-quiz-app.firebaseapp.com",
-            projectId: "bb-quiz-app",
-            storageBucket: "bb-quiz-app.firebasestorage.app",
-            messagingSenderId: "370671276686",
-            appId: "1:370671276686:web:204abb8c375f130b3a2fdf",
-            measurementId: "G-R83HJ2EDQG"
+            apiKey: "你的API_KEY",
+            authDomain: "你的AUTH_DOMAIN",
+            projectId: "你的PROJECT_ID",
+            storageBucket: "你的STORAGE_BUCKET",
+            messagingSenderId: "你的SENDER_ID",
+            appId: "你的APP_ID"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let currentRole = "", playerName = "", questions = [], currentQIndex = 0;
+        // 全局状态变量
+        let currentQuizCategory = "BB"; // "BB" 或 "Bible"
+        let currentRole = "";           // "Junior" 或 "Senior"
+        let playerName = ""; 
+        let questions = [], currentQIndex = 0;
         let score = 0, currentStreak = 0, maxStreak = 0, totalCorrect = 0;
         let currentSelectedOption = null, isPlaying = false;
-        let currentLeaderboardTab = "Junior";
+        
+        // 排行榜状态
+        let lbCurrentCat = "BB";
+        let lbCurrentRole = "Junior";
 
         function switchPage(hideId, showId) {
             document.getElementById(hideId).classList.add("hidden");
@@ -250,13 +288,33 @@
             showEl.classList.add("page-enter");
         }
 
+        // 流程 1: 选择游戏
+        function selectCategory(cat) {
+            currentQuizCategory = cat;
+            let icon = document.getElementById("roleIcon");
+            let title = document.getElementById("roleTitle");
+            
+            if(cat === "BB") {
+                icon.className = "fa-solid fa-anchor text-4xl text-indigo-600";
+                title.innerText = "BB Quiz";
+            } else {
+                icon.className = "fa-solid fa-book-bible text-4xl text-amber-600";
+                title.innerText = "Bible Quiz";
+            }
+            switchPage("page0-category", "page1-role");
+        }
+        function goBackToCategory() { switchPage("page1-role", "page0-category"); }
+
+        // 流程 2: 选择组别
         function selectRole(role) {
             currentRole = role;
+            document.getElementById("displayGameMode").innerText = currentQuizCategory + " Quiz";
             document.getElementById("displayRole").innerText = role;
             switchPage("page1-role", "page2-name");
         }
-        function goBack() { switchPage("page2-name", "page1-role"); }
+        function goBackToRole() { switchPage("page2-name", "page1-role"); }
 
+        // 流程 3: 开始游戏 (分流数据库)
         function startQuiz() {
             let nameInput = document.getElementById("playerName").value.trim();
             if (nameInput === "") { 
@@ -269,13 +327,22 @@
             switchPage("page2-name", "page3-quiz");
             document.getElementById("questionText").innerHTML = '<i class="fa-solid fa-spinner fa-spin text-indigo-500 mr-2"></i> Loading questions...';
 
-            let collectionName = currentRole === "Junior" ? "JuniorQuestions" : "SeniorQuestions";
+            // 🎯 核心：动态判断要拉取哪个数据库
+            let collectionName = "";
+            if (currentQuizCategory === "BB") {
+                collectionName = currentRole === "Junior" ? "JuniorQuestions" : "SeniorQuestions";
+            } else {
+                collectionName = currentRole === "Junior" ? "BibleJuniorQuestions" : "BibleSeniorQuestions";
+            }
+
             db.collection(collectionName).get().then((snapshot) => {
                 questions = snapshot.docs.map(doc => doc.data());
-                if(questions.length === 0) { document.getElementById("questionText").innerText = "No questions found!"; return; }
-                
+                if(questions.length === 0) {
+                    document.getElementById("questionText").innerText = "No questions found in this category!";
+                    return;
+                }
                 questions.sort(() => Math.random() - 0.5);
-                questions = questions.slice(0, 50); 
+                questions = questions.slice(0, 50); // 最多 50 题
                 loadQuestionUI();
             });
         }
@@ -301,7 +368,7 @@
             for(let i=0; i<4; i++) {
                 let btn = document.getElementById("btn" + i);
                 document.getElementById("opt" + i).innerText = q.options[i];
-                btn.className = "option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[15px] shadow-sm flex items-center gap-3";
+                btn.className = "option-btn w-full p-4 bg-white/90 border-2 border-white rounded-xl text-slate-700 font-bold text-left text-[14px] shadow-sm flex items-center gap-3";
                 btn.disabled = false;         
             }
             document.getElementById("confirmBtn").classList.add("hidden");
@@ -353,16 +420,19 @@
             isPlaying = false;
             switchPage("page3-quiz", "page4-result");
 
-            document.getElementById("finalName").innerText = playerName;
+            document.getElementById("finalName").innerText = playerName + " (" + currentRole + ")";
             document.getElementById("finalScore").innerText = score;
             document.getElementById("finalCombo").innerText = maxStreak;
             document.getElementById("finalCorrect").innerText = totalCorrect;
             document.getElementById("finalTotal").innerText = questions.length; 
             
-            let playerDocId = currentRole + "_" + playerName;
+            // 🎯 核心：带上分类的复合 ID，例如 "BB_Junior_ALEX" 或 "Bible_Senior_ALEX"
+            let playerDocId = `${currentQuizCategory}_${currentRole}_${playerName}`;
+            
             try {
                 await db.collection("Leaderboard").doc(playerDocId).set({
                     name: playerName,
+                    quizCategory: currentQuizCategory, // 新增字段：用于在排行榜中过滤
                     role: currentRole,
                     score: score,
                     maxCombo: maxStreak,
@@ -374,39 +444,72 @@
 
         window.addEventListener('beforeunload', (e) => { if (isPlaying) { e.preventDefault(); e.returnValue = ''; }});
 
+        // ==========================================
+        // 👑 升级版：双层排行榜系统
+        // ==========================================
         function openLeaderboard() {
-            currentLeaderboardTab = currentRole || "Junior"; 
+            // 默认打开玩家刚玩过的类别，如果没有则默认 BB 和 Junior
+            lbCurrentCat = currentQuizCategory || "BB";
+            lbCurrentRole = currentRole || "Junior"; 
             document.getElementById("page5-leaderboard").classList.remove("hidden");
-            loadLeaderboardData(currentLeaderboardTab);
+            fetchAndRenderLeaderboard();
         }
 
         function closeLeaderboard() {
             document.getElementById("page5-leaderboard").classList.add("hidden");
         }
 
-        function loadLeaderboardData(tabName) {
-            currentLeaderboardTab = tabName;
+        function switchLBCategory(cat) {
+            lbCurrentCat = cat;
+            fetchAndRenderLeaderboard();
+        }
+
+        function switchLBRole(role) {
+            lbCurrentRole = role;
+            fetchAndRenderLeaderboard();
+        }
+
+        function fetchAndRenderLeaderboard() {
+            // 1. 更新第一层 Tab (BB / Bible) 样式
+            const catBB = document.getElementById("tabCatBB");
+            const catBible = document.getElementById("tabCatBible");
+            const activeCatClass = ["bg-indigo-600", "text-white", "border-b-2", "border-white"];
+            const inactiveCatClass = ["bg-slate-800/50", "text-slate-400", "hover:bg-slate-700", "border-b-2", "border-transparent"];
             
-            const activeClass = ["bg-indigo-600", "text-white", "shadow-[0_0_15px_rgba(99,102,241,0.5)]", "border-transparent"];
-            const inactiveClass = ["bg-slate-800/50", "text-slate-400", "border-slate-600", "hover:bg-slate-700"];
-            
-            let tabJ = document.getElementById("tabJunior");
-            let tabS = document.getElementById("tabSenior");
-            
-            if(tabName === 'Junior') {
-                tabJ.classList.remove(...inactiveClass); tabJ.classList.add(...activeClass);
-                tabS.classList.remove(...activeClass); tabS.classList.add(...inactiveClass);
+            if(lbCurrentCat === 'BB') {
+                catBB.classList.remove(...inactiveCatClass); catBB.classList.add(...activeCatClass);
+                catBible.classList.remove(...activeCatClass); catBible.classList.add(...inactiveCatClass);
             } else {
-                tabS.classList.remove(...inactiveClass); tabS.classList.add(...activeClass);
-                tabJ.classList.remove(...activeClass); tabJ.classList.add(...inactiveClass);
+                catBible.classList.remove(...inactiveCatClass); catBible.classList.add(...activeCatClass);
+                catBB.classList.remove(...activeCatClass); catBB.classList.add(...inactiveCatClass);
             }
 
+            // 2. 更新第二层 Tab (Junior / Senior) 样式
+            const roleJ = document.getElementById("tabRoleJunior");
+            const roleS = document.getElementById("tabRoleSenior");
+            const activeRoleClass = ["bg-indigo-500", "text-white", "shadow-[0_0_10px_rgba(99,102,241,0.5)]", "border-transparent"];
+            const inactiveRoleClass = ["bg-slate-800", "text-slate-400", "border-slate-600", "hover:bg-slate-700"];
+            
+            if(lbCurrentRole === 'Junior') {
+                roleJ.classList.remove(...inactiveRoleClass); roleJ.classList.add(...activeRoleClass);
+                roleS.classList.remove(...activeRoleClass); roleS.classList.add(...inactiveRoleClass);
+            } else {
+                roleS.classList.remove(...inactiveRoleClass); roleS.classList.add(...activeRoleClass);
+                roleJ.classList.remove(...activeRoleClass); roleJ.classList.add(...inactiveRoleClass);
+            }
+
+            // 3. 拉取数据
             document.getElementById("lbLoading").classList.remove("hidden");
             document.getElementById("lbEmpty").classList.add("hidden");
             document.getElementById("lbPodium").classList.add("hidden");
             document.getElementById("lbList").classList.add("hidden");
 
-            db.collection("Leaderboard").where("role", "==", tabName).get().then((snapshot) => {
+            // 🎯 使用组合查询拉取分数
+            db.collection("Leaderboard")
+              .where("quizCategory", "==", lbCurrentCat)
+              .where("role", "==", lbCurrentRole)
+              .get()
+              .then((snapshot) => {
                 let players = snapshot.docs.map(doc => doc.data());
                 
                 if (players.length === 0) {
@@ -434,38 +537,13 @@
 
             if (players.length > 0) {
                 podium.classList.remove("hidden");
-                
-                let p1 = players[0] || null;
-                let p2 = players[1] || null;
-                let p3 = players[2] || null;
-
+                let p1 = players[0] || null, p2 = players[1] || null, p3 = players[2] || null;
                 const getAvatar = (name, colorClass) => `<div class="w-14 h-14 rounded-full ${colorClass} flex items-center justify-center text-white text-xl font-extrabold shadow-lg border-2 border-white/20 mb-2">${name.charAt(0)}</div>`;
 
                 let html = "";
-                
-                if (p2) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-4">
-                    <i class="fa-solid fa-crown text-slate-300 text-xl mb-1 shadow-sm"></i>
-                    ${getAvatar(p2.name, "bg-gradient-to-br from-slate-400 to-slate-600")}
-                    <p class="text-white text-xs font-bold truncate w-full px-1">${p2.name}</p>
-                    <p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p2.score}</p>
-                </div>`;
-                else html += `<div class="w-1/3"></div>`;
-
-                if (p1) html += `<div class="w-1/3 flex flex-col items-center text-center relative z-10 transform -translate-y-2">
-                    <i class="fa-solid fa-crown text-yellow-400 text-3xl mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"></i>
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-black shadow-[0_0_20px_rgba(250,204,21,0.5)] border-2 border-yellow-200 mb-2">${p1.name.charAt(0)}</div>
-                    <p class="text-white text-sm font-bold truncate w-full px-1">${p1.name}</p>
-                    <p class="text-emerald-400 font-mono font-black text-base mt-1 drop-shadow-md"><i class="fa-solid fa-caret-up text-xs"></i> ${p1.score}</p>
-                </div>`;
-
-                if (p3) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-6">
-                    <i class="fa-solid fa-crown text-orange-400 text-lg mb-1"></i>
-                    ${getAvatar(p3.name, "bg-gradient-to-br from-orange-400 to-amber-700")}
-                    <p class="text-white text-xs font-bold truncate w-full px-1">${p3.name}</p>
-                    <p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p3.score}</p>
-                </div>`;
-                else html += `<div class="w-1/3"></div>`;
-
+                if (p2) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-4"><i class="fa-solid fa-crown text-slate-300 text-xl mb-1 shadow-sm"></i>${getAvatar(p2.name, "bg-gradient-to-br from-slate-400 to-slate-600")}<p class="text-white text-xs font-bold truncate w-full px-1">${p2.name}</p><p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p2.score}</p></div>`; else html += `<div class="w-1/3"></div>`;
+                if (p1) html += `<div class="w-1/3 flex flex-col items-center text-center relative z-10 transform -translate-y-2"><i class="fa-solid fa-crown text-yellow-400 text-3xl mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"></i><div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-black shadow-[0_0_20px_rgba(250,204,21,0.5)] border-2 border-yellow-200 mb-2">${p1.name.charAt(0)}</div><p class="text-white text-sm font-bold truncate w-full px-1">${p1.name}</p><p class="text-emerald-400 font-mono font-black text-base mt-1 drop-shadow-md"><i class="fa-solid fa-caret-up text-xs"></i> ${p1.score}</p></div>`;
+                if (p3) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-6"><i class="fa-solid fa-crown text-orange-400 text-lg mb-1"></i>${getAvatar(p3.name, "bg-gradient-to-br from-orange-400 to-amber-700")}<p class="text-white text-xs font-bold truncate w-full px-1">${p3.name}</p><p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p3.score}</p></div>`; else html += `<div class="w-1/3"></div>`;
                 podium.innerHTML = html;
             }
 
@@ -476,7 +554,7 @@
                     let p = players[i];
                     let rank = i + 1;
                     listHtml += `
-                    <div class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl p-3 flex items-center transition-colors">
+                    <div class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl p-3 flex items-center transition-colors mb-3">
                         <div class="w-10 h-10 rounded-full bg-indigo-500/30 text-indigo-200 flex items-center justify-center font-bold text-lg border border-indigo-400/20 shrink-0">
                             ${p.name.charAt(0)}
                         </div>
