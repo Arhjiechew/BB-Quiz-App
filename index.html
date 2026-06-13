@@ -197,7 +197,7 @@
                 <div class="text-center mb-6">
                     <i class="fa-solid fa-trophy text-6xl text-amber-400 drop-shadow-lg mb-4"></i>
                     <h1 class="text-3xl font-extrabold text-slate-800 drop-shadow-sm">Challenge Complete!</h1>
-                    <h2 id="finalName" class="text-lg font-bold text-indigo-700 mt-2 bg-white/60 inline-block px-4 py-1 rounded-full border border-white shadow-sm"></h2>
+                    <h2 id="finalName" class="text-lg font-bold text-indigo-700 mt-2 bg-indigo-50 inline-block px-4 py-1 rounded-full border border-indigo-100 shadow-sm"></h2>
                 </div>
                 
                 <div class="bg-white/80 rounded-2xl p-6 shadow-inner border border-white space-y-4 mb-6">
@@ -216,7 +216,7 @@
                 </div>
                 
                 <div class="flex gap-2 mt-auto">
-                    <button onclick="openLeaderboard()" class="w-1/3 bg-white/70 hover:bg-white text-indigo-700 font-bold py-4 rounded-xl shadow-sm transform transition-all active:scale-95 flex flex-col justify-center items-center gap-1 border border-white">
+                    <button onclick="openLeaderboard()" class="w-1/3 bg-indigo-100 hover:bg-indigo-200 text-indigo-600 font-bold py-4 rounded-xl shadow-sm transform transition-all active:scale-95 flex flex-col justify-center items-center gap-1 border border-indigo-200">
                         <i class="fa-solid fa-ranking-star text-xl"></i> <span class="text-xs">Ranking</span>
                     </button>
                     <button onclick="location.reload()" class="w-2/3 bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-xl transform transition-all active:scale-95 flex justify-center items-center gap-2 border border-slate-700">
@@ -225,7 +225,7 @@
                 </div>
             </div>
 
-            <div id="page5-leaderboard" class="hidden absolute inset-0 z-50 dark-glass-card rounded-[2rem] flex flex-col page-enter">
+            <div id="page5-leaderboard" class="hidden absolute inset-0 z-50 dark-glass-card flex flex-col page-enter">
                 <div class="px-6 pt-6 pb-2 flex justify-between items-center relative z-10">
                     <button onclick="closeLeaderboard()" class="text-indigo-400 hover:text-white transition-colors w-8"><i class="fa-solid fa-arrow-left text-xl"></i></button>
                     <h2 class="text-white font-extrabold text-xl tracking-wider">LEADERBOARD</h2>
@@ -271,8 +271,8 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let currentQuizCategory = "BB"; 
-        let currentRole = "";           
+        let currentQuizCategory = "BB";
+        let currentRole = ""; 
         let playerName = ""; 
         let questions = [], currentQIndex = 0;
         let score = 0, currentStreak = 0, maxStreak = 0, totalCorrect = 0;
@@ -349,11 +349,17 @@
             });
         }
 
+        // 🌟 修复：只计算当前已经做过的题目，不再加 1！
         function endGameHalfway() {
             Swal.fire({
                 title: 'End Challenge?', html: "Are you sure you want to end early?<br>Your score will be saved.",
                 icon: 'warning', showCancelButton: true, confirmButtonColor: '#4f46e5', cancelButtonColor: '#f43f5e', confirmButtonText: 'Yes, End Game'
-            }).then((result) => { if (result.isConfirmed) { questions.length = currentQIndex + 1; endGame(); }});
+            }).then((result) => { 
+                if (result.isConfirmed) { 
+                    questions.length = currentQIndex; // 这里去掉了 + 1
+                    endGame(); 
+                }
+            });
         }
 
         function loadQuestionUI() {
@@ -440,6 +446,7 @@
                     score: score,
                     maxCombo: maxStreak,
                     correctAnswers: totalCorrect,
+                    totalAttempted: questions.length, 
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
             } catch (e) { console.error("Save error: ", e); }
@@ -447,7 +454,6 @@
 
         window.addEventListener('beforeunload', (e) => { if (isPlaying) { e.preventDefault(); e.returnValue = ''; }});
 
-        // 4. 排行榜系统
         function openLeaderboard() {
             lbCurrentCat = currentQuizCategory || "BB";
             lbCurrentRole = currentQuizCategory === "BB" ? (currentRole || "Junior") : "All"; 
@@ -515,15 +521,12 @@
                     rawPlayers = rawPlayers.filter(p => p.quizCategory !== "Bible");
                 }
 
-                // 🌟🌟🌟 核心修复：排行榜智能去重逻辑 (Deduplication) 🌟🌟🌟
-                // 如果数据库里有旧格式的残留数据导致同名，只保留分数最高的那个！
                 let uniquePlayersMap = {};
                 rawPlayers.forEach(p => {
-                    let nameKey = p.name.trim().toUpperCase(); // 确保名字大小写一致
+                    let nameKey = p.name.trim().toUpperCase(); 
                     if (!uniquePlayersMap[nameKey]) {
                         uniquePlayersMap[nameKey] = p;
                     } else {
-                        // 如果遇到同名的人，比较谁的分数高
                         let existing = uniquePlayersMap[nameKey];
                         if (p.score > existing.score || 
                            (p.score === existing.score && p.maxCombo > existing.maxCombo)) {
@@ -532,9 +535,7 @@
                     }
                 });
                 
-                // 将去重后的对象重新转换回数组
                 let players = Object.values(uniquePlayersMap);
-                // 🌟🌟🌟----------------------------------------🌟🌟🌟
 
                 if (players.length === 0) {
                     document.getElementById("lbLoading").classList.add("hidden");
@@ -566,10 +567,13 @@
                 podium.classList.remove("hidden");
                 let p1 = players[0] || null, p2 = players[1] || null, p3 = players[2] || null;
                 const getAvatar = (name, colorClass) => `<div class="w-14 h-14 rounded-full ${colorClass} flex items-center justify-center text-white text-xl font-extrabold shadow-lg border-2 border-white/20 mb-2">${name.charAt(0)}</div>`;
+                
                 let html = "";
-                if (p2) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-4"><i class="fa-solid fa-crown text-slate-300 text-xl mb-1 shadow-sm"></i>${getAvatar(p2.name, "bg-gradient-to-br from-slate-400 to-slate-600")}<p class="text-white text-xs font-bold truncate w-full px-1">${p2.name}</p><p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p2.score}</p></div>`; else html += `<div class="w-1/3"></div>`;
-                if (p1) html += `<div class="w-1/3 flex flex-col items-center text-center relative z-10 transform -translate-y-2"><i class="fa-solid fa-crown text-yellow-400 text-3xl mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"></i><div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-black shadow-[0_0_20px_rgba(250,204,21,0.5)] border-2 border-yellow-200 mb-2">${p1.name.charAt(0)}</div><p class="text-white text-sm font-bold truncate w-full px-1">${p1.name}</p><p class="text-emerald-400 font-mono font-black text-base mt-1 drop-shadow-md"><i class="fa-solid fa-caret-up text-xs"></i> ${p1.score}</p></div>`;
-                if (p3) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-6"><i class="fa-solid fa-crown text-orange-400 text-lg mb-1"></i>${getAvatar(p3.name, "bg-gradient-to-br from-orange-400 to-amber-700")}<p class="text-white text-xs font-bold truncate w-full px-1">${p3.name}</p><p class="text-emerald-400 font-mono font-bold text-sm mt-1"><i class="fa-solid fa-caret-up text-[10px]"></i> ${p3.score}</p></div>`; else html += `<div class="w-1/3"></div>`;
+                
+                if (p2) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-4"><i class="fa-solid fa-crown text-slate-300 text-xl mb-1 shadow-sm"></i>${getAvatar(p2.name, "bg-gradient-to-br from-slate-400 to-slate-600")}<p class="text-white text-xs font-bold truncate w-full px-1">${p2.name}</p><p class="text-emerald-400 font-mono font-bold text-xs mt-1 leading-tight"><i class="fa-solid fa-star text-[10px]"></i> ${p2.score}<br><i class="fa-solid fa-check text-[10px]"></i> ${p2.correctAnswers}/${p2.totalAttempted || 50}</p></div>`; else html += `<div class="w-1/3"></div>`;
+                if (p1) html += `<div class="w-1/3 flex flex-col items-center text-center relative z-10 transform -translate-y-2"><i class="fa-solid fa-crown text-yellow-400 text-3xl mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"></i><div class="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-black shadow-[0_0_20px_rgba(250,204,21,0.5)] border-2 border-yellow-200 mb-2">${p1.name.charAt(0)}</div><p class="text-white text-sm font-bold truncate w-full px-1">${p1.name}</p><p class="text-emerald-400 font-mono font-black text-sm mt-1 leading-tight drop-shadow-md"><i class="fa-solid fa-star text-xs"></i> ${p1.score}<br><i class="fa-solid fa-check text-xs"></i> ${p1.correctAnswers}/${p1.totalAttempted || 50}</p></div>`;
+                if (p3) html += `<div class="w-1/3 flex flex-col items-center text-center transform translate-y-6"><i class="fa-solid fa-crown text-orange-400 text-lg mb-1"></i>${getAvatar(p3.name, "bg-gradient-to-br from-orange-400 to-amber-700")}<p class="text-white text-xs font-bold truncate w-full px-1">${p3.name}</p><p class="text-emerald-400 font-mono font-bold text-xs mt-1 leading-tight"><i class="fa-solid fa-star text-[10px]"></i> ${p3.score}<br><i class="fa-solid fa-check text-[10px]"></i> ${p3.correctAnswers}/${p3.totalAttempted || 50}</p></div>`; else html += `<div class="w-1/3"></div>`;
+                
                 podium.innerHTML = html;
             }
 
@@ -578,7 +582,22 @@
                 let listHtml = "";
                 for(let i = 3; i < players.length; i++) {
                     let p = players[i], rank = i + 1;
-                    listHtml += `<div class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl p-3 flex items-center transition-colors mb-3"><div class="w-10 h-10 rounded-full bg-indigo-500/30 text-indigo-200 flex items-center justify-center font-bold text-lg border border-indigo-400/20 shrink-0">${p.name.charAt(0)}</div><div class="ml-4 flex-1 overflow-hidden"><p class="text-white font-bold text-sm truncate">${p.name}</p><p class="text-emerald-400 font-mono text-xs mt-0.5"><i class="fa-solid fa-caret-up"></i> ${p.score}</p></div><div class="text-slate-500 font-black italic text-lg px-2">${rank}<span class="text-xs">th</span></div></div>`;
+                    listHtml += `
+                    <div class="bg-white/5 hover:bg-white/10 border border-white/5 rounded-2xl p-3 flex items-center transition-colors mb-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-500/30 text-indigo-200 flex items-center justify-center font-bold text-lg border border-indigo-400/20 shrink-0">
+                            ${p.name.charAt(0)}
+                        </div>
+                        <div class="ml-4 flex-1 overflow-hidden">
+                            <p class="text-white font-bold text-sm truncate">${p.name}</p>
+                            <p class="text-emerald-400 font-mono text-xs mt-0.5">
+                                <i class="fa-solid fa-star"></i> ${p.score} &nbsp;&nbsp;|&nbsp;&nbsp; 
+                                <i class="fa-solid fa-check"></i> ${p.correctAnswers} / ${p.totalAttempted || 50}
+                            </p>
+                        </div>
+                        <div class="text-slate-500 font-black italic text-lg px-2">
+                            ${rank}<span class="text-xs">th</span>
+                        </div>
+                    </div>`;
                 }
                 list.innerHTML = listHtml;
             }
